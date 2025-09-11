@@ -3,7 +3,7 @@ include_once("config/database.php");
 include_once("config/callApi.php");
 class modelTracking{
     public function selectTrackingByOrderID($id) {
-        $url = "http://localhost/CNMoi/api/tracking/get_tracking_timeline.php";
+        $url = "http://localhost/KLTN/api/tracking/get_tracking_timeline.php";
         return callApi($url, 'GET', ["order_id" => $id]);
     }
 

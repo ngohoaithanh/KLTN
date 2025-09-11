@@ -30,6 +30,7 @@ if ($tblSP) {
             'Shippername' => $row['ShipperName'],
             'Status' => $row['Status'],
             'Note' => $row['Note'],
+            'CODFee' => $row['CODFee'],
             'PhoneNumberCus' => $row['PhoneNumberCus'],
             'Pick_up_address' => $row['Pick_up_address'],
             'Shippingfee' => $row['Shippingfee'] ?? 0
@@ -98,6 +99,7 @@ if ($tblSP) {
                 <th>Bên nhận</th> <th>Ngày tạo</th>
                 <th>COD</th>
                 <th>Phí VC</th>
+                <th>Phí COD</th>
                 <th>Trạng thái</th>
                 <?php if ($_SESSION["role"] != 6): ?>
                     <th>Thao tác</th>
@@ -122,6 +124,7 @@ if ($tblSP) {
                         <td><?= htmlspecialchars($order['Created_at']) ?></td>
                         <td><?= number_format($order['COD_amount'], 0, ',', '.') . ' VNĐ' ?></td>
                         <td><?= number_format($order['Shippingfee'], 0, ',', '.') . ' VNĐ' ?></td>
+                        <td><?= number_format($order['CODFee'], 0, ',', '.') . ' VNĐ' ?></td>
                         <td>
                             <?php 
                             $statusClass = 'status-pending';
@@ -217,6 +220,7 @@ if ($tblSP) {
                     <td>${order.Created_at || ''}</td>
                     <td>${parseInt(order.COD_amount).toLocaleString('vi-VN')} VNĐ</td>
                     <td>${parseInt(order.Shippingfee).toLocaleString('vi-VN')} VNĐ</td>
+                    <td>${parseInt(order.CODFee).toLocaleString('vi-VN')} VNĐ</td>
                     <td><span class="status-badge ${getStatusClass(order.Status)}">${order.Status || ''}</span></td>
                     
             `;

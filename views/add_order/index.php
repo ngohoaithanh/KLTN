@@ -74,7 +74,7 @@ $role = $_SESSION['Role'] ?? 'customer'; // 'employee' hoặc 'customer'
     </div>
 
  
-    <div class="form-group-add">
+    <!-- <div class="form-group-add">
         <label>Kho (Warehouse)</label>
         <select name="WarehouseID" class="form-control-add" required>
             <option value="">-- Chọn kho --</option>
@@ -88,7 +88,7 @@ $role = $_SESSION['Role'] ?? 'customer'; // 'employee' hoặc 'customer'
             }
             ?>
         </select>
-    </div>
+    </div> -->
 
     <?php date_default_timezone_set('Asia/Ho_Chi_Minh'); ?>
     <div class="form-group-add">

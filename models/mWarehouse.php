@@ -3,41 +3,41 @@ include_once("config/database.php");
 include_once("config/callApi.php");
 class modelWarehouse{
     public function selectAllWarehouse() {
-        $url = "http://localhost/CNMoi/api/warehouse/get_all_warehouses.php";
+        $url = "http://localhost/KLTN/api/warehouse/get_all_warehouses.php";
         return callApi($url, 'GET');
     }
 
     public function filterWarehouse($operation_status, $search) {
-        $url = "http://localhost/CNMoi/api/warehouse/filter_search.php?operation_status=" . urlencode($operation_status) . "&search=" . urlencode($search);
+        $url = "http://localhost/KLTN/api/warehouse/filter_search.php?operation_status=" . urlencode($operation_status) . "&search=" . urlencode($search);
         return callApi($url, 'GET');
     }
     public function getWarehouseDetail($id) {
-        $url = "http://localhost/CNMoi/api/warehouse/get_warehouse_detail.php";
+        $url = "http://localhost/KLTN/api/warehouse/get_warehouse_detail.php";
         return callApi($url, 'POST', ["id" => $id]);
     }
 
     public function importSingleOrder($id) {
-        $url = "http://localhost/CNMoi/api/warehouse/import_single_order.php";
+        $url = "http://localhost/KLTN/api/warehouse/import_single_order.php";
         return callApi($url, 'POST', ["id" => $id]);
     }
 
     public function exportSingleOrder($id) {
-        $url = "http://localhost/CNMoi/api/warehouse/export_single_order.php";
+        $url = "http://localhost/KLTN/api/warehouse/export_single_order.php";
         return callApi($url, 'POST', ["id" => $id]);
     }
 
     public function getWarehouseByID($id) {
-        $url = "http://localhost/CNMoi/api/warehouse/get_warehouse_by_id.php";
+        $url = "http://localhost/KLTN/api/warehouse/get_warehouse_by_id.php";
         return callApi($url, 'GET', ["id" => $id]);
     }
 
     public function addWarehouse($data) {
-        $url = "http://localhost/CNMoi/api/warehouse/add_warehouse.php";
+        $url = "http://localhost/KLTN/api/warehouse/add_warehouse.php";
         return callApi($url, 'POST', $data);
     }
 
     public function updateWarehouse($data) {
-        $url = "http://localhost/CNMoi/api/warehouse/update_warehouse.php";
+        $url = "http://localhost/KLTN/api/warehouse/update_warehouse.php";
         return callApi($url, 'POST', $data);
     }
 

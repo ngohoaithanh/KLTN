@@ -1,7 +1,7 @@
 <?php
     class clsKetNoi{
         public function moKetNoi(){
-            return mysqli_connect("localhost","root", "", "qlgh");
+            return mysqli_connect("localhost","root", "", "kltn");
         }
 
         public function dongKetNoi($con){

@@ -3,28 +3,28 @@ include_once("config/database.php");
 include_once("config/callApi.php");
 class modelOrder{
     public function selectAllOrder() {
-        $url = "http://localhost/CNMoi/api/order/order.php";
+        $url = "http://localhost/KLTN/api/order/order.php";
         return callApi($url, 'GET');
     }
 
     public function selectAllOrderForShipper($shipperID) {
-        $url = "http://localhost/CNMoi/api/order/order_for_shipper.php";
+        $url = "http://localhost/KLTN/api/order/order_for_shipper.php";
         return callApi($url, 'GET', ["shipperID" => $shipperID]);
     }
 
     public function pendingOrdersByWarehouse($warehouseID) {
-        $url = "http://localhost/CNMoi/api/order/get_pending_orders.php";
+        $url = "http://localhost/KLTN/api/order/get_pending_orders.php";
         return callApi($url, 'GET', ["warehouseID" => $warehouseID]);
     }
 
     public function exportOrdersByWarehouse($warehouseID) {
-        $url = "http://localhost/CNMoi/api/order/get_export_orders.php";
+        $url = "http://localhost/KLTN/api/order/get_export_orders.php";
         return callApi($url, 'GET', ["warehouseID" => $warehouseID]);
     }
 
      // Thêm đơn hàng
      public function addOrder($data) {
-        $url = "http://localhost/CNMoi/api/order/add_order.php";
+        $url = "http://localhost/KLTN/api/order/add_order.php";
         $response = $this->callApi($url, 'POST', $data); 
         return $response;
     }
@@ -34,13 +34,13 @@ class modelOrder{
     
     // Cập nhật thông tin đơn hàng
     public function updateOrder($data) {
-        $url = "http://localhost/CNMoi/api/order/update_order.php"; // API cập nhật đơn hàng
+        $url = "http://localhost/KLTN/api/order/update_order.php"; // API cập nhật đơn hàng
         return $this->callApi($url, 'POST', $data);
     }
 
     // Xóa đơn hàng
     public function deleteOrder($id) {
-        $url = "http://localhost/CNMoi/api/order/delete_order.php"; // API xóa đơn hàng
+        $url = "http://localhost/KLTN/api/order/delete_order.php"; // API xóa đơn hàng
         return $this->callApi($url, 'POST', ['id' => $id]);
     }
 
@@ -77,7 +77,7 @@ class modelOrder{
 }
 
     public function searchOrderByID($keyword) {
-        $url = "http://localhost/CNMoi/api/order/search_order.php";
+        $url = "http://localhost/KLTN/api/order/search_order.php";
         return callApi($url, 'GET', ["keyword" => $keyword]);
     }
 

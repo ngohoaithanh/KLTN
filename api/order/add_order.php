@@ -11,7 +11,7 @@ $response = [];
 $requiredFields = [
     'CustomerName', 'Pick_up_address', 'Delivery_address', 
     'Recipient', 'RecipientPhone', 'Status', 
-    'COD_amount', 'WarehouseID', 'Weight', 'PhoneNumber'  // Thêm PhoneNumber vào danh sách bắt buộc
+    'COD_amount', 'Weight', 'PhoneNumber'  // Thêm PhoneNumber vào danh sách bắt buộc 'WarehouseID'
 ];
 
 // Kiểm tra các trường dữ liệu yêu cầu
@@ -40,7 +40,7 @@ $Recipient = trim($_REQUEST['Recipient']);
 $RecipientPhone = trim($_REQUEST['RecipientPhone']);  // Số điện thoại người nhận nhập từ form
 $Status = trim($_REQUEST['Status']);
 $CODAmount = floatval($_REQUEST['COD_amount']);
-$WarehouseID = intval($_REQUEST['WarehouseID']);
+// $WarehouseID = intval($_REQUEST['WarehouseID']);
 $Note = isset($_REQUEST['Note']) ? trim($_REQUEST['Note']) : '';
 $Weight = floatval($_REQUEST['Weight']);
 date_default_timezone_set('Asia/Ho_Chi_Minh');
@@ -103,14 +103,24 @@ if ($Weight < 1) {
     $ShippingFee = 18000 + $extraFee;
 }
 
-// Thêm đơn hàng
+// ===== Tính phí COD 2% với min/max, nhưng nếu CODAmount = 0 thì bằng 0 =====
+if ($CODAmount <= 0) {
+    $CODFee = 0.0;
+} else {
+    $CODFee = $CODAmount * 0.01;
+    if ($CODFee < 5000) $CODFee = 5000;
+    if ($CODFee > 15000) $CODFee = 15000;
+}
+
 $ID = (int) (date("md") . mt_rand(1000, 9999));
+// Thêm đơn hàng
 $sqlInsertOrder = "INSERT INTO orders 
-(ID,CustomerID, Pick_up_address, Delivery_address, Recipient, RecipientPhone, Status, COD_amount, WarehouseID, Created_at, Note, ShippingFee, Weight)
+(ID,CustomerID, Pick_up_address, Delivery_address, Recipient, RecipientPhone, Status, COD_amount, Created_at, Note, ShippingFee, Weight, CODFee)
 VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
 $stmtOrder = $conn->prepare($sqlInsertOrder);
 $stmtOrder->bind_param(
-    "iisssssdsdsdd",
+    "iisssssdssddd",   // thêm 1 chữ d (double) cho CODFee
     $ID,
     $CustomerID,
     $PickUpAddress,
@@ -119,13 +129,12 @@ $stmtOrder->bind_param(
     $RecipientPhone,
     $Status,
     $CODAmount,
-    $WarehouseID,
     $Create_at,
     $Note,
     $ShippingFee,
-    $Weight
+    $Weight,
+    $CODFee
 );
-
 
 
 if (!$stmtOrder->execute()) {

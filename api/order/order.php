@@ -18,7 +18,7 @@ if (!$conn) {
 
 // Query lấy toàn bộ user cùng role
 $sql = "SELECT o.ID, o.CustomerID, o.ShipperID, o.Pick_up_address, o.Recipient, o.RecipientPhone,
-       o.Delivery_address, o.Status, o.COD_amount, o.Shippingfee, o.Weight, o.Created_at, o.Note, 
+       o.Delivery_address, o.Status, o.COD_amount, o.Shippingfee, o.Weight, o.Created_at, o.Note, o.CODFee,  
        u.Username AS UserName, u.Email AS CustomerEmail,
        u2.Username AS ShipperName, u2.Email AS ShipperEmail, u.PhoneNumber AS PhoneNumberCus
 FROM orders o 
