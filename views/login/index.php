@@ -3,7 +3,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-if(isset($_SESSION["dangnhap"])){
+if (isset($_SESSION["dangnhap"])) {
     header("refresh: 0; url=index.php");
 }
 
@@ -12,28 +12,25 @@ $p = new controlNguoiDung();
 
 if (isset($_POST['submit'])) {
     $data = [
-        'email' => $_POST['email'] ?? '',
-        'password' => md5($_POST['password']) ?? ''
+        'phonenumber' => $_POST['phonenumber'] ?? '',
+        'password'    => $_POST['password'] ?? ''
     ];
     $result = $p->loginUser($data);
 
     if ($result['success']) {
         $_SESSION['dangnhap'] = 1;
-        $_SESSION['user'] = $result['user']['Username'];
-        $_SESSION['user_id'] = $result['user']['ID'];
-        $_SESSION['role'] = $result['user']['Role'];
+        $_SESSION['user']     = $result['user']['Username'];
+        $_SESSION['user_id']  = $result['user']['ID'];
+        $_SESSION['role']     = $result['user']['Role'];
         $_SESSION['login_success'] = "Đăng nhập thành công!";
-                // var_dump($_SESSION['role']);
         echo "<script>alert('{$_SESSION['login_success']}');</script>";
         header("Location: index.php");
-        // header("refresh: 0.5; url=index.php");
         exit();
     } else {
         $error = $result['message'];
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -52,8 +49,16 @@ if (isset($_POST['submit'])) {
         <?php endif; ?>
 
         <div class="login-group">
-            <label for="email">Email:</label>
-            <input type="email" name="email" id="email" required placeholder="Nhập email">
+            <label for="phonenumber">Số điện thoại:</label>
+            <input
+                type="tel"
+                name="phonenumber"
+                id="phonenumber"
+                required
+                inputmode="numeric"
+                pattern="0[0-9]{9}"
+                placeholder="Nhập số điện thoại (10 số, bắt đầu bằng 0)"
+            >
         </div>
 
         <div class="login-group">
@@ -71,15 +76,13 @@ if (isset($_POST['submit'])) {
         </div>
     </form>
 </div>
+
 <script>
     // Cuộn mượt tới form đăng nhập khi trang load
     window.addEventListener('DOMContentLoaded', function () {
         const loginForm = document.getElementById('loginForm');
         if (loginForm) {
-            loginForm.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center'
-            });
+            loginForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     });
 </script>
