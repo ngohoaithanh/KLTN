@@ -1,0 +1,177 @@
+<?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+include_once('controllers/cOrder.php');
+include_once('config/database.php');
+
+$p = new controlOrder();
+$db = new clsKetNoi();
+$conn = $db->moKetNoi();
+
+$sql_warehouses = "SELECT ID, Name FROM warehouses WHERE operation_status ='active'";
+$result_warehouses = $conn->query($sql_warehouses);
+
+if (isset($_GET['id'])) {
+    $id = intval($_GET['id']);
+    $order = $p->getOrderById($id);
+}
+
+if (!$order) {
+    echo "<div class='alert alert-danger text-center mt-4'>Không tìm thấy đơn hàng với ID = $id</div>";
+    echo "<div class='text-center'><a href='?quanlydonhang' class='btn btn-primary mt-2'>Quay lại quản lý đơn hàng</a></div>";
+    return;
+}
+
+// Lấy danh sách kho
+$sql_warehouses = "SELECT ID, Name FROM warehouses";
+$result_warehouses = $conn->query($sql_warehouses);
+
+// Cập nhật đơn hàng
+if (isset($_POST['submit'])) {
+    // Lấy trọng lượng từ form
+    $weight = floatval($_POST['Weight']);
+
+    // Tính phí ship theo công thức bạn đã cung cấp
+    if ($weight <= 1) {
+        $shippingFee = 15000;
+    } elseif ($weight <= 2) {
+        $shippingFee = 18000;
+    } else {
+        $extraWeight = $weight - 2;
+        $extraFee = ceil($extraWeight * 2) * 2500;
+        $shippingFee = 18000 + $extraFee;
+    }
+
+    // Dữ liệu cập nhật đơn hàng
+    $data = [
+        "id" => $_POST['id'],
+        "CustomerID" => $_POST['CustomerID'],
+        "FullName" => $_POST['FullName'],
+        "PhoneNumber" => $_POST['PhoneNumber'],
+        "ShipperID" => 1,
+        "Pick_up_address" => $_POST['Pick_up_address'],
+        "Delivery_address" => $_POST['Delivery_address'],
+        "Recipient" => $_POST['Recipient'],
+        "RecipientPhone" => $_POST['RecipientPhone'],
+        "Weight" => $weight,
+        "ShippingFee" => $shippingFee, // Thêm phí ship vào dữ liệu
+        "Status" => $_POST['Status'],
+        "COD_amount" => $_POST['COD_amount'],
+        "WarehouseID" => $_POST['WarehouseID'],
+        "Note" => $_POST['Note']
+    ];
+
+    // Cập nhật đơn hàng
+    $result = $p->updateOrder($data);
+    if ($result && isset($result['success']) && $result['success'] === true) {
+        echo "<script>alert('Cập nhật đơn hàng thành công!'); window.location.href='?quanlydonhang';</script>";
+    } else {
+        $msg = isset($result['message']) ? $result['message'] : 'Cập nhật thất bại!';
+        echo "<script>alert('$msg');</script>";
+    }
+}
+
+
+?>
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Cập nhật Đơn Hàng</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="add-staff-form" style="margin-top: 50px;">
+    <h2 class="add-staff-title">Cập Nhật Đơn Hàng</h2>
+    <form method="POST">
+        <input type="hidden" name="id" value="<?= htmlspecialchars($order['ID']) ?>">
+        <input type="hidden" name="CustomerID" value="<?= htmlspecialchars($order['CustomerID']) ?>">
+
+        <div class="form-group-add">
+            <label>Tên Khách Hàng</label>
+            <input type="text" name="FullName" class="form-control-add form-control" value="<?= htmlspecialchars($order['FullName'] ?? '') ?>" required>
+        </div>
+
+        <div class="form-group-add">
+            <label>SĐT Khách Hàng</label>
+            <input type="text" name="PhoneNumber" class="form-control-add form-control" value="<?= htmlspecialchars($order['PhoneNumber'] ?? '') ?>" required pattern="[0-9]{10,11}">
+        </div>
+
+        <div class="form-group-add">
+            <label>Địa Chỉ Lấy Hàng</label>
+            <input type="text" name="Pick_up_address" class="form-control-add form-control" value="<?= htmlspecialchars($order['Pick_up_address']) ?>" required>
+        </div>
+
+        <div class="form-group-add">
+            <label>Địa Chỉ Giao Hàng</label>
+            <input type="text" name="Delivery_address" class="form-control-add form-control" value="<?= htmlspecialchars($order['Delivery_address']) ?>" required>
+        </div>
+
+        <div class="form-group-add">
+            <label>Người Nhận Hàng</label>
+            <input type="text" name="Recipient" class="form-control-add form-control" value="<?= htmlspecialchars($order['Recipient']) ?>" required>
+        </div>
+
+        <div class="form-group-add">
+            <label>SĐT Người Nhận</label>
+            <input type="text" name="RecipientPhone" class="form-control-add form-control" value="<?= htmlspecialchars($order['RecipientPhone'] ?? '') ?>" required pattern="[0-9]{10,11}">
+        </div>
+
+        <div class="form-group-add">
+            <label>Trọng Lượng (kg)</label>
+            <input type="number" name="Weight" step="0.01" class="form-control-add form-control" value="<?= htmlspecialchars($order['Weight'] ?? '') ?>" required>
+        </div>
+        <div class="form-group-add">
+        <label>Trạng Thái Đơn Hàng</label>
+        <select name="Status" class="form-control-add form-control" required>
+            <option value="">-- Chọn trạng thái --</option>
+            <option value="pending" <?= ($order['Status'] == 'pending' ? 'selected' : '') ?>>pending</option>
+            <option value="picked" <?= ($order['Status'] == 'received' ? 'selected' : '') ?>>picked</option>
+            <option value="in_transit" <?= ($order['Status'] == 'in_warehouse' ? 'selected' : '') ?>>in_warehouse</option>
+            <option value="delivered" <?= ($order['Status'] == 'out_of_warehouse' ? 'selected' : '') ?>>out_of_warehouse</option>
+            <option value="delivered" <?= ($order['Status'] == 'in_transit' ? 'selected' : '') ?>>in_transit</option>
+            <option value="delivered" <?= ($order['Status'] == 'delivered' ? 'selected' : '') ?>>delivered</option>
+            <option value="delivered" <?= ($order['Status'] == 'delivery_failed' ? 'selected' : '') ?>>delivery_failed</option>
+            <option value="delivered" <?= ($order['Status'] == 'returned' ? 'selected' : '') ?>>returned</option>
+            <option value="delivered" <?= ($order['Status'] == 'cancelled' ? 'selected' : '') ?>>cancelled</option>
+        </select>
+        </div>
+
+
+        <div class="form-group-add">
+            <label>Tiền COD</label>
+            <input type="number" name="COD_amount" class="form-control-add form-control" value="<?= htmlspecialchars($order['COD_amount']) ?>" step="1000" required>
+        </div>
+
+        <div class="form-group-add">
+            <label>Kho</label>
+            <select name="WarehouseID" class="form-control-add form-control" required>
+                <option value="">-- Chọn kho --</option>
+                <?php
+                if ($result_warehouses && $result_warehouses->num_rows > 0) {
+                    while ($row = $result_warehouses->fetch_assoc()) {
+                        $selected = $order['WarehouseID'] == $row['ID'] ? "selected" : "";
+                        echo "<option value='{$row['ID']}' $selected>{$row['Name']}</option>";
+                    }
+                } else {
+                    echo "<option disabled>Không có kho nào</option>";
+                }
+                ?>
+            </select>
+        </div>
+
+        <div class="form-group-add">
+            <label>Ghi Chú</label>
+            <textarea name="Note" rows="4" class="form-control-add form-control"><?= htmlspecialchars($order['Note']) ?></textarea>
+        </div>
+
+        <div class="button-group-add">
+            <button type="submit" name="submit" class="btn btn-success">Cập nhật</button>
+            <a href="?quanlydonhang" class="btn btn-secondary">Quay lại</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>
