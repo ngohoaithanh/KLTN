@@ -31,7 +31,11 @@ if (!empty($missingFields)) {
     exit();
 }
     
-
+// Lấy thêm lat/lng từ request (nếu có)
+$PickUpLat = isset($_REQUEST['Pick_up_lat']) ? floatval($_REQUEST['Pick_up_lat']) : null;
+$PickUpLng = isset($_REQUEST['Pick_up_lng']) ? floatval($_REQUEST['Pick_up_lng']) : null;
+$DeliveryLat = isset($_REQUEST['Delivery_lat']) ? floatval($_REQUEST['Delivery_lat']) : null;
+$DeliveryLng = isset($_REQUEST['Delivery_lng']) ? floatval($_REQUEST['Delivery_lng']) : null;
 // Lấy dữ liệu từ form
 $CustomerName = trim($_REQUEST['CustomerName']);
 $PickUpAddress = trim($_REQUEST['Pick_up_address']);
@@ -114,17 +118,26 @@ if ($CODAmount <= 0) {
 
 $ID = (int) (date("md") . mt_rand(1000, 9999));
 // Thêm đơn hàng
+// $sqlInsertOrder = "INSERT INTO orders 
+// (ID,CustomerID, Pick_up_address, Delivery_address, Recipient, RecipientPhone, Status, COD_amount, Created_at, Note, ShippingFee, Weight, CODFee)
+// VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 $sqlInsertOrder = "INSERT INTO orders 
-(ID,CustomerID, Pick_up_address, Delivery_address, Recipient, RecipientPhone, Status, COD_amount, Created_at, Note, ShippingFee, Weight, CODFee)
-VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+(ID, CustomerID, Pick_up_address, Pick_up_lat, Pick_up_lng, 
+ Delivery_address, Delivery_lat, Delivery_lng, 
+ Recipient, RecipientPhone, Status, COD_amount, Created_at, Note, ShippingFee, Weight, CODFee)
+VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 $stmtOrder = $conn->prepare($sqlInsertOrder);
 $stmtOrder->bind_param(
-    "iisssssdssddd",   // thêm 1 chữ d (double) cho CODFee
+    "iisddsddsssdssddd",  
     $ID,
     $CustomerID,
     $PickUpAddress,
+    $PickUpLat,
+    $PickUpLng,
     $DeliveryAddress,
+    $DeliveryLat,
+    $DeliveryLng,
     $Recipient,
     $RecipientPhone,
     $Status,
