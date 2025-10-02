@@ -124,19 +124,18 @@ if (isset($_POST['submit'])) {
             <input type="number" name="Weight" step="0.01" class="form-control-add form-control" value="<?= htmlspecialchars($order['Weight'] ?? '') ?>" required>
         </div>
         <div class="form-group-add">
-        <label>Trạng Thái Đơn Hàng</label>
-        <select name="Status" class="form-control-add form-control" required>
-            <option value="">-- Chọn trạng thái --</option>
-            <option value="pending" <?= ($order['Status'] == 'pending' ? 'selected' : '') ?>>pending</option>
-            <option value="picked" <?= ($order['Status'] == 'received' ? 'selected' : '') ?>>picked</option>
-            <option value="in_transit" <?= ($order['Status'] == 'in_warehouse' ? 'selected' : '') ?>>in_warehouse</option>
-            <option value="delivered" <?= ($order['Status'] == 'out_of_warehouse' ? 'selected' : '') ?>>out_of_warehouse</option>
-            <option value="delivered" <?= ($order['Status'] == 'in_transit' ? 'selected' : '') ?>>in_transit</option>
-            <option value="delivered" <?= ($order['Status'] == 'delivered' ? 'selected' : '') ?>>delivered</option>
-            <option value="delivered" <?= ($order['Status'] == 'delivery_failed' ? 'selected' : '') ?>>delivery_failed</option>
-            <option value="delivered" <?= ($order['Status'] == 'returned' ? 'selected' : '') ?>>returned</option>
-            <option value="delivered" <?= ($order['Status'] == 'cancelled' ? 'selected' : '') ?>>cancelled</option>
-        </select>
+            <label>Trạng Thái Đơn Hàng</label>
+            <select name="Status" class="form-control-add form-control" required>
+                <option value="">-- Chọn trạng thái --</option>
+                <?php $currentStatus = $order['Status'] ?? ''; // Lấy trạng thái hiện tại hoặc chuỗi rỗng ?>
+                <option value="pending" <?= ($currentStatus == 'pending' ? 'selected' : '') ?>>Đang chờ xử lý (Pending)</option>
+                <option value="accepted" <?= ($currentStatus == 'accepted' ? 'selected' : '') ?>>Đã xác nhận (Accepted)</option>
+                <option value="picked_up" <?= ($currentStatus == 'picked_up' ? 'selected' : '') ?>>Đã lấy hàng (Picked Up)</option>
+                <option value="in_transit" <?= ($currentStatus == 'in_transit' ? 'selected' : '') ?>>Đang vận chuyển (In Transit)</option>
+                <option value="delivered" <?= ($currentStatus == 'delivered' ? 'selected' : '') ?>>Đã giao hàng (Delivered)</option>
+                <option value="delivery_failed" <?= ($currentStatus == 'delivery_failed' ? 'selected' : '') ?>>Giao hàng thất bại (Delivery Failed)</option>
+                <option value="cancelled" <?= ($currentStatus == 'cancelled' ? 'selected' : '') ?>>Đã hủy (Cancelled)</option>
+            </select>
         </div>
 
 

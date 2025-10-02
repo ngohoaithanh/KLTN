@@ -199,7 +199,7 @@ if (isset($_POST['delivered'])) {
             <div class="row mt-3">
                 <div class="col-md-4">
                     <p><span class="label">Trạng thái:</span>
-                        <span class="badge badge-info"><?= htmlspecialchars($orderDetail['Status']) ?></span>
+                        <span class="badge badge-info"><?= htmlspecialchars($orderDetail['Status']?? 'N/A') ?></span>
                     </p>
                 </div>
                 <div class="col-md-4">
