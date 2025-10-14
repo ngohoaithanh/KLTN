@@ -3,14 +3,13 @@
 header('Content-Type: application/json; charset=utf-8');
 
 // Sử dụng đường dẫn tương đối để include file database.php
-// Đường dẫn này giả định file database.php nằm ở thư mục .../config/
 include_once('../../config/database.php');
 
 // Khởi tạo đối tượng response
 $response = array();
 
 // --- BƯỚC 1: KIỂM TRA DỮ LIỆU ĐẦU VÀO ---
-// Kiểm tra xem các tham số cần thiết có được gửi lên không
+// Kiểm tra các tham số BẮT BUỘC
 if (isset($_POST['order_id']) && isset($_POST['new_status'])) {
 
     // --- BƯỚC 2: KẾT NỐI CSDL THEO CÁCH CỦA BẠN ---
@@ -21,15 +20,16 @@ if (isset($_POST['order_id']) && isset($_POST['new_status'])) {
     if ($conn) {
         $orderId = intval($_POST['order_id']);
         $newStatus = $_POST['new_status'];
+        
+        // Lấy tham số Reason (TÙY CHỌN)
+        $reason = isset($_POST['reason']) ? trim($_POST['reason']) : null; 
 
         // --- BƯỚC 3: SỬ DỤNG TRANSACTION ĐỂ ĐẢM BẢO AN TOÀN DỮ LIỆU ---
         $conn->begin_transaction();
 
         try {
-            // --- Cập nhật bảng `orders` ---
-            // Dùng dấu "?" để tránh lỗi bảo mật SQL Injection
+            // --- Cập nhật bảng `orders` (Giữ nguyên) ---
             $stmt_update = $conn->prepare("UPDATE orders SET status = ? WHERE ID = ?");
-            // Gắn biến vào câu lệnh: "s" là string, "i" là integer
             $stmt_update->bind_param("si", $newStatus, $orderId);
             $stmt_update->execute();
 
@@ -49,7 +49,11 @@ if (isset($_POST['order_id']) && isset($_POST['new_status'])) {
                     $trackingMessage = "Giao hàng thành công!";
                     break;
                 case 'delivery_failed':
+                    // XỬ LÝ LÝ DO THẤT BẠI TẠI ĐÂY
                     $trackingMessage = "Giao hàng không thành công.";
+                    if (!empty($reason)) {
+                        $trackingMessage .= " Lý do: " . $reason;
+                    }
                     break;
             }
 

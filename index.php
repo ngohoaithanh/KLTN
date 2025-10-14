@@ -70,6 +70,10 @@ session_start();
         include_once("views/tracking_info/index.php");
     }elseif(isset($_GET["cod_dashboard"])){
         include_once("views/cod_dashboard/index.php");
+    }elseif(isset($_GET["quanlyshipper"])){
+        include_once("views/quanlyshipper/index.php");
+    }elseif(isset($_GET["shipper_stats"])){
+        include_once("views/shipper_stats/index.php");
     }else{
         include_once("views/giaodien/intro.php");
         // include_once("views/giaodien/wellcome.php");

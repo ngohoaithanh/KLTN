@@ -3,11 +3,6 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// if (isset($_SESSION['dangnhap'])) {
-//     var_dump($_SESSION['user']);
-// } else {
-//     echo 'Session chưa được thiết lập';
-// }
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -16,9 +11,12 @@ if (session_status() === PHP_SESSION_NONE) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hệ Thống Quản Lý Giao Hàng</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet"> -->
     <link rel="stylesheet" href="views/css/style.css">
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="views/css/style.css">
+
 </head>
 <body>
     <header>
@@ -55,10 +53,11 @@ if (session_status() === PHP_SESSION_NONE) {
                             // Hiển thị tất cả
                             echo '<li><a href="?quanlydonhang">Quản Lý Đơn Hàng</a></li>
                                 <li><a href="?quanlyuser">Quản Lý Nhân Viên</a></li>
-                                <li><a href="?quanlykho">Quản Lý Kho</a></li>
-                                <li><a href="?cod_dashboard">COD</a></li>
+                                <li><a href="?quanlyshipper">Shipper</a></li>
                                 <li><a href="?dashboard">Báo Cáo & Thống Kê</a></li>';
                             break;
+                            // <li><a href="?quanlykho">Quản Lý Kho</a></li>
+                                // <li><a href="?cod_dashboard">COD</a></li>
                         case 3:
                         case 6:
                             // Chỉ quản lý đơn hàng

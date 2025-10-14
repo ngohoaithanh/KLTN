@@ -1,300 +1,264 @@
-<?php
-if (!isset($_SESSION["dangnhap"]) || ($_SESSION["role"] !=5 && $_SESSION["role"] !=1 && $_SESSION["role"] !=2)) {
-    echo "<script>alert('Bạn không có quyền truy cập!');</script>";
-    header("refresh:0; url=index.php");
-    exit();
-}
-include_once("controllers/controlDashboard.php");
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Dashboard Tổng Quan</h1>
+        <div>
+            <label for="date-range-filter">Xem theo:</label>
+            <select id="date-range-filter" class="form-control" style="display: inline-block; width: auto;">
+                <option value="7" selected>7 ngày qua</option>
+                <option value="30">30 ngày qua</option>
+                <option value="90">90 ngày qua</option>
+            </select>
+        </div>
+    </div>
 
-$dashboard = new controlDashboard();
-$data = $dashboard->getSummary();
-
-// Dữ liệu giả lập đơn hàng theo thời gian
-$order_trend = [
-    'labels' => ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5'],
-    'values' => [2, 5, 3, 7, 8] // Bạn có thể lấy dữ liệu thật từ DB nếu có
-];
-?>
-
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Thống kê hệ thống</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            font-family: 'Nunito', sans-serif;
-            background-color: #f3f6f9;
-            color: #364a63;
-        }
-
-        .dashboard-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 30px;
-        }
-
-        .dashboard-header {
-            text-align: center;
-            color: #4d70fa;
-            margin-bottom: 40px;
-        }
-
-        .overview-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .overview-card {
-            background-color: #fff;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            border-left: 5px solid #4d70fa;
-        }
-
-        .overview-card h5 {
-            font-size: 1.1rem;
-            color: #6c757d;
-            margin-bottom: 8px;
-        }
-
-        .overview-card .value {
-            font-size: 1.75rem;
-            font-weight: bold;
-            color: #364a63;
-        }
-
-        .chart-section {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 30px;
-        }
-
-        .chart-section h3 {
-            color: #4d70fa;
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-        }
-
-        .chart-row {
-            display: flex;
-            gap: 20px;
-            overflow-x: auto;
-        }
-
-        .chart-container {
-            flex: 1;
-            min-width: 300px;
-            max-width: 500px;
-            height: 300px;
-        }
-
-        .role-badges {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .role-badge {
-            background-color: #e9ecef;
-            color: #495057;
-            padding: 10px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-        }
-
-        .role-badge strong {
-            font-weight: bold;
-            color: #4d70fa;
-        }
-    </style>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div class="dashboard-container">
-        <h2 class="dashboard-header"><i class="bi bi-speedometer2 me-2"></i> Báo cáo & Thống kê</h2>
-
-        <div class="overview-grid">
-            <div class="overview-card">
-                <h5><i class="bi bi-cart-fill me-2"></i> Tổng đơn hàng</h5>
-                <p class="value"><?= $data['total_orders'] ?></p>
-            </div>
-            <div class="overview-card">
-                <h5><i class="bi bi-cash-coin me-2"></i> Tổng thu (COD)</h5>
-                <p class="value"><?= number_format($data['total_thu']) ?> VND</p>
-            </div>
-            <div class="overview-card">
-                <h5><i class="bi bi-truck me-2"></i> Tổng chi (vận chuyển)</h5>
-                <p class="value"><?= number_format($data['total_chi']) ?> VND</p>
-            </div>
-            <div class="overview-card">
-                <h5><i class="bi bi-people-fill me-2"></i> Tổng người dùng</h5>
-                <p class="value"><?= $data['total_users'] ?></p>
-            </div>
+    <div class="row" id="kpi-cards-container">
         </div>
 
-        <?php if (!empty($data['role_counts'])): ?>
-            <div class="role-badges">
-                <?php foreach ($data['role_counts'] as $role): ?>
-                    <span class="role-badge">
-                        <i class="bi bi-person-badge-fill me-1"></i>
-                        <strong><?= htmlspecialchars($role['role_name']) ?>:</strong> <?= $role['total_users'] ?>
-                    </span>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
-
-        <div class="chart-section">
-            <h3><i class="bi bi-bar-chart-line me-2"></i> Phân tích đơn hàng</h3>
-            <div class="chart-row">
-                <div class="chart-container">
-                    <canvas id="statusChart"></canvas>
+    <div class="row">
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Tổng quan Doanh thu & Đơn hàng</h6>
                 </div>
-                <div class="chart-container">
-                    <canvas id="financeChart"></canvas>
+                <div class="card-body">
+                    <div class="chart-area"><canvas id="dailyChart"></canvas></div>
                 </div>
             </div>
         </div>
-
-        <div class="chart-section">
-            <h3><i class="bi bi-graph-up me-2"></i> Xu hướng và thống kê khác</h3>
-            <div class="chart-row">
-                <div class="chart-container">
-                    <canvas id="orderTrendChart"></canvas>
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Phân bổ Trạng thái</h6>
                 </div>
-                <div class="chart-container">
-                    <canvas id="codStatusChart"></canvas>
+                <div class="card-body">
+                    <div class="chart-pie pt-4"><canvas id="statusPieChart"></canvas></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-12 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Phân tích đơn hàng theo giờ</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-bar" style="height: 250px;"><canvas id="hourlyChart"></canvas></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Dữ liệu trạng thái đơn hàng
-        const statusData = {
-            labels: [
-                'Chờ xử lý', 'Đã tiếp nhận', 'Trong kho', 'Xuất kho', 'Đang giao',
-                'Giao thành công', 'Giao thất bại', 'Bị hoàn trả', 'Đã hủy'
-            ],
-            datasets: [{
-                label: 'Số lượng',
-                data: [
-                    <?= $data['pending'] ?? 0 ?>,
-                    <?= $data['received'] ?? 0 ?>,
-                    <?= $data['in_warehouse'] ?? 0 ?>,
-                    <?= $data['out_of_warehouse'] ?? 0 ?>,
-                    <?= $data['in_transit'] ?? 0 ?>,
-                    <?= $data['delivered'] ?? 0 ?>,
-                    <?= $data['delivery_failed'] ?? 0 ?>,
-                    <?= $data['returned'] ?? 0 ?>,
-                    <?= $data['cancelled'] ?? 0 ?>
-                ],
-                backgroundColor: [
-                    '#636efa', '#67c8ff', '#a78bfa', '#56ca85', '#ffc107',
-                    '#05b18a', '#fa5252', '#adb5bd', '#343a40'
-                ]
-            }]
-        };
+    <div class="row">
+        <div class="col-lg-12 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Biểu đồ tăng trưởng người dùng (Tích lũy)</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area"><canvas id="growthChart"></canvas></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        new Chart(document.getElementById('statusChart'), {
-            type: 'pie',
-            data: statusData,
-            options: {
-                responsive: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Trạng thái đơn hàng',
-                        font: {
-                            size: 16
-                        }
-                    },
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
-            }
-        });
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Top 5 Shipper hiệu quả (Theo số đơn đã giao)</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table" id="top-shippers-table"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Top 5 Khách hàng thân thiết</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table" id="top-customers-table"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        // Biểu đồ thu/chi
-        const financeData = {
-            labels: ['Tổng thu (COD)', 'Tổng chi (Phí vận chuyển)'],
-            datasets: [{
-                label: 'VNĐ',
-                data: [<?= $data['total_thu'] ?>, <?= $data['total_chi'] ?>],
-                backgroundColor: ['#28a745', '#dc3545']
-            }]
-        };
+    <div class="row">
+        <div class="col-lg-12 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Bản đồ nhiệt các điểm giao thất bại</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div id="heatmap-map" style="height: 400px; width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-        new Chart(document.getElementById('financeChart'), {
-            type: 'bar',
-            data: financeData,
-            options: {
-                responsive: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'So sánh thu/chi',
-                        font: {
-                            size: 16
-                        }
-                    },
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: value => value.toLocaleString('vi-VN') + ' VND'
-                        }
-                    }
-                }
-            }
-        });
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/maplibre-gl@2.4.0/dist/maplibre-gl.js'></script>
+<link href='https://cdn.jsdelivr.net/npm/maplibre-gl@2.4.0/dist/maplibre-gl.css' rel='stylesheet' />
 
-        // Biểu đồ đơn hàng theo thời gian (giả lập)
-        const orderTrendData = {
-            labels: <?= json_encode($order_trend['labels']) ?>,
-            datasets: [{
-                label: 'Số đơn hàng',
-                data: <?= json_encode($order_trend['values']) ?>,
-                fill: false,
-                borderColor: '#4d70fa',
-                backgroundColor: '#4d70fa',
-                tension: 0.3
-            }]
-        };
 
-        new Chart(document.getElementById('orderTrendChart'), {
+<script>
+    let dailyChartInstance, pieChartInstance, hourlyChartInstance, heatmapMap;
+    const GOONG_API_KEY = 'scmSgFcle8MbhKzOJMeUDIwuJWiwy6pOucLn1qQn'; // API Key của bạn
+    let growthChartInstance;
+
+    async function fetchDataAndRender(days = 7) {
+        try {
+            const response = await fetch(`api/dashboard/summary.php?days=${days}`);
+            const data = await response.json();
+
+            renderKpiCards(data.kpi);
+            renderDailyChart(data.dailyChart);
+            renderStatusPieChart(data.statusPieChart);
+            renderTopShippers(data.topShippers);
+            renderHourlyChart(data.hourlyStats);
+            renderHeatmap(data.failedHeatmap);
+            renderTopCustomers(data.topCustomers);
+            renderGrowthChart(data.growthChart);
+        } catch (error) {
+            console.error("Lỗi khi tải dữ liệu dashboard:", error);
+            alert("Đã xảy ra lỗi khi tải dữ liệu. Vui lòng kiểm tra Console (F12) để biết chi tiết.");
+        }
+    }
+
+    // function renderKpiCards(kpi) {
+    //     document.getElementById('kpi-cards-container').innerHTML = `
+    //         <div class="col-xl-3 col-md-6 mb-4"><div class="card border-left-primary shadow h-100 py-2"><div class="card-body"><div class="row no-gutters align-items-center"><div class="col mr-2"><div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Đơn hàng (Hôm nay)</div><div class="h5 mb-0 font-weight-bold text-gray-800">${kpi.total_orders_today || 0}</div></div><div class="col-auto"><i class="fas fa-calendar-day fa-2x text-gray-300"></i></div></div></div></div></div>
+    //         <div class="col-xl-3 col-md-6 mb-4"><div class="card border-left-success shadow h-100 py-2"><div class="card-body"><div class="row no-gutters align-items-center"><div class="col mr-2"><div class="text-xs font-weight-bold text-success text-uppercase mb-1">Doanh thu (Hôm nay)</div><div class="h5 mb-0 font-weight-bold text-gray-800">${Number(kpi.total_revenue_today || 0).toLocaleString('vi-VN')}đ</div></div><div class="col-auto"><i class="fas fa-dollar-sign fa-2x text-gray-300"></i></div></div></div></div></div>
+    //         <div class="col-xl-3 col-md-6 mb-4"><div class="card border-left-info shadow h-100 py-2"><div class="card-body"><div class="row no-gutters align-items-center"><div class="col mr-2"><div class="text-xs font-weight-bold text-info text-uppercase mb-1">Shipper hoạt động</div><div class="h5 mb-0 font-weight-bold text-gray-800">${kpi.active_shippers || 0}</div></div><div class="col-auto"><i class="fas fa-motorcycle fa-2x text-gray-300"></i></div></div></div></div></div>
+    //         <div class="col-xl-3 col-md-6 mb-4"><div class="card border-left-warning shadow h-100 py-2"><div class="card-body"><div class="row no-gutters align-items-center"><div class="col mr-2"><div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Đơn hàng đang chờ</div><div class="h5 mb-0 font-weight-bold text-gray-800">${kpi.pending_orders || 0}</div></div><div class="col-auto"><i class="fas fa-hourglass-start fa-2x text-gray-300"></i></div></div></div></div></div>
+    //     `;
+    // }
+    function renderKpiCards(kpi) {
+    document.getElementById('kpi-cards-container').innerHTML = `
+        <div class="col-xl-2 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Đơn hàng (Nay)</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">${kpi.total_orders_today || 0}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-calendar-day fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-2 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Doanh thu (Nay)</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">${Number(kpi.total_revenue_today || 0).toLocaleString('vi-VN')}đ</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-dollar-sign fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-2 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Shipper Online</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">${kpi.active_shippers || 0}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-motorcycle fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-2 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Đơn đang chờ</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">${kpi.pending_orders || 0}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-hourglass-start fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-2 col-md-6 mb-4">
+            <div class="card border-left-dark shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-dark text-uppercase mb-1">Tổng Shipper</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">${kpi.total_shippers || 0}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-users-cog fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-2 col-md-6 mb-4">
+            <div class="card border-left-secondary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">Tổng Khách Hàng</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">${kpi.total_customers || 0}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-user-friends fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+    function renderGrowthChart(data) {
+        if (growthChartInstance) growthChartInstance.destroy();
+
+        const ctx = document.getElementById('growthChart').getContext('2d');
+        growthChartInstance = new Chart(ctx, {
             type: 'line',
-            data: orderTrendData,
-            options: {
-                responsive: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Đơn hàng theo thời gian',
-                        font: {
-                            size: 16
-                        }
+            data: {
+                labels: data.map(d => new Date(d.join_date).toLocaleDateString('vi-VN')),
+                datasets: [
+                    {
+                        label: 'Tổng Khách hàng',
+                        data: data.map(d => d.cumulative_customers),
+                        borderColor: 'rgba(78, 115, 223, 1)',
+                        backgroundColor: 'rgba(78, 115, 223, 0.1)',
+                        fill: true,
+                        tension: 0.3
                     },
-                    legend: {
-                        display: false
+                    {
+                        label: 'Tổng Shipper',
+                        data: data.map(d => d.cumulative_shippers),
+                        borderColor: 'rgba(28, 200, 138, 1)',
+                        backgroundColor: 'rgba(28, 200, 138, 0.1)',
+                        fill: true,
+                        tension: 0.3
                     }
-                },
+                ]
+            },
+            options: {
+                maintainAspectRatio: false,
                 scales: {
                     y: {
                         beginAtZero: true
@@ -302,51 +266,91 @@ $order_trend = [
                 }
             }
         });
+    }
 
-        // Biểu đồ COD theo Status
-        const codStatusLabels = <?= json_encode(array_column($data['cod_by_status'], 'Status')) ?>;
-        const codStatusData = <?= json_encode(array_map('intval', array_column($data['cod_by_status'], 'total_cod'))) ?>;
-
-        new Chart(document.getElementById('codStatusChart'), {
+    function renderDailyChart(data) {
+        if (dailyChartInstance) dailyChartInstance.destroy();
+        const ctx = document.getElementById('dailyChart').getContext('2d');
+        dailyChartInstance = new Chart(ctx, {
             type: 'bar',
-            data: {
-                labels: codStatusLabels,
-                datasets: [{
-                    label: 'Tổng COD (VND)',
-                    data: codStatusData,
-                    backgroundColor: ['#28a745', '#ffc107', '#dc3545', '#17a2b8']
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'COD theo trạng thái',
-                        font: {
-                            size: 16
-                        }
-                    },
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: value => value.toLocaleString('vi-VN') + ' VND'
-                        }
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Trạng thái'
-                        }
-                    }
+            data: { labels: data.map(d => d.date), datasets: [{ label: 'Doanh thu', data: data.map(d => d.total_revenue), backgroundColor: 'rgba(78, 115, 223, 0.8)', yAxisID: 'yRevenue' }, { label: 'Số đơn', data: data.map(d => d.total_orders), type: 'line', borderColor: 'rgba(28, 200, 138, 1)', yAxisID: 'yOrders' }] },
+            options: { maintainAspectRatio: false, scales: { x: { type: 'time', time: { unit: 'day' } }, yRevenue: { type: 'linear', position: 'left', ticks: { callback: value => `${value/1000}k` } }, yOrders: { type: 'linear', position: 'right', grid: { drawOnChartArea: false } } } }
+        });
+    }
+    
+    function renderStatusPieChart(data) {
+        if (pieChartInstance) pieChartInstance.destroy();
+        const ctx = document.getElementById('statusPieChart').getContext('2d');
+        pieChartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: { labels: data.map(d => d.status), datasets: [{ data: data.map(d => d.count), backgroundColor: ['#1cc88a', '#e74a3b', '#f6c23e', '#36b9cc', '#858796', '#5a5c69'] }] },
+            options: { maintainAspectRatio: false, cutout: '80%' }
+        });
+    }
+
+    function renderTopShippers(data) {
+        const table = document.getElementById('top-shippers-table');
+        let html = '<thead class="thead-light"><tr><th>#</th><th>Tên Shipper</th><th>Số đơn đã giao</th></tr></thead><tbody>';
+        if (data.length > 0) { data.forEach((shipper, index) => { html += `<tr><td>${index + 1}</td><td>${shipper.Username}</td><td><strong>${shipper.delivered_count}</strong></td></tr>`; }); } else { html += '<tr><td colspan="3" class="text-center">Chưa có dữ liệu.</td></tr>'; }
+        html += '</tbody>';
+        table.innerHTML = html;
+    }
+    
+    function renderTopCustomers(data) {
+        const table = document.getElementById('top-customers-table');
+        let html = '<thead class="thead-light"><tr><th>#</th><th>Tên Khách hàng</th><th>Tổng số đơn</th></tr></thead><tbody>';
+        if (data.length > 0) { data.forEach((customer, index) => { html += `<tr><td>${index + 1}</td><td>${customer.Username}</td><td><strong>${customer.order_count}</strong></td></tr>`; }); } else { html += '<tr><td colspan="3" class="text-center">Chưa có dữ liệu.</td></tr>'; }
+        html += '</tbody>';
+        table.innerHTML = html;
+    }
+
+    function renderHourlyChart(data) {
+        if (hourlyChartInstance) hourlyChartInstance.destroy();
+        const labels = Array.from({length: 24}, (_, i) => `${i}h`);
+        const chartData = Array(24).fill(0);
+        data.forEach(item => { chartData[item.hour] = item.order_count; });
+        const ctx = document.getElementById('hourlyChart').getContext('2d');
+        hourlyChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: { labels: labels, datasets: [{ label: 'Số đơn', data: chartData, backgroundColor: 'rgba(78, 115, 223, 0.8)' }] },
+            options: { maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+        });
+    }
+
+    function renderHeatmap(data) {
+        if (!heatmapMap) {
+            heatmapMap = new maplibregl.Map({
+                container: 'heatmap-map',
+                style: `https://tiles.goong.io/assets/goong_map_web.json?api_key=${GOONG_API_KEY}`,
+                center: [106.7009, 10.7769],
+                zoom: 11
+            });
+        }
+        const geojsonData = { type: 'FeatureCollection', features: data.map(point => ({ type: 'Feature', geometry: { type: 'Point', coordinates: [point.lng, point.lat] } })) };
+        heatmapMap.on('load', () => {
+            if (heatmapMap.getSource('failed-points')) { heatmapMap.getSource('failed-points').setData(geojsonData); } else {
+                heatmapMap.addSource('failed-points', { type: 'geojson', data: geojsonData });
+                heatmapMap.addLayer({
+                    id: 'heatmap-layer', type: 'heatmap', source: 'failed-points',
+                    // paint: { 'heatmap-intensity': 1, 'heatmap-color': [ 'interpolate', ['linear'], ['heatmap-density'], 0, 'rgba(33,102,172,0)', 0.2, 'rgb(103,169,207)', 0.4, 'rgb(209,229,240)', 0.6, 'rgb(253,219,199)', 0.8, 'rgb(239,138,98)', 1, 'rgb(178,24,43)' ], 'heatmap-radius': 20, 'heatmap-opacity': 0.8 }
+                paint: {
+                    // Tăng "sức nóng" của mỗi điểm
+                    'heatmap-intensity': 2, // <-- Tăng từ 1 lên 2
+
+                    // Dải màu (giữ nguyên)
+                    'heatmap-color': [ 'interpolate', ['linear'], ['heatmap-density'], 0, 'rgba(33,102,172,0)', 0.2, 'rgb(103,169,207)', 0.4, 'rgb(209,229,240)', 0.6, 'rgb(253,219,199)', 0.8, 'rgb(239,138,98)', 1, 'rgb(178,24,43)' ],
+                    
+                    // Tăng "phạm vi ảnh hưởng" của mỗi điểm
+                    'heatmap-radius': 50, // <-- Tăng từ 20 lên 50 (hoặc 40)
+                    
+                    // Độ mờ (giữ nguyên)
+                    'heatmap-opacity': 0.7,
                 }
+                });
             }
         });
-    </script>
-</body>
-</html>
+    }
+
+    document.addEventListener('DOMContentLoaded', () => fetchDataAndRender(7));
+    document.getElementById('date-range-filter').addEventListener('change', (e) => fetchDataAndRender(e.target.value));
+</script>

@@ -5,36 +5,91 @@ include_once('../../config/database.php');
 $db = new clsKetNoi();
 $conn = $db->moKetNoi();
 
-$response = [];
-
-if (
-    isset($_REQUEST['username'], $_REQUEST['phone'], $_REQUEST['email'], $_REQUEST['password']) &&
-    !empty($_REQUEST['username']) && !empty($_REQUEST['phone']) && !empty($_REQUEST['email']) &&
-    !empty($_REQUEST['password'])
-) {
-    $username = trim($_REQUEST['username']);
-    $phone    = trim($_REQUEST['phone']);
-    $email    = trim($_REQUEST['email']);
-    $role     = intval($_REQUEST['role']);
-    // $role = isset($_REQUEST['role']) && $_REQUEST['role'] !== '' ? intval($_REQUEST['role']) : 'NULL';
-    $password = md5(trim($_REQUEST['password'])); // Hash password
-    // $warehouse_id     = trim($_REQUEST['warehouse_id']);
-    $warehouse_id = isset($_REQUEST['warehouse_id']) && $_REQUEST['warehouse_id'] !== '' ? intval($_REQUEST['warehouse_id']) : 'NULL';
-
-    $note = isset($_REQUEST['note']) ? trim($_REQUEST['note']) : '';
-
-    // Kiểm tra username đã tồn tại chưa
-    $check = $conn->query("SELECT * FROM users WHERE Email = '$email'");
-    if ($check && $check->num_rows > 0) {
-        echo json_encode(['success' => false, 'error' => 'Email đã tồn tại!']);
-    } else {
-        $sql = "INSERT INTO users (Username, Email, Password, PhoneNumber, Role, Note, warehouse_id) VALUES ('$username', '$email', '$password', '$phone', $role, '$note', $warehouse_id)";
-        $result = $conn->query($sql);
-        echo json_encode(['success' => $result]);
-    }
-} else {
-    $response = ['success' => false, 'error' => 'Thiếu dữ liệu cần thiết'];
+// Kiểm tra phương thức request phải là POST
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405); // Method Not Allowed
+    echo json_encode(['success' => false, 'error' => 'Phương thức request không hợp lệ.']);
+    exit;
 }
 
-// echo json_encode($response);
+// Kiểm tra các trường dữ liệu bắt buộc
+$required_fields = ['username', 'phone', 'email', 'password', 'role'];
+foreach ($required_fields as $field) {
+    if (!isset($_POST[$field]) || empty(trim($_POST[$field]))) {
+        http_response_code(400); // Bad Request
+        echo json_encode(['success' => false, 'error' => "Thiếu dữ liệu bắt buộc: {$field}"]);
+        $db->dongKetNoi($conn);
+        exit;
+    }
+}
+
+// Xử lý dữ liệu đầu vào
+$username = trim($_POST['username']);
+$phone    = trim($_POST['phone']);
+$email    = trim($_POST['email']);
+$role     = intval($_POST['role']);
+$password = trim($_POST['password']);
+$note     = isset($_POST['note']) ? trim($_POST['note']) : '';
+$warehouse_id = isset($_POST['warehouse_id']) && !empty(trim($_POST['warehouse_id'])) ? intval($_POST['warehouse_id']) : null;
+$hashed_password = md5($password);
+
+try {
+    // 1. Kiểm tra email đã tồn tại chưa
+    $stmt = $conn->prepare("SELECT ID FROM users WHERE Email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows > 0) {
+        http_response_code(409); // Conflict
+        echo json_encode(['success' => false, 'error' => 'Email đã tồn tại!']);
+        $stmt->close();
+        $db->dongKetNoi($conn);
+        exit;
+    }
+    $stmt->close();
+
+    // ===============================================
+    // === PHẦN MỚI: KIỂM TRA SỐ ĐIỆN THOẠI TỒN TẠI ===
+    // ===============================================
+    $stmt_phone = $conn->prepare("SELECT ID FROM users WHERE PhoneNumber = ?");
+    $stmt_phone->bind_param("s", $phone);
+    $stmt_phone->execute();
+    $stmt_phone->store_result();
+
+    if ($stmt_phone->num_rows > 0) {
+        http_response_code(409); // Conflict
+        echo json_encode(['success' => false, 'error' => 'Số điện thoại đã tồn tại!']);
+        $stmt_phone->close();
+        $db->dongKetNoi($conn);
+        exit;
+    }
+    $stmt_phone->close();
+    
+    // 2. Nếu tất cả đều hợp lệ, thêm người dùng mới
+    $stmt_insert = $conn->prepare(
+        "INSERT INTO users (Username, Email, Password, PhoneNumber, Role, Note, warehouse_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())"
+    );
+    $stmt_insert->bind_param("ssssisi", $username, $email, $hashed_password, $phone, $role, $note, $warehouse_id);
+
+    if ($stmt_insert->execute()) {
+        $new_user_id = $stmt_insert->insert_id;
+        http_response_code(201); // Created
+        echo json_encode([
+            'success' => true,
+            'message' => 'Thêm người dùng thành công',
+            'new_user_id' => $new_user_id
+        ]);
+    } else {
+        http_response_code(500); // Internal Server Error
+        echo json_encode(['success' => false, 'error' => 'Lỗi khi thêm vào CSDL: ' . $stmt_insert->error]);
+    }
+    $stmt_insert->close();
+
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode(['success' => false, 'error' => 'Lỗi máy chủ: ' . $e->getMessage()]);
+}
+
 $db->dongKetNoi($conn);
+?>
