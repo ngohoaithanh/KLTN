@@ -50,6 +50,7 @@ $Weight = floatval($_REQUEST['Weight']);
 date_default_timezone_set('Asia/Ho_Chi_Minh');
 $Create_at = date('Y-m-d H:i:s'); // Đảm bảo định dạng ngày giờ đúng
 $CustomerID = 0;
+$feePayer = isset($_REQUEST['fee_payer']) ? trim($_REQUEST['fee_payer']) : 'sender';
 
 $PhoneNumber = isset($_REQUEST['PhoneNumber']) ? trim($_REQUEST['PhoneNumber']) : '';  // Lấy 'PhoneNumber' từ form
 
@@ -116,20 +117,43 @@ if ($CODAmount <= 0) {
     if ($CODFee > 15000) $CODFee = 15000;
 }
 
-$ID = (int) (date("md") . mt_rand(1000, 9999));
-// Thêm đơn hàng
-// $sqlInsertOrder = "INSERT INTO orders 
-// (ID,CustomerID, Pick_up_address, Delivery_address, Recipient, RecipientPhone, Status, COD_amount, Created_at, Note, ShippingFee, Weight, CODFee)
-// VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+// $ID = (int) (date("md") . mt_rand(1000, 9999));
+
+$ID = 0;
+$maxTries = 5;
+do {
+    // Tạo ID ngẫu nhiên theo cách của bạn
+    $potentialID = (int) (date("md") . mt_rand(1000, 9999));
+    
+    // Kiểm tra xem ID này đã tồn tại trong database chưa
+    $stmtCheckID = $conn->prepare("SELECT ID FROM orders WHERE ID = ?");
+    $stmtCheckID->bind_param("i", $potentialID);
+    $stmtCheckID->execute();
+    $stmtCheckID->store_result();
+    
+    if ($stmtCheckID->num_rows == 0) {
+        // Nếu ID chưa tồn tại, chúng ta có thể sử dụng nó
+        $ID = $potentialID;
+    }
+    $stmtCheckID->close();
+    $maxTries--;
+} while ($ID == 0 && $maxTries > 0);
+
+if ($ID == 0) {
+    // Nếu sau 5 lần vẫn không tạo được ID duy nhất (rất hiếm), báo lỗi
+    echo json_encode(['success' => false, 'error' => 'Không thể tạo mã đơn hàng, vui lòng thử lại.']);
+    exit();
+}
+
 $sqlInsertOrder = "INSERT INTO orders 
 (ID, CustomerID, Pick_up_address, Pick_up_lat, Pick_up_lng, 
  Delivery_address, Delivery_lat, Delivery_lng, 
- Recipient, RecipientPhone, Status, COD_amount, Created_at, Note, ShippingFee, Weight, CODFee)
-VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+ Recipient, RecipientPhone, Status, COD_amount, Created_at, Note, ShippingFee, Weight, CODFee, fee_payer)
+VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?)";
 
 $stmtOrder = $conn->prepare($sqlInsertOrder);
 $stmtOrder->bind_param(
-    "iisddsddsssdssddd",  
+    "iisddsddsssdssddds",  
     $ID,
     $CustomerID,
     $PickUpAddress,
@@ -146,7 +170,8 @@ $stmtOrder->bind_param(
     $Note,
     $ShippingFee,
     $Weight,
-    $CODFee
+    $CODFee,
+    $feePayer
 );
 
 
@@ -156,17 +181,17 @@ if (!$stmtOrder->execute()) {
 }
 
 // Lấy ID của đơn hàng vừa chèn
-$orderID = $stmtOrder->insert_id;
+// $orderID = $stmtOrder->insert_id;
 
-// Cập nhật lại trường Created_at
-$sqlUpdateDate = "UPDATE orders SET Created_at = ? WHERE ID = ?";
-$stmtUpdateDate = $conn->prepare($sqlUpdateDate);
-$stmtUpdateDate->bind_param("si", $Create_at, $orderID);
-if (!$stmtUpdateDate->execute()) {
-    echo json_encode(['success' => false, 'error' => 'Lỗi cập nhật Created_at: ' . $stmtUpdateDate->error]);
-    exit();
-}
-$stmtUpdateDate->close();
+// // Cập nhật lại trường Created_at
+// $sqlUpdateDate = "UPDATE orders SET Created_at = ? WHERE ID = ?";
+// $stmtUpdateDate = $conn->prepare($sqlUpdateDate);
+// $stmtUpdateDate->bind_param("si", $Create_at, $orderID);
+// if (!$stmtUpdateDate->execute()) {
+//     echo json_encode(['success' => false, 'error' => 'Lỗi cập nhật Created_at: ' . $stmtUpdateDate->error]);
+//     exit();
+// }
+// $stmtUpdateDate->close();
 
 //create tracking
 $trackingStatus = 'Đơn hàng đã được tạo.';
