@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th10 14, 2025 lúc 11:53 AM
+-- Thời gian đã tạo: Th10 20, 2025 lúc 06:27 PM
 -- Phiên bản máy phục vụ: 10.4.24-MariaDB
 -- Phiên bản PHP: 8.1.6
 
@@ -35,6 +35,15 @@ CREATE TABLE `cods` (
   `Settled_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Đang đổ dữ liệu cho bảng `cods`
+--
+
+INSERT INTO `cods` (`ID`, `OrderID`, `Amount`, `Status`, `Settled_at`) VALUES
+(29, 10174717, '200000.00', 'pending', '2025-10-17 05:40:02'),
+(30, 10178154, '200000.00', 'pending', '2025-10-17 05:52:02'),
+(31, 10174039, '120000.00', 'pending', '2025-10-17 06:02:30');
+
 -- --------------------------------------------------------
 
 --
@@ -63,26 +72,30 @@ CREATE TABLE `orders` (
   `Note` varchar(255) DEFAULT NULL,
   `RecipientPhone` varchar(20) DEFAULT NULL,
   `hidden` int(11) NOT NULL DEFAULT 1,
-  `is_rated` tinyint(1) NOT NULL DEFAULT 0
+  `is_rated` tinyint(1) NOT NULL DEFAULT 0,
+  `fee_payer` enum('sender','receiver') NOT NULL DEFAULT 'sender'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Đang đổ dữ liệu cho bảng `orders`
 --
 
-INSERT INTO `orders` (`ID`, `CustomerID`, `ShipperID`, `Pick_up_address`, `Pick_up_lat`, `Pick_up_lng`, `Delivery_address`, `Delivery_lat`, `Delivery_lng`, `Recipient`, `status`, `COD_amount`, `CODFee`, `WarehouseID`, `Weight`, `ShippingFee`, `Created_at`, `Accepted_at`, `Note`, `RecipientPhone`, `hidden`, `is_rated`) VALUES
-(9175208, 185, NULL, 'Khoa Cơ Khí - IUH, Đại học Công nghiệp Tp.Hồ Chí Minh, 12 Nguyễn Văn Bảo, Phường 4, Gò Vấp, Hồ Chí Minh', '10.8221072', '106.6879015', 'Vinhomes Grand Park, Long Bình, Thủ Đức, Hồ Chí Minh', '10.8429630', '106.8407200', 'Zaa', 'pending', '0.00', '0.00', NULL, '1.20', '18000.00', '2025-09-17 04:53:35', '2025-10-14 04:40:55', 'Hàng dễ vỡ', '0998998999', 1, 0),
-(9178848, 185, 139, 'Vinschool, Nguyễn Hữu Cảnh, Bến Nghé, Quận 1, Hồ Chí Minh', '10.7862422', '106.7114781', 'Khoa Cơ Khí - IUH, Đại học Công nghiệp Tp.Hồ Chí Minh, 12 Nguyễn Văn Bảo, Phường 4, Gò Vấp, Hồ Chí Minh', '10.8221072', '106.6879015', 'Tom', 'delivery_failed', '0.00', '0.00', NULL, '1.00', '18000.00', '2025-09-17 04:03:20', '2025-10-09 04:07:35', 'Hàng điện tử', '0912345000', 1, 0),
-(9182385, 185, 139, '66 D. Lê Lợi, Phường 1, Gò Vấp, Hồ Chí Minh 700000, Việt Nam', '10.8205291', '106.6863567', '66b Nguyễn Sỹ Sách, Phường 15, Tân Bình, Hồ Chí Minh 70000, Việt Nam', '10.8199509', '106.6358395', 'Nguyễn Lâm', 'delivered', '0.00', '0.00', NULL, '1.00', '18000.00', '2025-09-18 10:33:01', '2025-10-14 02:42:46', 'Hàng điện tử', '0999888909', 1, 0),
-(9186174, 185, 141, '167/2/5 Ngô Tất Tố, P. 22, Phường 22, Bình Thạnh, Hồ Chí Minh 700000, Việt Nam', '10.7911801', '106.7148782', 'Khoa Cơ Khí - IUH, Đại học Công nghiệp Tp.Hồ Chí Minh, 12 Nguyễn Văn Bảo, Phường 4, Gò Vấp, Hồ Chí Minh', '10.8221072', '106.6879015', 'Trần An', 'delivered', '0.00', '0.00', NULL, '2.00', '18000.00', '2025-09-18 10:45:51', '2025-10-11 10:28:12', 'Hàng dễ vỡ', '0912098002', 1, 0),
-(9186919, 185, NULL, '144 Xuân Thủy, Dịch Vọng Hậu, Cầu Giấy, Hà Nội', '21.0368282', '105.7820251', '222 Trần Duy Hưng, Cầu Giấy', '21.0069095', '105.7933494', 'Lê Phong', 'pending', '0.00', '0.00', NULL, '1.00', '18000.00', '2025-09-18 13:53:32', NULL, 'Hàng dễ vỡ', '0921876987', 1, 0),
-(9221121, 185, 141, 'Trạm ép giấy Xuân Trường, Nguyễn Văn Quỳ, Tân Thuận Đông, Quận 7, Hồ Chí Minh', '10.7429218', '106.7390444', 'Sân Bay Tân Sơn Nhất - Trường Sơn, Cảng hàng không Quốc tế Tân Sơn Nhất, Phường 2, Tân Bình, Hồ Chí Minh', '10.8156395', '106.6638113', 'Lê Anh', 'delivered', '0.00', '0.00', NULL, '1.00', '18000.00', '2025-09-21 17:38:24', '2025-10-11 09:43:24', 'Hàng dễ vỡ', '0934999210', 1, 0),
-(9229334, 185, NULL, 'Trạm ép giấy Xuân Trường, Nguyễn Văn Quỳ, Tân Thuận Đông, Quận 7, Hồ Chí Minh', '10.7429218', '106.7390444', 'Chợ Thủ Đức B, Đoàn Công Hớn, Trường Thọ, Thủ Đức, Hồ Chí Minh', '10.8502291', '106.7557012', 'Trần Lam', 'pending', '0.00', '0.00', NULL, '2.00', '18000.00', '2025-09-21 17:40:03', '2025-10-04 04:29:10', '', '0924666892', 1, 0),
-(10046774, 185, NULL, '81 Đ. Võ Duy Ninh, Phường 22, Bình Thạnh, Hồ Chí Minh 90000, Việt Nam', '10.7919236', '106.7159995', 'Nguyễn Văn Bảo/Số 12 ĐH Công Nghiệp, Phường 1, Gò Vấp, Hồ Chí Minh 71408, Việt Nam', '10.8221589', '106.6868454', 'Nguyễn Sa', 'pending', '0.00', '0.00', NULL, '1.00', '18000.00', '2025-10-04 06:44:46', '2025-10-13 17:17:07', 'Tập tài liệu', '0900000878', 1, 0),
-(10046898, 185, 141, 'Katinat, 91 Đồng Khởi, Bến Nghé, Quận 1, Hồ Chí Minh', '10.7747667', '106.7043670', '66B Nguyễn Sỹ Sách, Phường 15, Tân Bình, Hồ Chí Minh', '10.8199447', '106.6358023', 'Lê Lam', 'delivered', '0.00', '0.00', NULL, '0.50', '15000.00', '2025-10-04 04:15:03', '2025-10-11 02:57:25', 'Hàng dễ vỡ', '0909000231', 1, 1),
-(10067527, 185, NULL, 'Katinat Phan Văn Trị, 18A Đ. Phan Văn Trị, Phường 1, Gò Vấp, Hồ Chí Minh, Việt Nam', NULL, NULL, 'Cheese Coffee, 190C Đ. Phan Văn Trị, Phường 14, Bình Thạnh, Hồ Chí Minh, Việt Nam', NULL, NULL, 'Nguyen Bao', 'cancelled', '0.00', '0.00', NULL, '0.30', '15000.00', '2025-10-06 01:14:57', NULL, 'Tai lieu', '0989878465', 1, 0),
-(10142116, 187, NULL, 'Lê Văn Khương, Thới An, Quận 12, Ho Chi Minh City', '10.8632542', '106.6497280', 'Đại học Văn Lang (Cơ sở 3), 68 Hẻm 80 Dương Quảng Hàm, Phường 5, Gò Vấp, Hồ Chí Minh', '10.8270654', '106.6987296', 'Hồ Bảo Ngọc', 'pending', '0.00', '0.00', NULL, '2.00', '18000.00', '2025-10-14 02:07:33', NULL, 'Hàng dễ vỡ', '0379654880', 1, 0),
-(10146432, 185, NULL, 'Chợ Đông Thạnh, Đặng Thúc Vịnh, Đông Thạnh, Hóc Môn, Hồ Chí Minh', '10.9043722', '106.6367921', 'KTX Đại Học Công Nghiệp ( IUHer), Nguyễn Văn Bảo, phường 4, Gò Vấp, Hồ Chí Minh', '10.8218768', '106.6870616', 'Lê Tú', 'delivery_failed', '0.00', '0.00', NULL, '1.00', '18000.00', '2025-10-13 17:26:59', NULL, 'Tài liệu giấy', '0923888970', 1, 0);
+INSERT INTO `orders` (`ID`, `CustomerID`, `ShipperID`, `Pick_up_address`, `Pick_up_lat`, `Pick_up_lng`, `Delivery_address`, `Delivery_lat`, `Delivery_lng`, `Recipient`, `status`, `COD_amount`, `CODFee`, `WarehouseID`, `Weight`, `ShippingFee`, `Created_at`, `Accepted_at`, `Note`, `RecipientPhone`, `hidden`, `is_rated`, `fee_payer`) VALUES
+(9175208, 185, 141, 'Khoa Cơ Khí - IUH, Đại học Công nghiệp Tp.Hồ Chí Minh, 12 Nguyễn Văn Bảo, Phường 4, Gò Vấp, Hồ Chí Minh', '10.8221072', '106.6879015', 'Vinhomes Grand Park, Long Bình, Thủ Đức, Hồ Chí Minh', '10.8429630', '106.8407200', 'Zaa', 'delivered', '500000.00', '5000.00', NULL, '1.20', '18000.00', '2025-09-17 04:53:35', '2025-10-17 15:04:29', 'Hàng dễ vỡ', '0998998999', 1, 0, 'sender'),
+(9178848, 185, 139, 'Vinschool, Nguyễn Hữu Cảnh, Bến Nghé, Quận 1, Hồ Chí Minh', '10.7862422', '106.7114781', 'Khoa Cơ Khí - IUH, Đại học Công nghiệp Tp.Hồ Chí Minh, 12 Nguyễn Văn Bảo, Phường 4, Gò Vấp, Hồ Chí Minh', '10.8221072', '106.6879015', 'Tom', 'delivery_failed', '0.00', '0.00', NULL, '1.00', '18000.00', '2025-09-17 04:03:20', '2025-10-09 04:07:35', 'Hàng điện tử', '0912345000', 1, 0, 'sender'),
+(9182385, 185, 139, '66 D. Lê Lợi, Phường 1, Gò Vấp, Hồ Chí Minh 700000, Việt Nam', '10.8205291', '106.6863567', '66b Nguyễn Sỹ Sách, Phường 15, Tân Bình, Hồ Chí Minh 70000, Việt Nam', '10.8199509', '106.6358395', 'Nguyễn Lâm', 'delivered', '0.00', '0.00', NULL, '1.00', '18000.00', '2025-09-18 10:33:01', '2025-10-14 02:42:46', 'Hàng điện tử', '0999888909', 1, 0, 'sender'),
+(9186174, 185, 141, '167/2/5 Ngô Tất Tố, P. 22, Phường 22, Bình Thạnh, Hồ Chí Minh 700000, Việt Nam', '10.7911801', '106.7148782', 'Khoa Cơ Khí - IUH, Đại học Công nghiệp Tp.Hồ Chí Minh, 12 Nguyễn Văn Bảo, Phường 4, Gò Vấp, Hồ Chí Minh', '10.8221072', '106.6879015', 'Trần An', 'in_transit', '120000.00', '5000.00', NULL, '2.00', '18000.00', '2025-09-18 10:45:51', '2025-10-11 10:28:12', 'Hàng dễ vỡ', '0912098002', 1, 0, 'sender'),
+(9186919, 185, NULL, '144 Xuân Thủy, Dịch Vọng Hậu, Cầu Giấy, Hà Nội', '21.0368282', '105.7820251', '222 Trần Duy Hưng, Cầu Giấy', '21.0069095', '105.7933494', 'Lê Phong', 'pending', '0.00', '0.00', NULL, '1.00', '18000.00', '2025-09-18 13:53:32', NULL, 'Hàng dễ vỡ', '0921876987', 1, 0, 'sender'),
+(9221121, 185, 141, 'Trạm ép giấy Xuân Trường, Nguyễn Văn Quỳ, Tân Thuận Đông, Quận 7, Hồ Chí Minh', '10.7429218', '106.7390444', 'Sân Bay Tân Sơn Nhất - Trường Sơn, Cảng hàng không Quốc tế Tân Sơn Nhất, Phường 2, Tân Bình, Hồ Chí Minh', '10.8156395', '106.6638113', 'Lê Anh', 'delivered', '0.00', '0.00', NULL, '1.00', '18000.00', '2025-09-21 17:38:24', '2025-10-11 09:43:24', 'Hàng dễ vỡ', '0934999210', 1, 0, 'sender'),
+(9229334, 185, NULL, 'Trạm ép giấy Xuân Trường, Nguyễn Văn Quỳ, Tân Thuận Đông, Quận 7, Hồ Chí Minh', '10.7429218', '106.7390444', 'Chợ Thủ Đức B, Đoàn Công Hớn, Trường Thọ, Thủ Đức, Hồ Chí Minh', '10.8502291', '106.7557012', 'Trần Lam', 'pending', '0.00', '0.00', NULL, '2.00', '18000.00', '2025-09-21 17:40:03', '2025-10-04 04:29:10', '', '0924666892', 1, 0, 'sender'),
+(10046774, 185, NULL, '81 Đ. Võ Duy Ninh, Phường 22, Bình Thạnh, Hồ Chí Minh 90000, Việt Nam', '10.7919236', '106.7159995', 'Nguyễn Văn Bảo/Số 12 ĐH Công Nghiệp, Phường 1, Gò Vấp, Hồ Chí Minh 71408, Việt Nam', '10.8221589', '106.6868454', 'Nguyễn Sa', 'pending', '0.00', '0.00', NULL, '1.00', '18000.00', '2025-10-04 06:44:46', '2025-10-13 17:17:07', 'Tập tài liệu', '0900000878', 1, 0, 'sender'),
+(10046898, 185, 141, 'Katinat, 91 Đồng Khởi, Bến Nghé, Quận 1, Hồ Chí Minh', '10.7747667', '106.7043670', '66B Nguyễn Sỹ Sách, Phường 15, Tân Bình, Hồ Chí Minh', '10.8199447', '106.6358023', 'Lê Lam', 'delivered', '0.00', '0.00', NULL, '0.50', '15000.00', '2025-10-04 04:15:03', '2025-10-11 02:57:25', 'Hàng dễ vỡ', '0909000231', 1, 1, 'sender'),
+(10067527, 185, NULL, 'Katinat Phan Văn Trị, 18A Đ. Phan Văn Trị, Phường 1, Gò Vấp, Hồ Chí Minh, Việt Nam', NULL, NULL, 'Cheese Coffee, 190C Đ. Phan Văn Trị, Phường 14, Bình Thạnh, Hồ Chí Minh, Việt Nam', NULL, NULL, 'Nguyen Bao', 'cancelled', '0.00', '0.00', NULL, '0.30', '15000.00', '2025-10-06 01:14:57', NULL, 'Tai lieu', '0989878465', 1, 0, 'sender'),
+(10142116, 187, NULL, 'Lê Văn Khương, Thới An, Quận 12, Ho Chi Minh City', '10.8632542', '106.6497280', 'Đại học Văn Lang (Cơ sở 3), 68 Hẻm 80 Dương Quảng Hàm, Phường 5, Gò Vấp, Hồ Chí Minh', '10.8270654', '106.6987296', 'Hồ Bảo Ngọc', 'pending', '0.00', '0.00', NULL, '2.00', '18000.00', '2025-10-14 02:07:33', NULL, 'Hàng dễ vỡ', '0379654880', 1, 0, 'sender'),
+(10146432, 185, NULL, 'Chợ Đông Thạnh, Đặng Thúc Vịnh, Đông Thạnh, Hóc Môn, Hồ Chí Minh', '10.9043722', '106.6367921', 'KTX Đại Học Công Nghiệp ( IUHer), Nguyễn Văn Bảo, phường 4, Gò Vấp, Hồ Chí Minh', '10.8218768', '106.6870616', 'Lê Tú', 'delivery_failed', '0.00', '0.00', NULL, '1.00', '18000.00', '2025-10-13 17:26:59', NULL, 'Tài liệu giấy', '0923888970', 1, 0, 'sender'),
+(10174039, 185, NULL, 'Chợ Đông Thạnh, Đặng Thúc Vịnh, Đông Thạnh, Hóc Môn, Hồ Chí Minh', '10.9043722', '106.6367921', '366 Đ. Phan Văn Trị, Phường 5, Gò Vấp, Thành phố Hồ Chí Minh, Việt Nam', '16.0497471', '108.2381568', 'Nguyễn Lâm Anh', 'pending', '120000.00', '5000.00', NULL, '1.00', '18000.00', '2025-10-17 06:02:30', NULL, 'Tài liệu', '0361897001', 1, 0, 'receiver'),
+(10174717, 187, NULL, 'LOTTE Mart Gò Vấp, 18 Đ. Phan Văn Trị, Phường 10, Gò Vấp, Thành phố Hồ Chí Minh, Việt Nam', '10.8382576', '106.6708474', 'AEON MALL TÂN PHÚ, 30 Đ. Tân Thắng, Sơn Kỳ, Tân Phú, Thành phố Hồ Chí Minh 700000, Việt Nam\\', '10.8034355', '106.6178294', 'Tran Thi Đinh Tam', 'pending', '200000.00', '5000.00', 1, '3.00', '23000.00', '2025-10-17 05:40:02', NULL, 'Giao trong giờ hành chính', '0367781923', 1, 0, 'sender'),
+(10178154, 185, NULL, '208 Nguyễn Hữu Cảnh, Vinhomes Tân Cảng, Bình Thạnh, Thành phố Hồ Chí Minh 700000, Việt Nam', '10.7940264', '106.7206721', '2B Đ. Phổ Quang, Phường 2, Tân Bình, Thành phố Hồ Chí Minh 700000, Việt Nam', '10.8029270', '106.6659258', 'Tran Thi Đinh Tam', 'pending', '200000.00', '5000.00', NULL, '3.00', '23000.00', '2025-10-17 05:52:02', NULL, 'Giao trong giờ hành chính', '0367781923', 1, 0, 'sender');
 
 -- --------------------------------------------------------
 
@@ -169,8 +182,8 @@ CREATE TABLE `shipper_locations` (
 --
 
 INSERT INTO `shipper_locations` (`shipper_id`, `lat`, `lng`, `accuracy`, `speed`, `heading`, `status`, `updated_at`) VALUES
-(139, 10.7998006, 106.6780023, NULL, NULL, NULL, 'online', '2025-10-14 09:27:06'),
-(141, 10.7998009, 106.6780017, NULL, NULL, NULL, 'offline', '2025-10-14 09:27:09'),
+(139, 10.7998006, 106.6780023, NULL, NULL, NULL, 'offline', '2025-10-17 14:53:08'),
+(141, 10.7997999, 106.6780014, NULL, NULL, NULL, 'offline', '2025-10-18 09:31:40'),
 (157, 10.7703004, 106.7170031, NULL, NULL, NULL, 'offline', '2025-10-12 16:19:04'),
 (158, 10.7703007, 106.717003, NULL, NULL, NULL, 'offline', '2025-10-12 16:19:50');
 
@@ -219,7 +232,14 @@ INSERT INTO `trackings` (`ID`, `OrderID`, `Status`, `Location`, `Updated_at`) VA
 (239, 9182385, 'Shipper 139 đã nhận đơn.', NULL, '2025-10-14 02:42:46'),
 (240, 9182385, 'Shipper đã lấy hàng thành công.', NULL, '2025-10-14 02:43:04'),
 (241, 9182385, 'Đơn hàng đang trên đường giao đến bạn.', NULL, '2025-10-14 02:43:08'),
-(242, 9182385, 'Giao hàng thành công!', NULL, '2025-10-14 02:43:35');
+(242, 9182385, 'Giao hàng thành công!', NULL, '2025-10-14 02:43:35'),
+(250, 10174717, 'Đơn hàng đã được tạo.', NULL, '2025-10-17 05:40:02'),
+(251, 10178154, 'Đơn hàng đã được tạo.', NULL, '2025-10-17 05:52:02'),
+(252, 10174039, 'Đơn hàng đã được tạo.', NULL, '2025-10-17 06:02:30'),
+(253, 9175208, 'Shipper 141 đã nhận đơn.', NULL, '2025-10-17 15:04:29'),
+(254, 9175208, 'Shipper đã lấy hàng thành công.', NULL, '2025-10-18 09:26:02'),
+(255, 9175208, 'Đơn hàng đang trên đường giao đến bạn.', NULL, '2025-10-18 09:26:23'),
+(256, 9175208, 'Giao hàng thành công!', NULL, '2025-10-18 09:26:30');
 
 -- --------------------------------------------------------
 
@@ -231,7 +251,7 @@ CREATE TABLE `transactions` (
   `ID` int(11) NOT NULL,
   `OrderID` int(11) DEFAULT NULL,
   `UserID` int(11) NOT NULL,
-  `Type` enum('collect_cod','pay_cod','salary','shipping_fee','other') NOT NULL,
+  `Type` enum('shipping_fee','collect_cod','deposit_cod','withdraw','bonus','penalty') NOT NULL,
   `Amount` decimal(10,2) NOT NULL,
   `Status` enum('pending','completed','failed') DEFAULT 'pending',
   `Note` varchar(255) DEFAULT NULL,
@@ -243,9 +263,11 @@ CREATE TABLE `transactions` (
 --
 
 INSERT INTO `transactions` (`ID`, `OrderID`, `UserID`, `Type`, `Amount`, `Status`, `Note`, `Created_at`) VALUES
-(12, NULL, 139, 'collect_cod', '120000.00', 'completed', NULL, '2025-05-27 03:20:00'),
-(13, NULL, 11, 'collect_cod', '198000.00', 'completed', NULL, '2025-05-27 11:51:19'),
-(14, NULL, 1, 'pay_cod', '198000.00', 'completed', NULL, '2025-05-27 11:53:10');
+(12, NULL, 1, 'shipping_fee', '120000.00', 'completed', NULL, '2025-10-10 03:20:00'),
+(13, NULL, 1, 'collect_cod', '198000.00', 'completed', NULL, '2025-10-18 05:51:19'),
+(14, NULL, 1, 'bonus', '198000.00', 'completed', NULL, '2025-10-18 06:10:12'),
+(15, 9175208, 141, 'shipping_fee', '18000.00', 'completed', NULL, '2025-10-18 09:26:30'),
+(16, 9175208, 141, 'collect_cod', '505000.00', 'completed', NULL, '2025-10-18 09:26:30');
 
 -- --------------------------------------------------------
 
@@ -309,7 +331,10 @@ INSERT INTO `users` (`ID`, `Username`, `Email`, `Password`, `PhoneNumber`, `Role
 (172, 'shipper20', 'shipper20@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0933322110', 6, NULL, '', 3, 1, 0, 0, '2025-10-14 05:30:32'),
 (185, 'Nguyễn Khách Hàng', 'khachhangnguyen@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0979730421', 7, NULL, '', NULL, 1, 0, 0, '2025-10-14 05:30:32'),
 (187, 'Trần Khách Hàng', 'tranKH@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0979730422', 7, NULL, '', NULL, 1, 0, 0, '2025-10-14 05:30:32'),
-(188, 'Nguyễn Văn Shipper', 'nvshipper@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0379111555', 6, NULL, '', NULL, 1, 0, 0, '2025-10-14 09:01:50');
+(188, 'Nguyễn Văn Shipper', 'nvshipper@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0379111555', 6, NULL, '', NULL, 1, 0, 0, '2025-10-14 09:01:50'),
+(189, 'Nguyen Van B Test New', 'guest_1760679602@fake.local', '$2y$10$Boj3qaANVn6tB.s4.l6jLuZwRI1zevbaEpnniDoJFZRyRt9/nuy1G', '0989789021', 7, NULL, '', NULL, 1, 0, 0, '2025-10-17 05:40:02'),
+(190, 'Nguyen Van B Test New 2', 'guest_1760680322@fake.local', '$2y$10$D2GnXU9TeYTFiA.h/kQMHehxG18E7ZN3aKz.qzF6S/Kyh7kSmihf2', '0989789021', 7, NULL, '', NULL, 1, 0, 0, '2025-10-17 05:52:02'),
+(191, 'Nguyễn Văn Ba', 'nguyenba@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0379111666', 6, NULL, '', NULL, 1, 0, 0, '2025-10-20 16:25:07');
 
 -- --------------------------------------------------------
 
@@ -335,7 +360,8 @@ INSERT INTO `vehicles` (`id`, `shipper_id`, `license_plate`, `model`, `type`, `i
 (2, 139, '59E-04963', 'Wave RSX', 'motorbike', 1),
 (3, 157, '51K - 87645', 'Honda AirBlade', 'motorbike', 1),
 (4, 158, '51E - 36618', 'Yamaha Exciter', 'motorbike', 1),
-(5, 188, '49E-65271', 'Honda Lead', 'motorbike', 1);
+(5, 188, '49E-65271', 'Honda Lead', 'motorbike', 1),
+(6, 191, '54Y-66872', 'Honda Vision', 'motorbike', 1);
 
 -- --------------------------------------------------------
 
@@ -466,7 +492,7 @@ ALTER TABLE `warehouses`
 -- AUTO_INCREMENT cho bảng `cods`
 --
 ALTER TABLE `cods`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT cho bảng `orders`
@@ -496,25 +522,25 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT cho bảng `trackings`
 --
 ALTER TABLE `trackings`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=250;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=257;
 
 --
 -- AUTO_INCREMENT cho bảng `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT cho bảng `users`
 --
 ALTER TABLE `users`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=189;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=192;
 
 --
 -- AUTO_INCREMENT cho bảng `vehicles`
 --
 ALTER TABLE `vehicles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT cho bảng `warehouses`

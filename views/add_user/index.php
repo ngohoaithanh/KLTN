@@ -17,7 +17,7 @@ if (isset($_POST['submit'])) {
     $role     = trim($_POST['role']);
     $password = trim($_POST['password']);
     $note     = trim($_POST['note']);
-    $warehouse_id = !empty(trim($_POST['warehouse_id'])) ? trim($_POST['warehouse_id']) : null;
+    // $warehouse_id = !empty(trim($_POST['warehouse_id'])) ? trim($_POST['warehouse_id']) : null;
 
     // Validate dữ liệu
     $errors = [];
@@ -35,7 +35,7 @@ if (isset($_POST['submit'])) {
         // Chuẩn bị dữ liệu để thêm user
         $data = [
             'username' => $username, 'phone' => $phone, 'email' => $email, 'role' => $role,
-            'warehouse_id' => $warehouse_id, 'password' => $password, 'note' => $note
+            'password' => $password, 'note' => $note
         ];
         
         // Gọi controller để thêm user
@@ -66,15 +66,15 @@ if (isset($_POST['submit'])) {
 }
 
 // 3. LẤY DANH SÁCH KHO (giữ nguyên)
-include_once('controllers/cWarehouse.php');
-$cWarehouse = new controlWarehouse();
-$warehouses_data = $cWarehouse->getAllWarehouse();
-$warehouses = [];
-if ($warehouses_data) {
-    foreach ($warehouses_data as $row) {
-        $warehouses[] = ['id' => $row['ID'] ?? '', 'name' => $row['Name'] ?? ''];
-    }
-}
+// include_once('controllers/cWarehouse.php');
+// $cWarehouse = new controlWarehouse();
+// $warehouses_data = $cWarehouse->getAllWarehouse();
+// $warehouses = [];
+// if ($warehouses_data) {
+//     foreach ($warehouses_data as $row) {
+//         $warehouses[] = ['id' => $row['ID'] ?? '', 'name' => $row['Name'] ?? ''];
+//     }
+// }
 ?>
 
 <!DOCTYPE html>
@@ -127,7 +127,7 @@ if ($warehouses_data) {
 
         <div class="form-group"><label>Mật khẩu</label><input type="password" name="password" class="form-control" required></div>
         
-        <div class="form-group">
+        <!-- <div class="form-group">
             <label>Nơi làm việc</label>
             <select name="warehouse_id" class="form-control" >
                 <option value="">-- Chọn nơi làm việc --</option>
@@ -135,7 +135,7 @@ if ($warehouses_data) {
                 <option value="<?= htmlspecialchars($w['id']) ?>"><?= htmlspecialchars($w['name']) ?></option>
                 <?php endforeach; ?>
             </select>
-        </div>
+        </div> -->
 
         <div class="form-group"><label>Ghi chú</label><textarea name="note" rows="4" class="form-control" placeholder="Nhập ghi chú nếu có..."></textarea></div>
 
