@@ -95,11 +95,32 @@ while ($row = $pieResult->fetch_assoc()) {
     $pieData[] = $row;
 }
 
+// 5. Lấy dữ liệu cho biểu đồ PHÍ COD & PHÍ VC theo ngày
+$daily_fees_chart_sql = $conn->prepare("
+    SELECT
+        DATE(Accepted_at) as order_date,
+        SUM(ShippingFee) as total_shipping_fee,
+        SUM(CODFee) as total_cod_fee 
+    FROM orders
+    WHERE ShipperID = ? AND Accepted_at >= CURDATE() - INTERVAL ? DAY
+    GROUP BY DATE(Accepted_at)
+    ORDER BY order_date ASC
+");
+$daily_fees_chart_sql->bind_param("ii", $shipperId, $days);
+$daily_fees_chart_sql->execute();
+$feesChartResult = $daily_fees_chart_sql->get_result();
+$feesChartData = [];
+while ($row = $feesChartResult->fetch_assoc()) {
+    $feesChartData[] = $row;
+}
+$daily_fees_chart_sql->close(); // <-- Đóng statement nà
+
 // Tập hợp tất cả dữ liệu và trả về dưới dạng JSON
 $response = [
     'shipperInfo' => $shipperInfo,
     'kpiStats' => $kpiStats,
     'dailyOrdersChart' => $chartData,
+    'dailyFeesChart' => $feesChartData,
     'statusPieChart' => $pieData
 ];
 

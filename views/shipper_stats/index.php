@@ -24,19 +24,32 @@ if ($shipperId == 0) {
         </div>
 
     <div class="row">
-        <div class="col-xl-8 col-lg-7">
+
+        <div class="col-xl-8 col-lg-7"> 
+        
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Số lượng đơn hàng theo ngày</h6>
                 </div>
                 <div class="card-body">
                     <div class="chart-area">
-                        <canvas id="dailyOrdersChart"></canvas>
+                        <canvas id="dailyOrdersChart"></canvas> 
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-xl-4 col-lg-5">
+
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Phí Vận Chuyển & Phí COD theo ngày</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="dailyFeesChart"></canvas> 
+                    </div>
+                </div>
+            </div>
+            
+        </div> <div class="col-xl-4 col-lg-5"> 
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Tỷ lệ trạng thái đơn hàng</h6>
@@ -47,7 +60,7 @@ if ($shipperId == 0) {
                     </div>
                 </div>
             </div>
-        </div>
+        </div> 
     </div>
 </div>
 
@@ -57,6 +70,7 @@ if ($shipperId == 0) {
     const shipperId = <?php echo $shipperId; ?>;
     let dailyChartInstance;
     let pieChartInstance;
+    let dailyFeesChartInstance;
 
     function formatSeconds(seconds) {
     if (!seconds || seconds <= 0) {
@@ -80,6 +94,7 @@ if ($shipperId == 0) {
 
             // Render biểu đồ
             renderDailyOrdersChart(data.dailyOrdersChart);
+            renderDailyFeesChart(data.dailyFeesChart);
             renderStatusPieChart(data.statusPieChart);
 
         } catch (error) {
@@ -245,6 +260,49 @@ function renderKpiCards(kpi) {
                 }]
             },
             options: { maintainAspectRatio: false }
+        });
+    }
+
+    function renderDailyFeesChart(data) {
+        if (dailyFeesChartInstance) {
+            dailyFeesChartInstance.destroy();
+        }
+        const ctx = document.getElementById('dailyFeesChart').getContext('2d');
+        dailyFeesChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.map(item => new Date(item.order_date).toLocaleDateString('vi-VN')),
+                datasets: [
+                    {
+                        label: 'Phí Vận Chuyển',
+                        data: data.map(item => item.total_shipping_fee || 0), 
+                        borderColor: 'rgba(78, 115, 223, 1)',  
+                        backgroundColor: 'rgba(78, 115, 223, 0.1)',
+                        fill: true,
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Phí COD',
+                        data: data.map(item => item.total_cod_fee || 0), 
+                        borderColor: 'rgba(246, 194, 62, 1)', 
+                        backgroundColor: 'rgba(246, 194, 62, 0.1)',
+                        fill: true,
+                        tension: 0.1
+                    }
+                ]
+            },
+            options: { 
+                maintainAspectRatio: false,
+                scales: {
+                    y: { 
+                        ticks: {
+                            callback: function(value, index, values) {
+                                return Number(value).toLocaleString('vi-VN') + 'đ';
+                            }
+                        }
+                    }
+                }
+            }
         });
     }
     

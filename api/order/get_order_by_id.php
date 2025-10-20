@@ -17,7 +17,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             o.Recipient, o.RecipientPhone, o.Delivery_address, o.Delivery_lat, o.Delivery_lng, 
             o.Status, o.COD_amount, o.Shippingfee, o.Weight, o.Created_at, o.Note, o.CODFee, o.is_rated, o.fee_payer, 
             u.Username AS UserName, u.Email AS CustomerEmail, u.PhoneNumber AS PhoneNumberCus,
-            u2.Username AS ShipperName, u2.Email AS ShipperEmail,
+            u2.Username AS ShipperName, u2.Email AS ShipperEmail,u2.PhoneNumber AS ShipperPhoneNumber,
             u2.rating AS ShipperRating,
             v.license_plate, v.model AS vehicle_model
         FROM orders o 

@@ -144,7 +144,7 @@
     // }
     function renderKpiCards(kpi) {
     document.getElementById('kpi-cards-container').innerHTML = `
-        <div class="col-xl-2 col-md-6 mb-4">
+        <div class="col-xl col-lg-4 col-md-6 mb-4">
             <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
@@ -158,7 +158,7 @@
             </div>
         </div>
 
-        <div class="col-xl-2 col-md-6 mb-4">
+        <div class="col-xl col-lg-4 col-md-6 mb-4">
             <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
@@ -172,7 +172,7 @@
             </div>
         </div>
 
-        <div class="col-xl-2 col-md-6 mb-4">
+        <div class="col-xl col-lg-4 col-md-6 mb-4">
             <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
@@ -186,7 +186,7 @@
             </div>
         </div>
 
-        <div class="col-xl-2 col-md-6 mb-4">
+        <div class="col-xl col-lg-4 col-md-6 mb-4">
             <div class="card border-left-warning shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
@@ -200,7 +200,24 @@
             </div>
         </div>
 
-        <div class="col-xl-2 col-md-6 mb-4">
+        <div class="col-xl col-lg-4 col-md-6 mb-4">
+            <div class="card border-left-secondary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">Tổng Phí COD (Nay)</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">${Number(kpi.total_cod_fee_today || 0).toLocaleString('vi-VN')}đ</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-hand-holding-usd fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+/* card nếu cần dùng ; nếu sử dụng thì đổi style trong div cho các div trên để hiển thị 6 div trên 1 hàng
+<div class="col-xl-2 col-md-6 mb-4">
             <div class="card border-left-dark shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
@@ -227,8 +244,7 @@
                 </div>
             </div>
         </div>
-    `;
-}
+*/
 
     function renderGrowthChart(data) {
         if (growthChartInstance) growthChartInstance.destroy();

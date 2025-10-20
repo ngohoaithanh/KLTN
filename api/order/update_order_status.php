@@ -62,6 +62,45 @@ if (isset($_POST['order_id']) && isset($_POST['new_status'])) {
                 $stmt_insert->bind_param("is", $orderId, $trackingMessage);
                 $stmt_insert->execute();
             }
+
+            // =======================================================
+            // ## THÊM CODE GHI GIAO DỊCH VÀO ĐÂY ##
+            // =======================================================
+
+            if ($newStatus == 'delivered') {
+            // Lấy thông tin chi tiết của đơn hàng để ghi giao dịch
+            $stmt_get_order = $conn->prepare("SELECT ShipperID, Shippingfee, COD_amount, CODFee FROM orders WHERE ID = ?");
+            $stmt_get_order->bind_param("i", $orderId);
+            $stmt_get_order->execute();
+            $order_details = $stmt_get_order->get_result()->fetch_assoc();
+            $stmt_get_order->close();
+
+            if ($order_details && $order_details['ShipperID'] != null) { // Chỉ ghi giao dịch nếu có shipper
+                $shipperId = $order_details['ShipperID'];
+                $shippingFee = $order_details['Shippingfee'];
+                $codAmount = $order_details['COD_amount'];
+                $codFee = $order_details['CODFee'];
+
+                // 1. Ghi nhận thu nhập Phí Ship
+                $stmt_ship = $conn->prepare("INSERT INTO transactions (UserID, OrderID, Type, Amount, Status) VALUES (?, ?, 'shipping_fee', ?, 'completed')");
+                // "iid" là integer, integer, double
+                $stmt_ship->bind_param("iid", $shipperId, $orderId, $shippingFee);
+                $stmt_ship->execute();
+                $stmt_ship->close();
+
+                // 2. Ghi nhận việc Thu COD (BAO GỒM CẢ PHÍ COD)
+                if ($codAmount > 0 || $codFee > 0) {
+                    $totalCodCollected = $codAmount + $codFee;
+
+                    $stmt_cod = $conn->prepare("INSERT INTO transactions (UserID, OrderID, Type, Amount, Status) VALUES (?, ?, 'collect_cod', ?, 'completed')");
+                    // "iid" là integer, integer, double
+                    $stmt_cod->bind_param("iid", $shipperId, $orderId, $totalCodCollected);
+                    $stmt_cod->execute();
+                    $stmt_cod->close();
+                }
+            }
+        }
+
             
             // Nếu mọi thứ thành công, xác nhận transaction
             $conn->commit();

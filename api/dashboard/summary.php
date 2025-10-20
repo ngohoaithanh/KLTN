@@ -16,6 +16,7 @@ $kpi_today_sql = "
         (SELECT COUNT(ID) FROM orders WHERE status = 'pending') as pending_orders,
         (SELECT COUNT(shipper_id) FROM shipper_locations WHERE status IN ('online', 'busy') AND updated_at >= NOW() - INTERVAL 5 MINUTE) as active_shippers,
         (SELECT COUNT(ID) FROM users WHERE Role = 6) as total_shippers,
+        (SELECT SUM(CODFee) FROM orders WHERE DATE(Created_at) = CURDATE() AND COD_amount > 0) as total_cod_fee_today,
         (SELECT COUNT(ID) FROM users WHERE Role = 7) as total_customers
 ";
 $kpi_result = $conn->query($kpi_today_sql);
