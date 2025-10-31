@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || $_SERVER['REQUEST_METHOD'] === 'GET
     }
 
     // Query theo cột PhoneNumber
-    $stmt = $conn->prepare("SELECT ID, Username, Role, PhoneNumber, Password FROM users WHERE PhoneNumber = ? LIMIT 1");
+    $stmt = $conn->prepare("SELECT ID, Username, Role, PhoneNumber, Password, rating FROM users WHERE PhoneNumber = ? LIMIT 1");
     $stmt->bind_param("s", $phonenumber);
     $stmt->execute();
     $res = $stmt->get_result();
@@ -31,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || $_SERVER['REQUEST_METHOD'] === 'GET
             $_SESSION['username'] = $user['Username'];
             $_SESSION['role']     = $user['Role'];
             $_SESSION['user_id']  = $user['ID'];
+            $_SESSION['rating']  = $user['rating'];
 
             unset($user['Password']); // Ẩn mật khẩu khi trả về
             echo json_encode(['success' => true, 'user' => $user]);
