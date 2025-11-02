@@ -164,41 +164,63 @@
 
     /** Render lại bảng dữ liệu dựa trên danh sách shipper được cung cấp */
     function renderTable(shippers) {
-        const tableBody = document.getElementById('shipper-table-body');
-        tableBody.innerHTML = '';
-        if (shippers.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Không tìm thấy shipper nào.</td></tr>';
-            return;
-        }
-
-        shippers.forEach((shipper, index) => {
-            const statusBadge = getStatusBadge(shipper.status);
-            const row = `
-                <tr id="shipper-row-${shipper.ID}" style="cursor: pointer;">
-                    <td>${index + 1}</td>
-                    <td>${shipper.Username}</td>
-                    <td>${shipper.PhoneNumber}</td>
-                    <td>${statusBadge}</td>
-                    <td>${shipper.rating || 'Chưa có'} ⭐</td>
-                    <td>
-                        <button class="btn btn-info btn-sm btn-detail" data-id="${shipper.ID}" title="Xem chi tiết">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <a href="index.php?updateUser&id=${shipper.ID}" class="btn btn-warning btn-sm" title="Sửa">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <a href="index.php?deleteUser&id=${shipper.ID}" class="btn btn-danger btn-sm" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa shipper này?');">
-                            <i class="fas fa-trash"></i>
-                        </a>
-                        <a href="index.php?shipper_stats&id=${shipper.ID}" class="btn btn-success btn-sm" title="Thống kê">
-                            <i class="fas fa-chart-line"></i>
-                        </a>
-                    </td>
-                </tr>
-            `;
-            tableBody.innerHTML += row;
-        });
+    const tableBody = document.getElementById('shipper-table-body');
+    tableBody.innerHTML = ''; // Xóa dữ liệu cũ
+    if (shippers.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Không tìm thấy shipper nào.</td></tr>';
+        return;
     }
+
+    shippers.forEach((shipper, index) => {
+        const statusBadge = getStatusBadge(shipper.status); // Trạng thái hoạt động (online/offline)
+        
+        // *** LOGIC CHO NÚT KHÓA/MỞ KHÓA MỚI ***
+        let toggleButton = '';
+        if (shipper.account_status == 'active') {
+            // Nếu tài khoản đang hoạt động, hiển thị nút KHÓA
+            toggleButton = `
+                <a href="?toggleUserStatus&id=${shipper.ID}&status=active&return=quanlyshipper" 
+                   onclick="return confirm('Bạn có chắc chắn muốn KHÓA tài khoản shipper này?');" 
+                   class="btn btn-warning btn-sm" title="Khóa tài khoản">
+                    <i class="fas fa-lock"></i>
+                </a>
+            `;
+        } else {
+            // Nếu đang khóa hoặc chờ, hiển thị nút KÍCH HOẠT
+            toggleButton = `
+                <a href="?toggleUserStatus&id=${shipper.ID}&status=${shipper.account_status}&return=quanlyshipper" 
+                   onclick="return confirm('Bạn có chắc chắn muốn KÍCH HOẠT tài khoản shipper này?');" 
+                   class="btn btn-info btn-sm" title="Kích hoạt tài khoản">
+                    <i class="fas fa-lock-open"></i>
+                </a>
+            `;
+        }
+        // *** HẾT LOGIC NÚT MỚI ***
+
+        const row = `
+            <tr id="shipper-row-${shipper.ID}" style="cursor: pointer;">
+                <td>${index + 1}</td>
+                <td>${shipper.Username}</td>
+                <td>${shipper.PhoneNumber}</td>
+                <td>${statusBadge}</td>
+                <td>${shipper.rating || 'Chưa có'} ⭐</td>
+                <td>
+                    <button class="btn btn-info btn-sm btn-detail" data-id="${shipper.ID}" title="Xem chi tiết">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <a href="index.php?updateUser&id=${shipper.ID}" class="btn btn-warning btn-sm" title="Sửa">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="index.php?deleteUser&id=${shipper.ID}" class="btn btn-danger btn-sm" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa shipper này?');">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                    ${toggleButton}
+                </td>
+            </tr>
+        `;
+        tableBody.innerHTML += row;
+    });
+}
 
     /** Cập nhật các marker của shipper đang hoạt động trên bản đồ */
     async function updateActiveShipperMarkers() {

@@ -15,6 +15,7 @@ $status_filter = isset($_GET['status']) ? $_GET['status'] : 'all';
 // Nền tảng câu lệnh SQL
 $sql = "SELECT 
             u.ID, u.Username, u.Email, u.PhoneNumber, u.rating,
+            u.account_status,
             sl.lat, sl.lng, sl.status, sl.updated_at,
             v.license_plate, v.model AS vehicle_model
         FROM 

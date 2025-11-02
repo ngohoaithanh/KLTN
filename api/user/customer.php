@@ -23,6 +23,7 @@ $sql = "SELECT
             u.Email,
             u.PhoneNumber,
             u.Note,
+            u.account_status,
             r.Name AS RoleName,
             r.Description AS RoleDescription,
             w.Name AS warehouse_name

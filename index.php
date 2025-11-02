@@ -74,9 +74,10 @@ session_start();
         include_once("views/quanlyshipper/index.php");
     }elseif(isset($_GET["shipper_stats"])){
         include_once("views/shipper_stats/index.php");
+    }elseif(isset($_GET["toggleUserStatus"])){  
+        include_once("views/lock_user/toggle_user_status.php");   
     }else{
         include_once("views/giaodien/intro.php");
-        // include_once("views/giaodien/wellcome.php");
     }
     include_once("views/giaodien/footer.php");
     include_once("views/giaodien/back_to_top.php");

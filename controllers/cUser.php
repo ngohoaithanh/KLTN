@@ -66,5 +66,18 @@ class controlNguoiDung{
         }
         return null;
     }
+
+
+    public function toggleUserStatus($id, $current_status) {
+        $new_status = 'active'; // Mặc định là 'active'
+        
+        if ($current_status == 'active') {
+            $new_status = 'locked'; // Nếu đang active -> khóa
+        }
+        // Ngược lại, nếu đang 'locked' hoặc 'pending' -> 'active' (như mặc định)
+
+        $mUser = new modelNguoiDung();
+        return $mUser->updateUserStatus($id, $new_status);
+    }
 }
 ?>

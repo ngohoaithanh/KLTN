@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || $_SERVER['REQUEST_METHOD'] === 'GET
     }
 
     // Query theo cột PhoneNumber
-    $stmt = $conn->prepare("SELECT ID, Username, Role, PhoneNumber, Password, rating FROM users WHERE PhoneNumber = ? LIMIT 1");
+    $stmt = $conn->prepare("SELECT ID, Username, Role, PhoneNumber, Password, rating FROM users WHERE PhoneNumber = ? AND hidden = 1 AND account_status = 'active' LIMIT 1");
     $stmt->bind_param("s", $phonenumber);
     $stmt->execute();
     $res = $stmt->get_result();

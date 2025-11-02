@@ -1,4 +1,5 @@
 <?php
+// FILE: views/list_customer/index.php (Đã nâng cấp)
 
 include_once('controllers/cUser.php');
 // Khởi tạo đối tượng và lấy dữ liệu
@@ -10,24 +11,22 @@ if (isset($_REQUEST['submit'])) {
 }
 
 // Xử lý dữ liệu
-$staffs = [];
+$customers = []; // Đổi tên biến cho rõ nghĩa
 if (is_array($tblSP)) {
     foreach ($tblSP as $row) {
-        $staffs[] = [
+        $customers[] = [
             'id' => $row['ID'],
             'username' => $row['Username'],
             'phone' => $row['PhoneNumber'],
             'email' => $row['Email'],
-            'role' => $row['RoleName'],
-            'note' => $row['Note'] ?? '',
-            'warehouse_name' => $row['warehouse_name'] ?? '',
+            'role' => $row['RoleName'], // Dù là customer, vẫn giữ lại
+            'account_status' => $row['account_status'], // <-- Dữ liệu quan trọng
         ];
     }
 } else {
     // Debug lỗi nếu có
     echo "<div class='alert alert-danger'>Lỗi khi lấy dữ liệu người dùng: " . htmlspecialchars($tblSP) . "</div>";
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -35,8 +34,7 @@ if (is_array($tblSP)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Nhân Viên</title>
-    <!-- Bootstrap CSS -->
+    <title>Quản Lý Khách Hàng</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
@@ -51,7 +49,7 @@ if (is_array($tblSP)) {
                     <button type="submit" class="btn btn-primary" style="margin-left: 10px;" name="submit">Tìm Kiếm</button>
                 </form>
             </div>
-
+            <a href="?addUser&role=7" class="btn btn-success">+ Thêm Khách Hàng</a>
         </div>
         
         <table>
@@ -60,75 +58,50 @@ if (is_array($tblSP)) {
                     <th>Mã KH</th>
                     <th>Họ Tên</th>
                     <th>SĐT</th>
-                    <th>Thao tác</th>
-                    <!-- <th>Note</th> -->
+                    <th>Email</th>
+                    <th>Trạng thái TK</th> <th>Thao tác</th>
                 </tr>
             </thead>
-            <tbody id="staffTableBody">
-                <?php if (!empty($staffs)): ?>
-                    <?php foreach ($staffs as $staff): ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($staff['id']); ?></td>
-                            <td><?php echo htmlspecialchars($staff['username']); ?></td>
-                            <td><?php echo htmlspecialchars($staff['phone']); ?></td>
-                            <td><?php echo htmlspecialchars($staff['email']); ?></td>
-                            <td>
-                                <a href="?deleteUser&&id=<?php echo htmlspecialchars($staff['id']); ?>"
-                                onclick="return confirm('Bạn có chắc chắn muốn xóa nhân viên này?');"
-                                class="btn btn-danger btn-sm">
-                                <i class="fas fa-trash-alt"></i> Xóa
-                                </a>
-
-                                <a href="edit_staff.php?id=<?php echo htmlspecialchars($staff['id']); ?>"
-                                class="btn btn-success btn-sm">
-                                <i class="fas fa-edit"></i> Sửa
-                                </a>
-                            </td>
-                            
-                            <!-- <td><?php echo htmlspecialchars($staff['note']); ?></td> -->
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <tr>
-                        <td colspan="9" style="text-align: center;">Không có dữ liệu khách hàng nào.</td>
-                    </tr>
-                <?php endif; ?>
-            </tbody>
+            <tbody id="customerTableBody"> </tbody>
         </table>
-        <div class="text-center mb-3">
-            <a href="javascript:history.back()" class="btn btn-outline-primary">
-                <i class="fas fa-arrow-left"></i> Quay lại
-            </a>
-        </div>
+        
         <div style="display: flex; justify-content: center; margin-top: 20px;">
-            <button class="btn btn-secondary" style="margin: 0 5px;">Trước</button>
-            <button class="btn" style="margin: 0 5px; background-color: #2980b9; color: white;">1</button>
-            <button class="btn btn-secondary" style="margin: 0 5px;">2</button>
-            <button class="btn btn-secondary" style="margin: 0 5px;">3</button>
-            <button class="btn btn-secondary" style="margin: 0 5px;">Sau</button>
-        </div>
+            </div>
     </div>
 
-    <!-- Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 <script>
-    // Mảng staff được server đẩy vào (PHP => JavaScript)
-    const staffList = <?php echo json_encode($staffs); ?>;
+    // Mảng customer được server đẩy vào
+    const customerList = <?php echo json_encode($customers); ?>;
 
     const searchInput = document.getElementById('searchInput');
-    const tableBody = document.getElementById('staffTableBody');
+    const tableBody = document.getElementById('customerTableBody');
 
-    // Hàm render table
+    // === HÀM HELPER TẠO BADGE (Giống hệt trang quanlyuser) ===
+    function getStatusBadge(status) {
+        let badgeClass = 'badge-secondary';
+        let statusText = status;
+        switch (status) {
+            case 'active':
+                badgeClass = 'badge-success'; statusText = 'Hoạt động'; break;
+            case 'locked':
+                badgeClass = 'badge-danger'; statusText = 'Đã khóa'; break;
+            case 'pending':
+                badgeClass = 'badge-warning'; statusText = 'Chờ duyệt'; break;
+        }
+        return `<span class="badge ${badgeClass}">${statusText}</span>`;
+    }
+
+    // === HÀM RENDER TABLE ĐÃ NÂNG CẤP ===
     function renderTable(data) {
         tableBody.innerHTML = ''; // Xóa sạch bảng
         if (data.length === 0) {
             tableBody.innerHTML = `
                 <tr>
-                    <td colspan="6">
-                        <div class="alert alert-warning text-center" role="alert">
+                    <td colspan="6"> <div class="alert alert-warning text-center" role="alert">
                             Không có khách hàng nào được tìm thấy.
                         </div>
                     </td>
@@ -136,22 +109,44 @@ if (is_array($tblSP)) {
             `;
             return;
         }
-        data.forEach(staff => {
+        data.forEach(customer => {
+            // Lấy badge trạng thái
+            const statusBadge = getStatusBadge(customer.account_status);
+
+            // Logic cho nút Khóa/Mở khóa
+            let toggleButton = '';
+            if (customer.account_status == 'active') {
+                toggleButton = `
+                    <a href="?toggleUserStatus&id=${customer.id}&status=active&return=listCustomer" 
+                       onclick="return confirm('Bạn có chắc chắn muốn KHÓA tài khoản này?');" 
+                       class="btn btn-warning btn-sm" title="Khóa tài khoản">
+                        <i class="fas fa-lock"></i>
+                    </a>
+                `;
+            } else {
+                toggleButton = `
+                    <a href="?toggleUserStatus&id=${customer.id}&status=${customer.account_status}&return=listCustomer" 
+                       onclick="return confirm('Bạn có chắc chắn muốn KÍCH HOẠT tài khoản này?');" 
+                       class="btn btn-info btn-sm" title="Kích hoạt tài khoản">
+                        <i class="fas fa-lock-open"></i>
+                    </a>
+                `;
+            }
+
             tableBody.innerHTML += `
                 <tr>
-                    <td>${staff.id}</td>
-                    <td>${staff.username}</td>
-                    <td>${staff.phone}</td>
-                    <td>
-                        <a href="?deleteUser&&id=${staff.id}" onclick="return confirm('Bạn có chắc chắn muốn xóa user này?');" class="btn btn-danger btn-sm" title="Xóa">
+                    <td>${customer.id}</td>
+                    <td>${customer.username}</td>
+                    <td>${customer.phone}</td>
+                    <td>${customer.email}</td>
+                    <td>${statusBadge}</td> <td>
+                        <a href="?deleteUser&&id=${customer.id}" onclick="return confirm('Bạn có chắc chắn muốn xóa khách hàng này?');" class="btn btn-danger btn-sm" title="Xóa">
                             <i class="fas fa-trash-alt"></i>
                         </a>
-                        <a href="?updateUser&&id=${staff.id}" class="btn btn-success btn-sm" title="Sửa">
+                        <a href="?updateUser&&id=${customer.id}" class="btn btn-success btn-sm" title="Sửa">
                             <i class="fas fa-edit"></i>
                         </a>
-                    </td>
-                    
-
+                        ${toggleButton} </td>
                 </tr>
             `;
         });
@@ -160,15 +155,14 @@ if (is_array($tblSP)) {
     // Khi gõ trong input
     searchInput.addEventListener('input', function() {
         const keyword = this.value.toLowerCase().trim();
-        const filtered = staffList.filter(staff => 
-            staff.username.toLowerCase().includes(keyword) ||
-            staff.phone.toLowerCase().includes(keyword) ||
-            staff.email.toLowerCase().includes(keyword) ||
-            staff.role.toLowerCase().includes(keyword)
+        const filtered = customerList.filter(customer => 
+            customer.username.toLowerCase().includes(keyword) ||
+            customer.phone.toLowerCase().includes(keyword) ||
+            customer.email.toLowerCase().includes(keyword)
         );
         renderTable(filtered);
     });
 
     // Ban đầu load toàn bộ danh sách
-    renderTable(staffList);
+    renderTable(customerList);
 </script>
