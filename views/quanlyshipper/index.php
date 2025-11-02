@@ -1,3 +1,15 @@
+<style>
+    /* CSS cho Marker */
+    #shipper-map .marker { width: 40px; height: 40px; background-size: cover; border-radius: 50%; border: 2px solid white; cursor: pointer; }
+    #shipper-map .marker-online { animation: pulse 2s infinite; }
+    #shipper-map .marker-busy { border-color: #ffc107; box-shadow: 0 0 10px 3px rgba(255, 193, 7, 0.8); }
+    /* @keyframes pulse {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7); }
+        70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(0, 123, 255, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 123, 255, 0); }
+    } */
+</style>
+
 <div class="container-fluid">
 
     <h1 class="h3 mb-4 text-gray-800">Tổng quan Quản lý Shipper</h1>
@@ -27,11 +39,11 @@
                             <option value="busy">Busy</option>
                             <option value="offline">Offline</option>
                         </select>
-                        <input type="text" id="search-shipper" class="form-control" placeholder="Tìm theo tên/SĐT..." style="width: 250px;">
+                        <input type="text" id="search-shipper" class="form-control mr-3" placeholder="Tìm theo tên/SĐT..." style="width: 250px;">
+                        <a href="index.php?addUser&role=6" class="btn btn-success">
+                            <i class="fas fa-plus mr-2"></i>Thêm Shipper
+                        </a>
                     </div>
-                    <a href="index.php?addUser&role=6" class="btn btn-success">
-                        <i class="fas fa-plus mr-2"></i>Thêm Shipper
-                    </a>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -41,8 +53,7 @@
                                     <th>#</th>
                                     <th>Tên Shipper</th>
                                     <th>Số điện thoại</th>
-                                    <th>Trạng thái</th>
-                                    <th>Đánh giá</th>
+                                    <th>Trạng thái Online</th> <th>Trạng thái TK</th> <th>Đánh giá</th>
                                     <th>Thao tác</th>
                                 </tr>
                             </thead>
@@ -75,16 +86,20 @@
             <div class="modal-body">
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-toggle-on fa-fw mr-3 text-gray-500"></i>Trạng thái Online</span>
+                        <span id="detail-status"></span>
+                    </li>
+                     <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-user-check fa-fw mr-3 text-gray-500"></i>Trạng thái Tài khoản</span>
+                        <span id="detail-account-status"></span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span><i class="fas fa-envelope fa-fw mr-3 text-gray-500"></i>Email</span>
                         <strong id="detail-email"></strong>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span><i class="fas fa-phone fa-fw mr-3 text-gray-500"></i>Số điện thoại</span>
                         <strong id="detail-phone"></strong>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span><i class="fas fa-toggle-on fa-fw mr-3 text-gray-500"></i>Trạng thái</span>
-                        <span id="detail-status"></span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span><i class="fas fa-id-card fa-fw mr-3 text-gray-500"></i>Biển số xe</span>
@@ -112,49 +127,46 @@
         </div>
     </div>
 </div>
+
 <script src='https://cdn.jsdelivr.net/npm/maplibre-gl@2.4.0/dist/maplibre-gl.js'></script>
 <link href='https://cdn.jsdelivr.net/npm/maplibre-gl@2.4.0/dist/maplibre-gl.css' rel='stylesheet' />
 
 <script>
     // === KHAI BÁO BIẾN TOÀN CỤC ===
     let map;
-    let allShippers = []; // Lưu trữ toàn bộ danh sách shipper
-    let shipperMarkers = {}; // Lưu marker trên bản đồ
+    let allShippers = [];
+    let shipperMarkers = {};
     const API_URL = 'api/shipper/getAllShippers.php';
-    
-    // !!! QUAN TRỌNG: Thay API Key của bạn vào đây
     const GOONG_API_KEY = 'scmSgFcle8MbhKzOJMeUDIwuJWiwy6pOucLn1qQn';
 
     // === KHỞI TẠO ===
     document.addEventListener('DOMContentLoaded', function() {
         initMap();
-        loadAllShippers();
+        loadAllShippers(); // Tải dữ liệu lần đầu
         setupEventListeners();
-        // Tự động cập nhật vị trí marker mỗi 20 giây
-        setInterval(updateActiveShipperMarkers, 20000);
+        setInterval(updateShipperData, 20000); // Bật cập nhật real-time
     });
 
     // === CÁC HÀM XỬ LÝ ===
 
-    /** Khởi tạo bản đồ Goong Maps */
     function initMap() {
         map = new maplibregl.Map({
             container: 'shipper-map',
             style: `https://tiles.goong.io/assets/goong_map_web.json?api_key=${GOONG_API_KEY}`,
-            center: [106.7009, 10.7769], // [Kinh độ, Vĩ độ] - Trung tâm TP.HCM
+            center: [106.7009, 10.7769],
             zoom: 12
         });
         map.addControl(new maplibregl.NavigationControl(), 'top-right');
     }
 
-    /** Tải toàn bộ danh sách shipper lần đầu */
     async function loadAllShippers() {
         document.getElementById('loading-spinner').style.display = 'block';
         try {
             const response = await fetch(API_URL);
             allShippers = await response.json();
             renderTable(allShippers);
-            updateActiveShipperMarkers();
+            // Cập nhật bản đồ lần đầu
+            updateShipperData(allShippers); 
         } catch (error) {
             console.error("Lỗi khi tải danh sách shipper:", error);
         } finally {
@@ -162,102 +174,86 @@
         }
     }
 
-    /** Render lại bảng dữ liệu dựa trên danh sách shipper được cung cấp */
+    // === HÀM renderTable ĐÃ NÂNG CẤP ===
     function renderTable(shippers) {
-    const tableBody = document.getElementById('shipper-table-body');
-    tableBody.innerHTML = ''; // Xóa dữ liệu cũ
-    if (shippers.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Không tìm thấy shipper nào.</td></tr>';
-        return;
+        const tableBody = document.getElementById('shipper-table-body');
+        tableBody.innerHTML = '';
+        if (shippers.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="7" class="text-center">Không tìm thấy shipper nào.</td></tr>';
+            return;
+        }
+
+        shippers.forEach((shipper, index) => {
+            const onlineStatusBadge = getOnlineStatusBadge(shipper.status); // Badge cho online/offline
+            const accountStatusBadge = getAccountStatusBadge(shipper.account_status); // Badge cho active/locked
+
+            // Logic cho nút Khóa/Mở khóa
+            let toggleButton = '';
+            if (shipper.account_status == 'active') {
+                toggleButton = `<a href="?toggleUserStatus&id=${shipper.ID}&status=active&return=quanlyshipper" onclick="return confirm('Bạn có chắc chắn muốn KHÓA tài khoản shipper này?');" class="btn btn-warning btn-sm" title="Khóa tài khoản"><i class="fas fa-lock"></i></a>`;
+            } else {
+                toggleButton = `<a href="?toggleUserStatus&id=${shipper.ID}&status=${shipper.account_status}&return=quanlyshipper" onclick="return confirm('Bạn có chắc chắn muốn KÍCH HOẠT tài khoản shipper này?');" class="btn btn-info btn-sm" title="Kích hoạt tài khoản"><i class="fas fa-lock-open"></i></a>`;
+            }
+
+            const row = `
+                <tr id="shipper-row-${shipper.ID}" style="cursor: pointer;">
+                    <td>${index + 1}</td>
+                    <td>${shipper.Username}</td>
+                    <td>${shipper.PhoneNumber}</td>
+                    <td id="status-cell-online-${shipper.ID}">${onlineStatusBadge}</td> <td id="status-cell-account-${shipper.ID}">${accountStatusBadge}</td> <td>${shipper.rating || 'Chưa có'} ⭐</td>
+                    <td>
+                        <button class="btn btn-info btn-sm btn-detail" data-id="${shipper.ID}" title="Xem chi tiết"><i class="fas fa-eye"></i></button>
+                        <a href="index.php?updateUser&id=${shipper.ID}" class="btn btn-warning btn-sm" title="Sửa"><i class="fas fa-edit"></i></a>
+                        <a href="index.php?deleteUser&id=${shipper.ID}" class="btn btn-danger btn-sm" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa shipper này?');"><i class="fas fa-trash"></i></a>
+                        ${toggleButton}
+                    </td>
+                </tr>
+            `;
+            tableBody.innerHTML += row;
+        });
     }
 
-    shippers.forEach((shipper, index) => {
-        const statusBadge = getStatusBadge(shipper.status); // Trạng thái hoạt động (online/offline)
-        
-        // *** LOGIC CHO NÚT KHÓA/MỞ KHÓA MỚI ***
-        let toggleButton = '';
-        if (shipper.account_status == 'active') {
-            // Nếu tài khoản đang hoạt động, hiển thị nút KHÓA
-            toggleButton = `
-                <a href="?toggleUserStatus&id=${shipper.ID}&status=active&return=quanlyshipper" 
-                   onclick="return confirm('Bạn có chắc chắn muốn KHÓA tài khoản shipper này?');" 
-                   class="btn btn-warning btn-sm" title="Khóa tài khoản">
-                    <i class="fas fa-lock"></i>
-                </a>
-            `;
-        } else {
-            // Nếu đang khóa hoặc chờ, hiển thị nút KÍCH HOẠT
-            toggleButton = `
-                <a href="?toggleUserStatus&id=${shipper.ID}&status=${shipper.account_status}&return=quanlyshipper" 
-                   onclick="return confirm('Bạn có chắc chắn muốn KÍCH HOẠT tài khoản shipper này?');" 
-                   class="btn btn-info btn-sm" title="Kích hoạt tài khoản">
-                    <i class="fas fa-lock-open"></i>
-                </a>
-            `;
-        }
-        // *** HẾT LOGIC NÚT MỚI ***
+    // === HÀM CẬP NHẬT REAL-TIME ===
+    async function updateShipperData(initialData = null) {
+        let shippersToUpdate = initialData;
 
-        const row = `
-            <tr id="shipper-row-${shipper.ID}" style="cursor: pointer;">
-                <td>${index + 1}</td>
-                <td>${shipper.Username}</td>
-                <td>${shipper.PhoneNumber}</td>
-                <td>${statusBadge}</td>
-                <td>${shipper.rating || 'Chưa có'} ⭐</td>
-                <td>
-                    <button class="btn btn-info btn-sm btn-detail" data-id="${shipper.ID}" title="Xem chi tiết">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <a href="index.php?updateUser&id=${shipper.ID}" class="btn btn-warning btn-sm" title="Sửa">
-                        <i class="fas fa-edit"></i>
-                    </a>
-                    <a href="index.php?deleteUser&id=${shipper.ID}" class="btn btn-danger btn-sm" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa shipper này?');">
-                        <i class="fas fa-trash"></i>
-                    </a>
-                    ${toggleButton}
-                </td>
-            </tr>
-        `;
-        tableBody.innerHTML += row;
-    });
-}
-
-    /** Cập nhật các marker của shipper đang hoạt động trên bản đồ */
-    async function updateActiveShipperMarkers() {
         try {
-            const response = await fetch(`${API_URL}?status=online`);
-            const onlineShippers = await response.json();
-            const responseBusy = await fetch(`${API_URL}?status=busy`);
-            const busyShippers = await responseBusy.json();
-            const activeShippers = [...onlineShippers, ...busyShippers];
+            if (!shippersToUpdate) {
+                // Nếu không phải lần tải đầu, fetch dữ liệu mới
+                const response = await fetch(API_URL);
+                shippersToUpdate = await response.json();
+                
+                // Cập nhật lại mảng allShippers để bộ lọc hoạt động
+                allShippers = shippersToUpdate;
+            }
 
             Object.values(shipperMarkers).forEach(m => m.updated = false);
 
-            activeShippers.forEach(shipper => {
+            shippersToUpdate.forEach(shipper => {
+                // 1. CẬP NHẬT BẢNG (Cả 2 trạng thái)
+                updateTableRow(shipper); 
+                
+                // 2. CẬP NHẬT BẢN ĐỒ
                 const position = [parseFloat(shipper.lng), parseFloat(shipper.lat)];
 
-                if (shipperMarkers[shipper.ID]) {
-                    shipperMarkers[shipper.ID].marker.setLngLat(position);
-                    shipperMarkers[shipper.ID].updated = true;
-                } else {
-                    const el = document.createElement('div');
-                    el.className = 'marker';
-                    el.style.backgroundImage = shipper.status === 'busy' 
-                        ? `url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKuXtJr9JP2Vy8DvRkphf9GsJb4b-JE3Xi_Q&s)` // Icon xe máy màu cam
-                        : `url(https://cdn-icons-png.flaticon.com/512/5860/5860579.png)`; // Icon xe máy màu xanh
-                    el.style.width = '35px';
-                    el.style.height = '35px';
-                    el.style.backgroundSize = '100%';
-
-                    const popup = new maplibregl.Popup({ offset: 25 })
-                        .setHTML(`<strong>${shipper.Username}</strong><br/>${shipper.PhoneNumber}`);
-
-                    const marker = new maplibregl.Marker(el)
-                        .setLngLat(position)
-                        .setPopup(popup)
-                        .addTo(map);
-
-                    shipperMarkers[shipper.ID] = { marker, updated: true };
+                if (shipper.status === 'online' || shipper.status === 'busy') {
+                    if (shipperMarkers[shipper.ID]) {
+                        shipperMarkers[shipper.ID].marker.setLngLat(position);
+                        shipperMarkers[shipper.ID].updated = true;
+                    } else {
+                        const el = document.createElement('div');
+                        el.className = 'marker'; 
+                        if (shipper.status === 'busy') {
+                            el.classList.add('marker-busy');
+                            el.style.backgroundImage = `url(views/img/icon_shipper.png)`;
+                        } else {
+                            el.classList.add('marker-online');
+                            el.style.backgroundImage = `url(views/img/icon_shipper.png)`;
+                        }
+                        const popup = new maplibregl.Popup({ offset: 25 }).setHTML(`<strong>${shipper.Username}</strong><br/>${shipper.PhoneNumber}`);
+                        const marker = new maplibregl.Marker({ element: el }).setLngLat(position).setPopup(popup).addTo(map);
+                        shipperMarkers[shipper.ID] = { marker, updated: true };
+                    }
                 }
             });
 
@@ -268,11 +264,49 @@
                 }
             }
         } catch (error) {
-            console.error("Lỗi khi cập nhật marker:", error);
+            console.error("Lỗi khi cập nhật dữ liệu real-time:", error);
+        }
+    }
+
+    // Hàm cập nhật ô trong bảng (Đã nâng cấp)
+    function updateTableRow(shipper) {
+        const onlineStatusCell = document.getElementById(`status-cell-online-${shipper.ID}`);
+        const accountStatusCell = document.getElementById(`status-cell-account-${shipper.ID}`);
+        
+        if (onlineStatusCell) {
+            const newBadge = getOnlineStatusBadge(shipper.status);
+            if (onlineStatusCell.innerHTML !== newBadge) {
+                onlineStatusCell.innerHTML = newBadge;
+            }
+        }
+        if (accountStatusCell) {
+            const newBadge = getAccountStatusBadge(shipper.account_status);
+             if (accountStatusCell.innerHTML !== newBadge) {
+                accountStatusCell.innerHTML = newBadge;
+            }
         }
     }
     
-    /** Gắn các sự kiện cho bộ lọc, tìm kiếm và các nút */
+    // === CÁC HÀM HELPER (ĐÃ THÊM) ===
+    function getOnlineStatusBadge(status) {
+        switch (status) {
+            case 'online': return '<span class="badge badge-success">Online</span>';
+            case 'busy': return '<span class="badge badge-warning">Busy</span>';
+            default: return '<span class="badge badge-secondary">Offline</span>';
+        }
+    }
+
+    function getAccountStatusBadge(status) {
+        switch (status) {
+            case 'active': return '<span class="badge badge-success">Hoạt động</span>';
+            case 'locked': return '<span class="badge badge-danger">Đã khóa</span>';
+            case 'pending': return '<span class="badge badge-warning">Chờ duyệt</span>';
+            default: return `<span class="badge badge-secondary">${status}</span>`;
+        }
+    }
+
+    // === CÁC HÀM KHÁC (Giữ nguyên) ===
+
     function setupEventListeners() {
         document.getElementById('filter-status').addEventListener('change', handleFilterAndSearch);
         document.getElementById('search-shipper').addEventListener('input', handleFilterAndSearch);
@@ -280,19 +314,20 @@
         document.getElementById('shipper-table-body').addEventListener('click', function(e) {
             const row = e.target.closest('tr');
             if (!row) return;
-
             const shipperId = row.id.replace('shipper-row-', '');
+            
+            // Tìm dữ liệu shipper đầy đủ từ mảng allShippers
+            const shipperData = allShippers.find(s => s.ID == shipperId);
+            if (!shipperData) return;
 
             if (e.target.closest('.btn-detail')) {
-                const shipperData = allShippers.find(s => s.ID == shipperId);
-                if (shipperData) showDetailModal(shipperData);
+                showDetailModal(shipperData); // Gửi dữ liệu đầy đủ
             } else {
                 highlightAndPan(shipperId);
             }
         });
     }
 
-    /** Xử lý khi người dùng thay đổi bộ lọc hoặc gõ vào ô tìm kiếm */
     function handleFilterAndSearch() {
         const statusValue = document.getElementById('filter-status').value;
         const searchValue = document.getElementById('search-shipper').value.toLowerCase();
@@ -302,16 +337,15 @@
             const matchesSearch = shipper.Username.toLowerCase().includes(searchValue) || shipper.PhoneNumber.includes(searchValue);
             return matchesStatus && matchesSearch;
         });
-
         renderTable(filteredShippers);
     }
 
-    /** Hiển thị modal với thông tin chi tiết của shipper */
     function showDetailModal(shipper) {
         document.getElementById('detail-name-title').textContent = shipper.Username;
         document.getElementById('detail-email').textContent = shipper.Email || 'Chưa cập nhật';
         document.getElementById('detail-phone').textContent = shipper.PhoneNumber || 'Chưa cập nhật';
-        document.getElementById('detail-status').innerHTML = getStatusBadge(shipper.status);
+        document.getElementById('detail-status').innerHTML = getOnlineStatusBadge(shipper.status);
+        document.getElementById('detail-account-status').innerHTML = getAccountStatusBadge(shipper.account_status);
         document.getElementById('detail-license').textContent = shipper.license_plate || 'Chưa cập nhật';
         document.getElementById('detail-vehicle').textContent = shipper.vehicle_model || 'Chưa cập nhật';
         document.getElementById('detail-rating').innerHTML = shipper.rating ? `<span class="text-warning">${shipper.rating} <i class="fas fa-star"></i></span>` : 'Chưa có';
@@ -320,16 +354,6 @@
         $('#shipperDetailModal').modal('show');
     }
 
-    /** Tạo badge trạng thái Bootstrap */
-    function getStatusBadge(status) {
-        switch (status) {
-            case 'online': return '<span class="badge badge-success">Online</span>';
-            case 'busy': return '<span class="badge badge-warning">Busy</span>';
-            default: return '<span class="badge badge-secondary">Offline</span>';
-        }
-    }
-
-    /** Tô sáng hàng trong bảng và di chuyển bản đồ đến marker tương ứng */
     function highlightAndPan(shipperId) {
         document.querySelectorAll('#shipper-table-body tr').forEach(r => r.classList.remove('table-primary'));
         const row = document.getElementById(`shipper-row-${shipperId}`);

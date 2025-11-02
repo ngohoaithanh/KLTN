@@ -71,7 +71,7 @@ nav ul li a:hover {
     margin-top: 20px;
 }
 
-.card {
+/* .card {
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -81,7 +81,7 @@ nav ul li a:hover {
 
 .card:hover {
     transform: translateY(-5px);
-}
+} */
 
 .card-header {
     font-size: 18px;
@@ -234,7 +234,7 @@ footer {
 /* css footer */
 
 /* css img */
-.welcome-image {
+/* .welcome-image {
     text-align: center;
     width: 100%;
     overflow: hidden;
@@ -242,16 +242,16 @@ footer {
 }
 
 .welcome-image img {
-    display: block; /* Đảm bảo <img> là block để text-align hoạt động */
-    margin: 0 auto; /* Căn giữa theo chiều ngang */
+    display: block; 
+    margin: 0 auto; 
     width: 60%;
     height: auto;
     border-radius: 10px;
     object-fit: cover;
-}
+} */
 
 /* css for text-run */
-.btn-disabled,
+/* .btn-disabled,
 .btn-disabled[disabled] {
     cursor: default !important;
     pointer-events: none;
@@ -263,17 +263,17 @@ footer {
 .welcome-message {
     display: inline-block;
     animation: moveSideToSide 20s infinite;
-    position: absolute; /* Đặt vị trí tuyệt đối  or fixed*/
-    top: 10px; /* Khoảng cách từ trên xuống */
-    right: 20px; /* Khoảng cách từ bên phải */
+    position: absolute;
+    top: 10px;
+    right: 20px;
     
 }
 
 @keyframes moveSideToSide {
     0%   {transform: translateX(0);}
-    50%  {transform: translateX(-200px);} /* Di chuyển sang trái */
+    50%  {transform: translateX(-200px);}
     100% {transform: translateX(0);}
-}
+} */
 
 /* css for form add_user */
 .add-staff-form {

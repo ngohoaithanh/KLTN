@@ -14,9 +14,6 @@ if (session_status() === PHP_SESSION_NONE) {
     <link rel="stylesheet" href="views/css/style.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="views/css/style.css">
-
 </head>
 <body>
     <header>
@@ -54,6 +51,7 @@ if (session_status() === PHP_SESSION_NONE) {
                             echo '<li><a href="?quanlydonhang">Quản Lý Đơn Hàng</a></li>
                                 <li><a href="?quanlyuser">Quản Lý Nhân Viên</a></li>
                                 <li><a href="?quanlyshipper">Shipper</a></li>
+                                <li><a href="?cod_dashboard">COD</a></li>
                                 <li><a href="?dashboard">Báo Cáo & Thống Kê</a></li>';
                             break;
                             // <li><a href="?quanlykho">Quản Lý Kho</a></li>
@@ -87,10 +85,10 @@ if (session_status() === PHP_SESSION_NONE) {
         </div>
     </nav>
     <?php
-        // var_dump($_SESSION["role"]);
-        if (isset($_SESSION["dangnhap"]) && isset($_SESSION["user"])) {
-            echo '<a href="/" class="btn-disabled welcome-message" style="text-decoration:none;">Xin chào ' . htmlspecialchars($_SESSION["user"]) . '</a>';
-        }
+
+        // if (isset($_SESSION["dangnhap"]) && isset($_SESSION["user"])) {
+        //     echo '<a href="/" class="btn-disabled welcome-message" style="text-decoration:none;">Xin chào ' . htmlspecialchars($_SESSION["user"]) . '</a>';
+        // }
     ?>              
 
 
