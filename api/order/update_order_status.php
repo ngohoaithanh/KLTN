@@ -4,6 +4,7 @@ header('Content-Type: application/json; charset=utf-8');
 
 // Sử dụng đường dẫn tương đối để include file database.php
 include_once('../../config/database.php');
+include_once('../../config/auth_check.php');
 
 // Khởi tạo đối tượng response
 $response = array();

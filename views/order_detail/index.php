@@ -13,8 +13,9 @@ function getStatusBadge($status) {
     switch ($status) {
         case 'delivered':
             $badgeClass = 'badge-success'; $statusText = 'Đã giao'; break;
-        case 'in_transit':
         case 'picked_up':
+            $badgeClass = 'badge-info'; $statusText = 'Đã lấy hàng'; break;
+        case 'in_transit':
             $badgeClass = 'badge-info'; $statusText = 'Đang giao'; break;
         case 'accepted':
             $badgeClass = 'badge-primary'; $statusText = 'Đã chấp nhận'; break;

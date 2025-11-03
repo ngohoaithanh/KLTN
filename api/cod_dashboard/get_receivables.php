@@ -30,11 +30,17 @@ $sql_table = "
          WHERE t.UserID = u.ID AND t.Type = 'deposit_cod') AS TotalFeePaid,
          
         -- (C) TÍNH TOÁN MỚI: Tổng phí quá hạn (đã giao > 7 ngày & chưa nộp)
-        (SELECT COALESCE(SUM(o.CODFee), 0)
+
+         (SELECT COALESCE(SUM(o.CODFee), 0)
          FROM orders o
+         -- Join với bảng trackings để tìm ngày giao hàng thực tế
+         LEFT JOIN trackings t_delivered 
+             ON o.ID = t_delivered.OrderID 
+             AND t_delivered.Status = 'Giao hàng thành công!'
          WHERE o.ShipperID = u.ID 
            AND o.status = 'delivered'
-           AND o.Accepted_at < NOW() - INTERVAL 7 DAY -- Lấy thời gian giao hàng (hoặc Accepted_at)
+           -- Điều kiện lọc mới: Ngày giao hàng thực tế < 7 ngày trước
+           AND t_delivered.Updated_at < NOW() - INTERVAL 7 DAY 
            AND NOT EXISTS (
                SELECT 1 FROM transactions t
                WHERE t.OrderID = o.ID AND t.Type = 'deposit_cod'

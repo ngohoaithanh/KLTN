@@ -144,22 +144,7 @@ if (isset($_POST['submit'])) {
             <input type="number" name="COD_amount" class="form-control-add form-control" value="<?= htmlspecialchars($order['COD_amount']) ?>" step="1000" required>
         </div>
 
-        <div class="form-group-add">
-            <label>Kho</label>
-            <select name="WarehouseID" class="form-control-add form-control" required>
-                <option value="">-- Chọn kho --</option>
-                <?php
-                if ($result_warehouses && $result_warehouses->num_rows > 0) {
-                    while ($row = $result_warehouses->fetch_assoc()) {
-                        $selected = $order['WarehouseID'] == $row['ID'] ? "selected" : "";
-                        echo "<option value='{$row['ID']}' $selected>{$row['Name']}</option>";
-                    }
-                } else {
-                    echo "<option disabled>Không có kho nào</option>";
-                }
-                ?>
-            </select>
-        </div>
+        
 
         <div class="form-group-add">
             <label>Ghi Chú</label>
