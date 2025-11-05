@@ -174,7 +174,6 @@
         }
     }
 
-    // === HÀM renderTable ĐÃ NÂNG CẤP ===
     function renderTable(shippers) {
         const tableBody = document.getElementById('shipper-table-body');
         tableBody.innerHTML = '';
@@ -184,10 +183,9 @@
         }
 
         shippers.forEach((shipper, index) => {
-            const onlineStatusBadge = getOnlineStatusBadge(shipper.status); // Badge cho online/offline
-            const accountStatusBadge = getAccountStatusBadge(shipper.account_status); // Badge cho active/locked
+            const onlineStatusBadge = getOnlineStatusBadge(shipper.status); 
+            const accountStatusBadge = getAccountStatusBadge(shipper.account_status); 
 
-            // Logic cho nút Khóa/Mở khóa
             let toggleButton = '';
             if (shipper.account_status == 'active') {
                 toggleButton = `<a href="?toggleUserStatus&id=${shipper.ID}&status=active&return=quanlyshipper" onclick="return confirm('Bạn có chắc chắn muốn KHÓA tài khoản shipper này?');" class="btn btn-warning btn-sm" title="Khóa tài khoản"><i class="fas fa-lock"></i></a>`;
@@ -200,12 +198,21 @@
                     <td>${index + 1}</td>
                     <td>${shipper.Username}</td>
                     <td>${shipper.PhoneNumber}</td>
-                    <td id="status-cell-online-${shipper.ID}">${onlineStatusBadge}</td> <td id="status-cell-account-${shipper.ID}">${accountStatusBadge}</td> <td>${shipper.rating || 'Chưa có'} ⭐</td>
+                    <td id="status-cell-online-${shipper.ID}">${onlineStatusBadge}</td>
+                    <td id="status-cell-account-${shipper.ID}">${accountStatusBadge}</td>
+                    <td>${shipper.rating || 'Chưa có'} ⭐</td>
                     <td>
                         <button class="btn btn-info btn-sm btn-detail" data-id="${shipper.ID}" title="Xem chi tiết"><i class="fas fa-eye"></i></button>
+                        
                         <a href="index.php?updateUser&id=${shipper.ID}" class="btn btn-warning btn-sm" title="Sửa"><i class="fas fa-edit"></i></a>
-                        <a href="index.php?deleteUser&id=${shipper.ID}" class="btn btn-danger btn-sm" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa shipper này?');"><i class="fas fa-trash"></i></a>
+                        
+                        <a href="index.php?shipper_stats&id=${shipper.ID}" class="btn btn-success btn-sm" title="Thống kê">
+                            <i class="fas fa-chart-line"></i>
+                        </a>
+                        
                         ${toggleButton}
+
+                        <a href="index.php?deleteUser&id=${shipper.ID}" class="btn btn-danger btn-sm" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa shipper này?');"><i class="fas fa-trash"></i></a>
                     </td>
                 </tr>
             `;

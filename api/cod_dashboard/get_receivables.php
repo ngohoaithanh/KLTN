@@ -93,7 +93,7 @@ $sql_history = $conn->prepare("
     SELECT t.Created_at, u.Username, t.Amount, t.OrderID, t.Note, t.Type
     FROM transactions t
     JOIN users u ON t.UserID = u.ID
-    WHERE t.Type IN ('deposit_cod', 'shipping_fee', 'collect_cod') 
+    WHERE t.Type IN ('deposit_cod', 'collect_cod') 
       AND t.Created_at >= ? AND t.Created_at < ? 
     ORDER BY t.Created_at DESC
 ");
