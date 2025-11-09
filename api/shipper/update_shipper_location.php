@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 require_once('../../config/database.php');
-
+include_once('../../config/auth_check.php');
 function respond($ok, $data = []) {
     echo json_encode($ok ? array_merge(['success'=>true], $data)
                          : array_merge(['success'=>false], $data));

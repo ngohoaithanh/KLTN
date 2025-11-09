@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 include_once('../../config/database.php');
-
+include_once('../../config/auth_check.php');
 /** ====== Feasibility hint (chỉ cảnh báo, không chặn) ====== */
 const SECOND_ORDER_MAX_PICKUP_KM = 3.0;  // khoảng cách target→pickup đơn mới cho phép
 // const MAX_HEADING_DIFF_DEG       = 60.0; // lệch hướng tối đa cho phép

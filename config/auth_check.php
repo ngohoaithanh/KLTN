@@ -1,6 +1,6 @@
 <?php
 // File này sẽ được include ở đầu mỗi API cần bảo vệ
-
+ini_set('session.cookie_path', '/KLTN/api/');
 // Bắt đầu session nếu chưa có
 if (session_status() == PHP_SESSION_NONE) {
     session_start();

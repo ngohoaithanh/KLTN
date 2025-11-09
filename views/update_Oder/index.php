@@ -9,8 +9,6 @@ $p = new controlOrder();
 $db = new clsKetNoi();
 $conn = $db->moKetNoi();
 
-$sql_warehouses = "SELECT ID, Name FROM warehouses WHERE operation_status ='active'";
-$result_warehouses = $conn->query($sql_warehouses);
 
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
@@ -23,9 +21,6 @@ if (!$order) {
     return;
 }
 
-// Lấy danh sách kho
-$sql_warehouses = "SELECT ID, Name FROM warehouses";
-$result_warehouses = $conn->query($sql_warehouses);
 
 // Cập nhật đơn hàng
 if (isset($_POST['submit'])) {
@@ -58,7 +53,6 @@ if (isset($_POST['submit'])) {
         "ShippingFee" => $shippingFee, // Thêm phí ship vào dữ liệu
         "Status" => $_POST['Status'],
         "COD_amount" => $_POST['COD_amount'],
-        "WarehouseID" => $_POST['WarehouseID'],
         "Note" => $_POST['Note']
     ];
 

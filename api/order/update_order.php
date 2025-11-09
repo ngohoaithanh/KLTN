@@ -9,7 +9,7 @@ if (
     isset($_POST['id'], $_POST['CustomerID'], $_POST['FullName'], $_POST['PhoneNumber'],
         $_POST['Pick_up_address'], $_POST['Delivery_address'], $_POST['Recipient'],
         $_POST['RecipientPhone'], $_POST['Weight'], $_POST['Status'],
-        $_POST['COD_amount'], $_POST['WarehouseID'])
+        $_POST['COD_amount'])
     && $_POST['Weight'] !== '' && $_POST['COD_amount'] !== '' && $_POST['Status'] !== ''
 ) {
     // Lấy dữ liệu từ form
@@ -36,7 +36,6 @@ if (
 
     $status = trim($_POST['Status']);
     $cod = floatval($_POST['COD_amount']);
-    $warehouseID = intval($_POST['WarehouseID']);
     $note = isset($_POST['Note']) ? trim($_POST['Note']) : '';
 
     // Tính toán ShippingFee dựa trên trọng lượng
@@ -51,7 +50,7 @@ if (
     }
 
     // Kiểm tra các trạng thái hợp lệ
-    $allowed_statuses = ['pending', 'picked', 'in_transit', 'delivered'];
+    $allowed_statuses = ['pending','accepted','picked_up','in_transit','delivered','delivery_failed','cancelled'];
     if (!in_array($status, $allowed_statuses)) {
         echo json_encode(['success' => false, 'error' => 'Trạng thái không hợp lệ']);
         exit;
@@ -71,12 +70,11 @@ if (
                     ShippingFee = ?, 
                     Status = ?, 
                     COD_amount = ?, 
-                    WarehouseID = ?, 
                     Note = ? 
                 WHERE ID = ?";
         $stmt = $conn->prepare($sql);
        $stmt->bind_param(
-    'ssssddsdisi', // Kiểu dữ liệu
+    'ssssddsdsi', // Kiểu dữ liệu
     $pickup,      // s
     $delivery,    // s
     $recipient,   // s
@@ -85,7 +83,6 @@ if (
     $shippingFee, // d
     $status,      // s
     $cod,         // d
-    $warehouseID, // i
     $note,        // s
     $id           // i
 );
@@ -119,7 +116,7 @@ if (
     // Kiểm tra các trường bắt buộc
     $missing = [];
     $required = ['id', 'CustomerID', 'FullName', 'PhoneNumber', 'Pick_up_address', 'Delivery_address', 'Recipient',
-                 'RecipientPhone', 'Weight', 'Status', 'COD_amount', 'WarehouseID'];
+                 'RecipientPhone', 'Weight', 'Status', 'COD_amount'];
 
     foreach ($required as $field) {
         if (!isset($_POST[$field]) || trim($_POST[$field]) === '') {

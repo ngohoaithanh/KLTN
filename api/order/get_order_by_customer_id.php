@@ -4,7 +4,7 @@ header("Content-Type: application/json; charset=UTF-8");
 
 // Include file database.php
 include_once("../../config/database.php"); // Đảm bảo đường dẫn này chính xác
-
+include_once('../../config/auth_check.php');
 // Tạo kết nối
 $db = new clsKetNoi();
 $conn = $db->moKetNoi();

@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 include_once('../../config/database.php'); // Đảm bảo đường dẫn đúng
-
+include_once('../../config/auth_check.php');
 $db = new clsKetNoi();
 $conn = $db->moKetNoi();
 // Khởi tạo response với 3 giá trị mới

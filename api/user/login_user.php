@@ -1,4 +1,5 @@
 <?php
+ini_set('session.cookie_path', '/KLTN/api/');
 session_start();
 header('Content-Type: application/json; charset=utf-8');
 
@@ -41,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || $_SERVER['REQUEST_METHOD'] === 'GET
                 $_SESSION['rating']   = $user['rating'];
 
                 unset($user['Password']);
-                echo json_encode(['success' => true, 'user' => $user]);
+                echo json_encode(['success' => true, 'user' => $user,'session_id' => session_id()]);
                 exit;
             } else {
                 // TRƯỜNG HỢP 2: BỊ KHÓA -> Trả về mã lỗi đặc biệt

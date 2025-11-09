@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 include_once('../../config/database.php');
-
+include_once('../../config/auth_check.php');
 function float_or($v, $def){ return isset($v) ? floatval($v) : $def; }
 function int_or($v, $def){ return isset($v) ? intval($v) : $def; }
 
