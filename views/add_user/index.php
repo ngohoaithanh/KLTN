@@ -64,17 +64,6 @@ if (isset($_POST['submit'])) {
         }
     }
 }
-
-// 3. LẤY DANH SÁCH KHO (giữ nguyên)
-// include_once('controllers/cWarehouse.php');
-// $cWarehouse = new controlWarehouse();
-// $warehouses_data = $cWarehouse->getAllWarehouse();
-// $warehouses = [];
-// if ($warehouses_data) {
-//     foreach ($warehouses_data as $row) {
-//         $warehouses[] = ['id' => $row['ID'] ?? '', 'name' => $row['Name'] ?? ''];
-//     }
-// }
 ?>
 
 <!DOCTYPE html>
@@ -126,16 +115,6 @@ if (isset($_POST['submit'])) {
         </div>
 
         <div class="form-group"><label>Mật khẩu</label><input type="password" name="password" class="form-control" required></div>
-        
-        <!-- <div class="form-group">
-            <label>Nơi làm việc</label>
-            <select name="warehouse_id" class="form-control" >
-                <option value="">-- Chọn nơi làm việc --</option>
-                <?php foreach ($warehouses as $w): ?>
-                <option value="<?= htmlspecialchars($w['id']) ?>"><?= htmlspecialchars($w['name']) ?></option>
-                <?php endforeach; ?>
-            </select>
-        </div> -->
 
         <div class="form-group"><label>Ghi chú</label><textarea name="note" rows="4" class="form-control" placeholder="Nhập ghi chú nếu có..."></textarea></div>
 

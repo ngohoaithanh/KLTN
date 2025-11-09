@@ -27,7 +27,6 @@ if (is_array($tblSP)) {
             'email' => $row['Email'],
             'role' => $row['RoleName'],
             'note' => $row['Note'] ?? '',
-            'warehouse_name' => $row['warehouse_name'] ?? '',
             'account_status' => $row['account_status'], // <-- Dữ liệu mới
         ];
     }

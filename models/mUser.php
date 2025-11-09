@@ -84,16 +84,6 @@ class modelNguoiDung{
         return callApi($url, 'GET', ["role" => $role]);
     }
 
-    public function getShipperByWarehouseID($warehouseID){
-        $p = new clsKetNoi();
-        $sql = "SELECT * FROM users WHERE Role = 6 AND warehouse_id=$warehouseID";
-        $con = $p->moKetNoi();
-        $kq = $con->query($sql);
-        $p->dongKetNoi($con);
-        return $kq;  
-    }
-
-
     public function updateShipperVehicle($shipper_id, $license_plate, $vehicle_model) {
         $db = new clsKetNoi();
         $conn = $db->moKetNoi();
@@ -137,12 +127,7 @@ class modelNguoiDung{
 
     public function updateUserStatus($id, $new_status) {
         $url = "http://localhost/KLTN/api/user/update_status.php";
-        
-        // Dữ liệu sẽ được gửi
         $data = ["id" => $id, "new_status" => $new_status];
-        
-        // Gọi hàm callApi như bình thường. 
-        // Nó sẽ tự động gửi $data dưới dạng form (x-www-form-urlencoded).
         return callApi($url, 'POST', $data); 
     }
 }

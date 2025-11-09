@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th10 03, 2025 lúc 04:06 AM
+-- Thời gian đã tạo: Th10 09, 2025 lúc 03:38 PM
 -- Phiên bản máy phục vụ: 10.4.24-MariaDB
 -- Phiên bản PHP: 8.1.6
 
@@ -45,7 +45,7 @@ INSERT INTO `cods` (`ID`, `OrderID`, `Amount`, `Status`, `Settled_at`) VALUES
 (31, 10174039, '120000.00', 'pending', '2025-10-17 06:02:30'),
 (32, 10216894, '120000.00', 'pending', '2025-10-21 03:02:52'),
 (33, 11019179, '99000.00', 'pending', '2025-11-01 15:16:15'),
-(34, 11021978, '69000.00', 'pending', '2025-11-02 14:00:19');
+(34, 11021978, '69000.00', 'pending', '2025-11-08 15:00:40');
 
 -- --------------------------------------------------------
 
@@ -93,7 +93,7 @@ INSERT INTO `orders` (`ID`, `CustomerID`, `ShipperID`, `Pick_up_address`, `Pick_
 (9186919, 185, NULL, '144 Xuân Thủy, Dịch Vọng Hậu, Cầu Giấy, Hà Nội', '21.0368282', '105.7820251', '222 Trần Duy Hưng, Cầu Giấy', '21.0069095', '105.7933494', 'Lê Phong', 'pending', '0.00', '0.00', NULL, '1.00', '18000.00', '2025-09-18 13:53:32', NULL, 'Hàng dễ vỡ', '0921876987', 1, 0, 'sender', NULL, NULL),
 (9221121, 185, 141, 'Trạm ép giấy Xuân Trường, Nguyễn Văn Quỳ, Tân Thuận Đông, Quận 7, Hồ Chí Minh', '10.7429218', '106.7390444', 'Sân Bay Tân Sơn Nhất - Trường Sơn, Cảng hàng không Quốc tế Tân Sơn Nhất, Phường 2, Tân Bình, Hồ Chí Minh', '10.8156395', '106.6638113', 'Lê Anh', 'delivered', '0.00', '0.00', NULL, '1.00', '18000.00', '2025-09-21 17:38:24', '2025-10-11 09:43:24', 'Hàng dễ vỡ', '0934999210', 1, 0, 'sender', NULL, NULL),
 (9229334, 185, NULL, 'Trạm ép giấy Xuân Trường, Nguyễn Văn Quỳ, Tân Thuận Đông, Quận 7, Hồ Chí Minh', '10.7429218', '106.7390444', 'Chợ Thủ Đức B, Đoàn Công Hớn, Trường Thọ, Thủ Đức, Hồ Chí Minh', '10.8502291', '106.7557012', 'Trần Lam', 'pending', '0.00', '0.00', NULL, '2.00', '18000.00', '2025-09-21 17:40:03', '2025-10-04 04:29:10', '', '0924666892', 1, 0, 'sender', NULL, NULL),
-(10046774, 185, 141, '81 Đ. Võ Duy Ninh, Phường 22, Bình Thạnh, Hồ Chí Minh 90000, Việt Nam', '10.7919236', '106.7159995', 'Nguyễn Văn Bảo/Số 12 ĐH Công Nghiệp, Phường 1, Gò Vấp, Hồ Chí Minh 71408, Việt Nam', '10.8221589', '106.6868454', 'Nguyễn Sa', 'picked_up', '0.00', '0.00', NULL, '1.00', '18000.00', '2025-10-04 06:44:46', '2025-10-21 03:08:00', 'Tập tài liệu', '0900000878', 1, 0, 'sender', 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F10046774%2Fpicked_up_1762097162482.jpg?alt=media&token=2af76a8b-b56a-4457-a656-200e6eed5c39', NULL),
+(10046774, 185, 141, '81 Đ. Võ Duy Ninh, Phường 22, Bình Thạnh, Hồ Chí Minh 90000, Việt Nam', '10.7919236', '106.7159995', 'Nguyễn Văn Bảo/Số 12 ĐH Công Nghiệp, Phường 1, Gò Vấp, Hồ Chí Minh 71408, Việt Nam', '10.8221589', '106.6868454', 'Nguyễn Sa', 'delivered', '0.00', '0.00', NULL, '1.00', '18000.00', '2025-10-04 06:44:46', '2025-10-21 03:08:00', 'Tập tài liệu', '0900000878', 1, 0, 'sender', 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F10046774%2Fpicked_up_1762097162482.jpg?alt=media&token=2af76a8b-b56a-4457-a656-200e6eed5c39', 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F10046774%2Fdelivered_1762436311009.jpg?alt=media&token=091edaba-2ff9-4377-b8a2-c9060b09d855'),
 (10046898, 185, 141, 'Katinat, 91 Đồng Khởi, Bến Nghé, Quận 1, Hồ Chí Minh', '10.7747667', '106.7043670', '66B Nguyễn Sỹ Sách, Phường 15, Tân Bình, Hồ Chí Minh', '10.8199447', '106.6358023', 'Lê Lam', 'delivered', '0.00', '0.00', NULL, '0.50', '15000.00', '2025-10-04 04:15:03', '2025-10-11 02:57:25', 'Hàng dễ vỡ', '0909000231', 1, 1, 'sender', NULL, NULL),
 (10067527, 185, NULL, 'Katinat Phan Văn Trị, 18A Đ. Phan Văn Trị, Phường 1, Gò Vấp, Hồ Chí Minh, Việt Nam', NULL, NULL, 'Cheese Coffee, 190C Đ. Phan Văn Trị, Phường 14, Bình Thạnh, Hồ Chí Minh, Việt Nam', NULL, NULL, 'Nguyen Bao', 'cancelled', '0.00', '0.00', NULL, '0.30', '15000.00', '2025-10-06 01:14:57', NULL, 'Tai lieu', '0989878465', 1, 0, 'sender', NULL, NULL),
 (10142116, 187, NULL, 'Lê Văn Khương, Thới An, Quận 12, Ho Chi Minh City', '10.8632542', '106.6497280', 'Đại học Văn Lang (Cơ sở 3), 68 Hẻm 80 Dương Quảng Hàm, Phường 5, Gò Vấp, Hồ Chí Minh', '10.8270654', '106.6987296', 'Hồ Bảo Ngọc', 'pending', '0.00', '0.00', NULL, '2.00', '18000.00', '2025-10-14 02:07:33', NULL, 'Hàng dễ vỡ', '0379654880', 1, 0, 'sender', NULL, NULL),
@@ -103,7 +103,9 @@ INSERT INTO `orders` (`ID`, `CustomerID`, `ShipperID`, `Pick_up_address`, `Pick_
 (10178154, 185, NULL, '208 Nguyễn Hữu Cảnh, Vinhomes Tân Cảng, Bình Thạnh, Thành phố Hồ Chí Minh 700000, Việt Nam', '10.7940264', '106.7206721', '2B Đ. Phổ Quang, Phường 2, Tân Bình, Thành phố Hồ Chí Minh 700000, Việt Nam', '10.8029270', '106.6659258', 'Tran Thi Đinh Tam', 'pending', '200000.00', '5000.00', NULL, '3.00', '23000.00', '2025-10-17 05:52:02', '2025-11-01 04:16:48', 'Giao trong giờ hành chính', '0367781923', 1, 0, 'sender', NULL, NULL),
 (10216894, 185, NULL, 'Empire 88 Tower - Empire City, Thủ Thiêm, Thủ Đức, Hồ Chí Minh', '10.7697001', '106.7160034', 'Landmark 81, Vinhomes Central Park, Phường 22, Bình Thạnh, Hồ Chí Minh', '10.7948522', '106.7218363', 'Nguyen Van B', 'pending', '120000.00', '5000.00', NULL, '1.00', '18000.00', '2025-10-21 03:02:52', '2025-11-01 04:56:00', 'Hang de vo', '0379546210', 1, 0, 'sender', NULL, NULL),
 (11019179, 185, 139, '256/39/31e ấp 2, Đường Đông Thạnh 2-5, Hóc Môn, Hồ Chí Minh', '10.9066919', '106.6348243', 'Katinat, 3 Tháng 2, Phường 12, Quận 10, Hồ Chí Minh', '10.7778520', '106.6810900', 'Lê Ân Linh', 'in_transit', '99000.00', '5000.00', NULL, '1.00', '18000.00', '2025-11-01 15:16:15', '2025-11-01 15:20:38', 'Hàng thực phẩm', '0986421357', 1, 0, 'receiver', 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F11019179%2Fpicked_up_1762010981122.jpg?alt=media&token=ab4d6e63-87a6-4349-88a6-944b09b85c4b', NULL),
-(11021978, 194, NULL, 'KFC Đặng Thúc Vịnh, 253-287 Âp 7, Đông Thạnh, Hóc Môn, Hồ Chí Minh', '10.9039511', '106.6358836', 'Ways station Gym & Billiard, 395 Đ. An Dương Vương, Phường 10, Quận 6, Hồ Chí Minh', '10.7419791', '106.6235623', 'Vũ Hà Linh', 'pending', '69000.00', '5000.00', NULL, '1.00', '18000.00', '2025-11-02 14:00:19', NULL, 'Thực phẩm', '0383645978', 1, 0, 'sender', NULL, NULL);
+(11021978, 194, 141, 'KFC Đặng Thúc Vịnh, 253-287 Âp 7, Đông Thạnh, Hóc Môn, Hồ Chí Minh', '10.9039511', '106.6358836', 'Ways station Gym & Billiard, 395 Đ. An Dương Vương, Phường 10, Quận 6, Hồ Chí Minh', '10.7419791', '106.6235623', 'Vũ Hà Linh', 'delivered', '69000.00', '5000.00', NULL, '1.00', '15000.00', '2025-11-02 14:00:19', '2025-11-06 13:46:11', 'Thực phẩm', '0383645978', 1, 0, 'sender', 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F11021978%2Fpicked_up_1762675243576.jpg?alt=media&token=5aca71b7-c66c-4b12-a2fa-f79ab58fce2b', 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F11021978%2Fdelivered_1762679347413.jpg?alt=media&token=abc9d780-5c42-48ee-b863-72c08f9197da'),
+(11068347, 185, NULL, 'Lê Văn Khương, Thới An, Quận 12, Ho Chi Minh City', '10.8632542', '106.6497280', 'Anh ngữ Ms Hoa TOEIC, 82 Lê Văn Việt, Hiệp Phú, Thủ Đức, Hồ Chí Minh', '10.8469475', '106.7769739', 'Nguyễn Diệu Anh', 'cancelled', '0.00', '0.00', NULL, '1.00', '15000.00', '2025-11-06 15:42:43', NULL, 'Tài liệu', '0379645888', 1, 0, 'sender', NULL, NULL),
+(11094471, 194, NULL, '256/39/31e ấp 2, Đường Đông Thạnh 2-5, Hóc Môn, Hồ Chí Minh', '10.9067210', '106.6348573', 'Cầu vượt Tân Thới Hiệp, Thới An, Quận 12, Hồ Chí Minh', '10.8619885', '106.6499294', 'Lê văn trung', 'pending', '99000.00', '5000.00', NULL, '1.00', '18000.00', '2025-11-09 14:17:07', NULL, 'Thực phẩm', '0986368996', 1, 0, 'sender', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -190,8 +192,8 @@ CREATE TABLE `shipper_locations` (
 --
 
 INSERT INTO `shipper_locations` (`shipper_id`, `lat`, `lng`, `accuracy`, `speed`, `heading`, `status`, `updated_at`) VALUES
-(139, 10.9066917, 106.6348359, NULL, NULL, NULL, 'offline', '2025-11-02 13:47:49'),
-(141, 10.8215179, 106.6869817, NULL, NULL, NULL, 'online', '2025-11-03 03:06:05'),
+(139, 10.9066441, 106.6347992, NULL, NULL, NULL, 'offline', '2025-11-09 11:12:44'),
+(141, 10.9067036, 106.6348364, NULL, NULL, NULL, 'offline', '2025-11-09 09:50:19'),
 (157, 10.7703004, 106.7170031, NULL, NULL, NULL, 'offline', '2025-10-12 16:19:04'),
 (158, 10.9066972, 106.6348068, NULL, NULL, NULL, 'offline', '2025-11-02 14:01:04');
 
@@ -264,7 +266,15 @@ INSERT INTO `trackings` (`ID`, `OrderID`, `Status`, `Location`, `Updated_at`) VA
 (281, 11021978, 'Đơn hàng đã được tạo.', NULL, '2025-11-02 14:00:19'),
 (282, 9186174, 'Giao hàng thành công!', NULL, '2025-11-02 14:33:48'),
 (283, 10046774, 'Shipper đã lấy hàng thành công.', NULL, '2025-11-02 15:26:16'),
-(284, 10046774, 'Đơn hàng đang trên đường giao đến bạn.', NULL, '2025-11-02 15:34:42');
+(284, 10046774, 'Đơn hàng đang trên đường giao đến bạn.', NULL, '2025-11-02 15:34:42'),
+(285, 10046774, 'Đơn hàng đang trên đường giao đến bạn.', NULL, '2025-11-06 13:25:30'),
+(286, 10046774, 'Giao hàng thành công!', NULL, '2025-11-06 13:38:59'),
+(287, 11021978, 'Shipper 141 đã nhận đơn.', NULL, '2025-11-06 13:46:11'),
+(288, 11068347, 'Đơn hàng đã được tạo.', NULL, '2025-11-06 15:42:43'),
+(290, 11021978, 'Shipper đã lấy hàng thành công.', NULL, '2025-11-09 08:00:55'),
+(291, 11021978, 'Đơn hàng đang trên đường giao đến bạn.', NULL, '2025-11-09 09:08:31'),
+(292, 11021978, 'Giao hàng thành công!', NULL, '2025-11-09 09:09:18'),
+(293, 11094471, 'Đơn hàng đã được tạo.', NULL, '2025-11-09 14:17:07');
 
 -- --------------------------------------------------------
 
@@ -296,7 +306,12 @@ INSERT INTO `transactions` (`ID`, `OrderID`, `UserID`, `Type`, `Amount`, `Status
 (26, 10174039, 139, 'collect_cod', '125000.00', 'completed', NULL, '2025-11-01 15:20:24'),
 (34, 9175208, 141, 'deposit_cod', '5000.00', 'completed', '', '2025-11-02 14:32:58'),
 (35, 9186174, 141, 'shipping_fee', '18000.00', 'completed', NULL, '2025-11-02 14:33:48'),
-(36, 9186174, 141, 'collect_cod', '125000.00', 'completed', NULL, '2025-11-02 14:33:48');
+(36, 9186174, 141, 'collect_cod', '125000.00', 'completed', NULL, '2025-11-02 14:33:48'),
+(37, 10046774, 141, 'shipping_fee', '18000.00', 'completed', NULL, '2025-11-06 13:38:59'),
+(38, 11021978, 141, 'shipping_fee', '18000.00', 'completed', NULL, '2025-11-09 09:09:18'),
+(39, 11021978, 141, 'collect_cod', '74000.00', 'completed', NULL, '2025-11-09 09:09:18'),
+(40, 9186174, 141, 'deposit_cod', '5000.00', 'completed', '', '2025-11-09 14:36:08'),
+(41, 10174039, 139, 'deposit_cod', '5000.00', 'completed', '', '2025-11-09 14:36:31');
 
 -- --------------------------------------------------------
 
@@ -334,7 +349,7 @@ INSERT INTO `users` (`ID`, `Username`, `Email`, `Password`, `PhoneNumber`, `Role
 (6, 'nhanvientiepnhan2', 'nhanvientiepnhan2@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0901234505', 3, 'active', NULL, '', NULL, 1, 0, 0, '2025-10-14 05:30:32'),
 (7, 'quanlykho1', 'quanlykho1@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0901234506', 4, 'active', NULL, '', 1, 1, 0, 0, '2025-10-14 05:30:32'),
 (8, 'quanlykho2', 'quanlykho2@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0901234507', 4, 'active', NULL, '', NULL, 1, 0, 0, '2025-10-14 05:30:32'),
-(9, 'ketoan1', 'ketoan1@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0901234508', 5, 'active', NULL, '', NULL, 1, 0, 0, '2025-10-14 05:30:32'),
+(9, 'ketoan1', 'ketoan1@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0901234508', 5, 'active', NULL, 'test update', NULL, 1, 0, 0, '2025-10-14 05:30:32'),
 (10, 'ketoan2', 'ketoan2@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0901234509', 5, 'active', NULL, '', NULL, 1, 0, 0, '2025-10-14 05:30:32'),
 (11, 'shipper1', 'shipper1@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0901234510', 6, 'active', NULL, 'Go Vap-Binh Thanh', 1, 1, 0, 0, '2025-10-14 05:30:32'),
 (12, 'shipper2', 'shipper2@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0901234511', 6, 'active', NULL, 'Cu Chi - Hoc Mon', 1, 1, 0, 0, '2025-10-14 05:30:32'),
@@ -342,7 +357,7 @@ INSERT INTO `users` (`ID`, `Username`, `Email`, `Password`, `PhoneNumber`, `Role
 (77, 'Dom', 'dom2@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0989777666', 2, 'active', NULL, '', NULL, 1, 0, 0, '2025-10-14 05:30:32'),
 (100, 'QuanlyKho3', 'quanly3@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0983251777', 4, 'active', NULL, 'QL3', 4, 1, 0, 0, '2025-10-14 05:30:32'),
 (139, 'shipper3', 'shipper3@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0379111222', 6, 'active', '4.50', '', 1, 1, 0, 0, '2025-10-10 02:30:32'),
-(141, 'shipper4', 'shipper4@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0379111000', 6, 'locked', '5.00', '', 1, 1, 3, 15, '2025-10-14 05:30:32'),
+(141, 'shipper4', 'shipper4@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0379111000', 6, 'active', '5.00', '', 1, 1, 3, 15, '2025-10-14 05:30:32'),
 (157, 'shipper5', 'shipper5@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0379111333', 6, 'active', NULL, '', 2, 1, 0, 0, '2025-10-14 05:30:32'),
 (158, 'shipper6', 'shipper6@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0379111444', 6, 'active', NULL, '', 2, 1, 0, 0, '2025-10-14 05:30:32'),
 (159, 'shipper7', 'shipper7@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0936778998', 6, 'active', NULL, '', 2, 1, 0, 0, '2025-10-14 05:30:32'),
@@ -555,13 +570,13 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT cho bảng `trackings`
 --
 ALTER TABLE `trackings`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=285;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=294;
 
 --
 -- AUTO_INCREMENT cho bảng `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT cho bảng `users`

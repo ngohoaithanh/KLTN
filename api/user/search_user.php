@@ -19,10 +19,9 @@ $conn = $p->moKetNoi();
 $keyword = $conn->real_escape_string($keyword);
 
 // Câu truy vấn: tìm kiếm theo Username hoặc Name (role sẽ join để lấy luôn)
-$sql = "SELECT u.ID, u.Username, u.PhoneNumber, u.Email, r.Name AS RoleName, w.Name AS warehouse_name
+$sql = "SELECT u.ID, u.Username, u.PhoneNumber, u.Email, r.Name AS RoleName
         FROM users u 
         JOIN roles r ON u.Role = r.ID
-        LEFT JOIN warehouses w ON w.ID = u.warehouse_id
         WHERE u.Username LIKE '%$keyword%' OR r.Name LIKE '%$keyword%'";
 
 $result = $conn->query($sql);
@@ -36,8 +35,7 @@ if ($result && $result->num_rows > 0) {
             'Username' => $row['Username'],
             'PhoneNumber' => $row['PhoneNumber'],
             'Email' => $row['Email'],
-            'RoleName' => $row['RoleName'],
-            'warehouse_name' => $row['warehouse_name']
+            'RoleName' => $row['RoleName']
         ];
     }
 }

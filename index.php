@@ -46,22 +46,6 @@ session_start();
         include_once("views/logout/index.php");
     }elseif(isset($_GET["register"])){
         include_once("views/register/index.php");
-    }elseif(isset($_GET["quanlykho"])){
-        include_once("views/quanlykho/index.php");
-    }elseif(isset($_GET["detailWarehouse"])){
-        include_once("views/detail_warehouse/index.php");
-    }elseif(isset($_GET["pendingImports"])){
-        include_once("views/list_import/index.php");
-    }elseif(isset($_GET["importsingle"])){
-        include_once("views/list_import/importSingle.php");
-    }elseif(isset($_GET["exportedGoods"])){
-        include_once("views/list_export/index.php");
-    }elseif(isset($_GET["exportSingleOrder"])){
-        include_once("views/list_export/exportSingle.php");
-    }elseif(isset($_GET["add_warehouse"])){
-        include_once("views/add_warehouse/index.php");
-    }elseif(isset($_GET["update_warehouse"])){
-        include_once("views/update_warehouse/index.php");
     }elseif(isset($_GET["listCustomer"])){
         include_once("views/list_customer/index.php");
     }elseif(isset($_GET["trackOrder"])){

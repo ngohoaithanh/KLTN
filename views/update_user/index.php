@@ -25,13 +25,12 @@ if (isset($_POST['submit'])) {
     $email = $_POST['email'];
     $phone = $_POST['phone'];
     $role = $_POST['role'];
-    $warehouse_id = !empty(trim($_POST['warehouse_id'])) ? trim($_POST['warehouse_id']) : null;
     $password = $_POST['password'];
     $note = $_POST['note'];
 
     $data = [
         "id" => $id, "username" => $username, "email" => $email, "phone" => $phone,
-        "role" => $role, "warehouse_id" => $warehouse_id, "note" => $note
+        "role" => $role, "note" => $note
     ];
 
     if (!empty($password)) {
@@ -62,16 +61,6 @@ if (isset($_POST['submit'])) {
     }
 }
 
-// 3. LẤY DANH SÁCH KHO (giữ nguyên)
-include_once('controllers/cWarehouse.php');
-$cWarehouse = new controlWarehouse();
-$warehouses_data = $cWarehouse->getAllWarehouse();
-$warehouses = [];
-if ($warehouses_data) {
-    foreach ($warehouses_data as $row) {
-        $warehouses[] = ['id' => $row['ID'] ?? '', 'name' => $row['Name'] ?? ''];
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -98,7 +87,7 @@ if ($warehouses_data) {
         <div class="form-group"><label>Email</label><input type="email" name="email" class="form-control" value="<?= htmlspecialchars($user['Email']) ?>" required></div>
         <div class="form-group"><label>Số điện thoại</label><input type="text" name="phone" class="form-control" value="<?= htmlspecialchars($user['PhoneNumber']) ?>" required></div>
         <div class="form-group"><label>Chức vụ</label><select name="role" class="form-control"><option value="">-- Chọn chức vụ --</option><option value="2" <?= $user['Role'] == 2 ? 'selected' : '' ?>>Quản lý</option><option value="3" <?= $user['Role'] == 3 ? 'selected' : '' ?>>Nhân viên tiếp nhận</option><option value="4" <?= $user['Role'] == 4 ? 'selected' : '' ?>>Quản lý kho</option><option value="5" <?= $user['Role'] == 5 ? 'selected' : '' ?>>Kế toán</option><option value="6" <?= $user['Role'] == 6 ? 'selected' : '' ?>>Shipper</option><option value="7" <?= $user['Role'] == 7 ? 'selected' : '' ?>>Khách hàng</option></select></div>
-        <div class="form-group"><label>Nơi làm việc</label><select name="warehouse_id" class="form-control"><option value="">-- Chọn nơi làm việc --</option><?php foreach ($warehouses as $w): ?><option value="<?= $w['id'] ?>" <?= ($user['warehouse_id'] ?? null) == $w['id'] ? 'selected' : '' ?>><?= htmlspecialchars($w['name']) ?></option><?php endforeach; ?></select></div>
+        
         
         <?php if ($user['Role'] == 6): // Chỉ hiển thị nếu là Shipper ?>
             <hr>

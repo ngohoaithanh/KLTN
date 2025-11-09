@@ -12,15 +12,6 @@ class modelOrder{
         return callApi($url, 'GET', ["shipperID" => $shipperID]);
     }
 
-    public function pendingOrdersByWarehouse($warehouseID) {
-        $url = "http://localhost/KLTN/api/order/get_pending_orders.php";
-        return callApi($url, 'GET', ["warehouseID" => $warehouseID]);
-    }
-
-    public function exportOrdersByWarehouse($warehouseID) {
-        $url = "http://localhost/KLTN/api/order/get_export_orders.php";
-        return callApi($url, 'GET', ["warehouseID" => $warehouseID]);
-    }
 
      // Thêm đơn hàng
      public function addOrder($data) {

@@ -60,15 +60,6 @@ if (isset($_POST['delivered'])) {
             // Không nên exit() ở đây, hãy để code chạy tiếp
         }
         $stmtTrans->close();
-        
-        // update status for COD:
-        $updateCODSql = "UPDATE cods SET Status = 'collected', Settled_at = ? WHERE OrderID = ?";
-        $stmtUpdateCOD = $conn->prepare($updateCODSql);
-        $stmtUpdateCOD->bind_param("si", $timestamp1_formatted, $_GET['id']);
-        if (!$stmtUpdateCOD->execute()) {
-             echo "Lỗi cập nhật trạng thái COD: " . $stmtUpdateCOD->error;
-        }
-        $stmtUpdateCOD->close();  
         $db->dongKetNoi($conn);
     }
 

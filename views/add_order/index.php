@@ -73,23 +73,6 @@ $role = $_SESSION['Role'] ?? 'customer'; // 'employee' hoặc 'customer'
         <input type="number" step="1000" name="COD_amount" class="form-control-add" required>
     </div>
 
- 
-    <!-- <div class="form-group-add">
-        <label>Kho (Warehouse)</label>
-        <select name="WarehouseID" class="form-control-add" required>
-            <option value="">-- Chọn kho --</option>
-            <?php
-            if ($result_warehouses && $result_warehouses->num_rows > 0) {
-                while ($row = $result_warehouses->fetch_assoc()) {
-                    echo "<option value='" . $row['ID'] . "'>" . $row['Name'] . "</option>";
-                }
-            } else {
-                echo "<option disabled>Không có kho nào</option>";
-            }
-            ?>
-        </select>
-    </div> -->
-
     <?php date_default_timezone_set('Asia/Ho_Chi_Minh'); ?>
     <div class="form-group-add">
         <label>Ngày Tạo (Create_at)</label>

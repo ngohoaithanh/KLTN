@@ -36,15 +36,15 @@ class controlOrder {
         return $p->updateOrder($data);
     }
 
-    public function getPendingImports($warehouseID) {
-        $p = new modelOrder();
-        return $p->pendingOrdersByWarehouse($warehouseID);
-    }
+    // public function getPendingImports($warehouseID) {
+    //     $p = new modelOrder();
+    //     return $p->pendingOrdersByWarehouse($warehouseID);
+    // }
 
-    public function getExportOrders($warehouseID) {
-        $p = new modelOrder();
-        return $p->exportOrdersByWarehouse($warehouseID);
-    }
+    // public function getExportOrders($warehouseID) {
+    //     $p = new modelOrder();
+    //     return $p->exportOrdersByWarehouse($warehouseID);
+    // }
 
     public function setShipper($shipperID, $orderID) {
         $p = new modelOrder();

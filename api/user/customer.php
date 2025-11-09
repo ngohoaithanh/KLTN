@@ -25,11 +25,9 @@ $sql = "SELECT
             u.Note,
             u.account_status,
             r.Name AS RoleName,
-            r.Description AS RoleDescription,
-            w.Name AS warehouse_name
+            r.Description AS RoleDescription
         FROM users u
         LEFT JOIN roles r ON u.Role = r.ID 
-        LEFT JOIN warehouses w ON w.ID = u.warehouse_id
         WHERE u.Role =7 AND hidden = 1 
         ORDER BY u.ID DESC";
 

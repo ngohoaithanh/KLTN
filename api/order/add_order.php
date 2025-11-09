@@ -11,7 +11,7 @@ $response = [];
 $requiredFields = [
     'CustomerName', 'Pick_up_address', 'Delivery_address', 
     'Recipient', 'RecipientPhone', 'Status', 
-    'COD_amount', 'Weight', 'PhoneNumber'  // Thêm PhoneNumber vào danh sách bắt buộc 'WarehouseID'
+    'COD_amount', 'Weight', 'PhoneNumber'
 ];
 
 // Kiểm tra các trường dữ liệu yêu cầu
@@ -41,14 +41,13 @@ $CustomerName = trim($_REQUEST['CustomerName']);
 $PickUpAddress = trim($_REQUEST['Pick_up_address']);
 $DeliveryAddress = trim($_REQUEST['Delivery_address']);
 $Recipient = trim($_REQUEST['Recipient']);
-$RecipientPhone = trim($_REQUEST['RecipientPhone']);  // Số điện thoại người nhận nhập từ form
+$RecipientPhone = trim($_REQUEST['RecipientPhone']);
 $Status = trim($_REQUEST['Status']);
 $CODAmount = floatval($_REQUEST['COD_amount']);
-// $WarehouseID = intval($_REQUEST['WarehouseID']);
 $Note = isset($_REQUEST['Note']) ? trim($_REQUEST['Note']) : '';
 $Weight = floatval($_REQUEST['Weight']);
 date_default_timezone_set('Asia/Ho_Chi_Minh');
-$Create_at = date('Y-m-d H:i:s'); // Đảm bảo định dạng ngày giờ đúng
+$Create_at = date('Y-m-d H:i:s');
 $CustomerID = 0;
 $feePayer = isset($_REQUEST['fee_payer']) ? trim($_REQUEST['fee_payer']) : 'sender';
 
@@ -202,21 +201,6 @@ if (!$stmtTracking->execute()) {
     // Nếu cần, bạn có thể ghi log lỗi ở đây
 }
 $stmtTracking->close();
-
-// created cod
-if($CODAmount > 0){
-    $statusCOD = 'pending';
-    $settledAt = null;
-
-    $sqlInsertCOD = "INSERT INTO cods (OrderID, Amount, Status, Settled_at) VALUES (?, ?, ?, ?)";
-    $stmtCOD = $conn->prepare($sqlInsertCOD);
-    $stmtCOD->bind_param("idss", $ID, $CODAmount, $statusCOD, $settledAt);
-    if (!$stmtCOD->execute()) {
-        echo json_encode(['success' => false, 'error' => 'Lỗi thêm COD: ' . $stmtCOD->error]);
-        exit();
-    }
-    $stmtCOD->close();
-}
 
 echo json_encode([
     'success' => true,

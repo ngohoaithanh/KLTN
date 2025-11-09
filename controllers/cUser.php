@@ -47,25 +47,25 @@ class controlNguoiDung{
         return $model->getUserByRole($role);
     }
 
-    public function getShipperByWarehouseID($warehouseID) {
-        $p = new modelNguoiDung();
-        $kq = $p->getShipperByWarehouseID($warehouseID);
-        return $kq;
-    }
+    // public function getShipperByWarehouseID($warehouseID) {
+    //     $p = new modelNguoiDung();
+    //     $kq = $p->getShipperByWarehouseID($warehouseID);
+    //     return $kq;
+    // }
 
-    public function getRandomShipperByWarehouseID($warehouseID) {
-        $p = new modelNguoiDung();
-        $kq = $p->getShipperByWarehouseID($warehouseID);
+    // public function getRandomShipperByWarehouseID($warehouseID) {
+    //     $p = new modelNguoiDung();
+    //     $kq = $p->getShipperByWarehouseID($warehouseID);
         
-        $shippers = array();
-        if ($kq && $kq->num_rows > 0) {
-            while($row = $kq->fetch_assoc()) {
-                $shippers[] = $row['ID'];
-            }
-            return $shippers[array_rand($shippers)];
-        }
-        return null;
-    }
+    //     $shippers = array();
+    //     if ($kq && $kq->num_rows > 0) {
+    //         while($row = $kq->fetch_assoc()) {
+    //             $shippers[] = $row['ID'];
+    //         }
+    //         return $shippers[array_rand($shippers)];
+    //     }
+    //     return null;
+    // }
 
 
     public function toggleUserStatus($id, $current_status) {

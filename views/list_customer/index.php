@@ -1,33 +1,53 @@
 <?php
-// FILE: views/list_customer/index.php (Đã nâng cấp)
-
 include_once('controllers/cUser.php');
-// Khởi tạo đối tượng và lấy dữ liệu
 $p = new controlNguoiDung();
+
 if (isset($_REQUEST['submit'])) {
-    $tblSP = $p->searchUser($_REQUEST['search']); // Nếu có tìm kiếm
+    $tblSP = $p->searchUser($_REQUEST['search']); 
 } else {
-    $tblSP = $p->getAllCustomer(); // Nếu không thì lấy tất cả
+    $tblSP = $p->getAllCustomer(); 
 }
 
-// Xử lý dữ liệu
-$customers = []; // Đổi tên biến cho rõ nghĩa
-if (is_array($tblSP)) {
-    foreach ($tblSP as $row) {
-        $customers[] = [
-            'id' => $row['ID'],
-            'username' => $row['Username'],
-            'phone' => $row['PhoneNumber'],
-            'email' => $row['Email'],
-            'role' => $row['RoleName'], // Dù là customer, vẫn giữ lại
-            'account_status' => $row['account_status'], // <-- Dữ liệu quan trọng
-        ];
+$customers = [];
+
+function toArrayOfAssoc($raw) {
+    if ($raw === false || $raw === null) return [];
+
+    if ($raw instanceof mysqli_result) {
+        $out = [];
+        while ($row = $raw->fetch_assoc()) {
+            $out[] = $row;
+        }
+        return $out;
     }
-} else {
-    // Debug lỗi nếu có
-    echo "<div class='alert alert-danger'>Lỗi khi lấy dữ liệu người dùng: " . htmlspecialchars($tblSP) . "</div>";
+
+    if (is_array($raw)) {
+        if (isset($raw['error'])) return [];
+
+        return array_values(array_filter($raw, 'is_array'));
+    }
+    return $raw;
+}
+
+$normalized = toArrayOfAssoc($tblSP);
+
+if (is_string($normalized)) {
+    echo "<div class='alert alert-danger'>Lỗi khi lấy dữ liệu người dùng: " . htmlspecialchars($normalized) . "</div>";
+    $normalized = [];
+}
+
+foreach ($normalized as $row) {
+    $customers[] = [
+        'id'             => $row['ID']          ?? '',
+        'username'       => $row['Username']    ?? '',
+        'phone'          => $row['PhoneNumber'] ?? '',
+        'email'          => $row['Email']       ?? '',
+        'role'           => $row['RoleName']    ?? '',
+        'account_status' => $row['account_status'] ?? 'active',
+    ];
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="vi">
