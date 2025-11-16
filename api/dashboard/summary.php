@@ -10,7 +10,7 @@ $conn = $db->moKetNoi();
 $kpi_today_sql = "
     SELECT
         (SELECT COUNT(ID) FROM orders WHERE DATE(Created_at) = CURDATE()) as total_orders_today,
-        (SELECT SUM(ShippingFee) FROM orders WHERE DATE(Created_at) = CURDATE()) as total_revenue_today,
+        (SELECT SUM(ShippingFee) FROM orders WHERE DATE(Created_at) = CURDATE() AND status != 'cancelled') as total_revenue_today,
         (SELECT COUNT(ID) FROM orders WHERE status = 'pending') as pending_orders,
         (SELECT COUNT(shipper_id) FROM shipper_locations WHERE status IN ('online', 'busy') AND updated_at >= NOW() - INTERVAL 5 MINUTE) as active_shippers,
         (SELECT COUNT(ID) FROM users WHERE Role = 6) as total_shippers,

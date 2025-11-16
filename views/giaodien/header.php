@@ -30,19 +30,11 @@ if (session_status() === PHP_SESSION_NONE) {
         <div class="container">
             <ul>
                 <li><a href="index.php">Trang Chủ</a></li>
-                <li><a href="?tracking_info">Tracking</a></li>
                 <?php
                 if(!isset($_SESSION['dangnhap']) || $_SESSION['dangnhap'] != 1){
                     echo '<li><a href="?login">Đăng Nhập</a></li>
                         <li><a href="?register">Đăng Ký</a></li>';
                 }else{
-                    // echo '<li><a href="?quanlydonhang">Quản Lý Đơn Hàng</a></li>
-                    //     <li><a href="?quanlyuser">Quản Lý Nhân Viên</a></li>
-                    //     <li><a href="?quanlykho">Quản Lý Kho</a></li>
-                    //     <li><a href="?cod_dashboard">COD</a></li>
-                    //     <li><a href="?dashboard">Báo Cáo & Thống Kê</a></li>';
-                    // echo '<li><a href="?logout">Đăng Xuất</a></li>';
-
                     $role = $_SESSION['role'];
                     switch ($role) {
                         case 1:
@@ -54,8 +46,6 @@ if (session_status() === PHP_SESSION_NONE) {
                                 <li><a href="?cod_dashboard">COD</a></li>
                                 <li><a href="?dashboard">Báo Cáo & Thống Kê</a></li>';
                             break;
-                            // <li><a href="?quanlykho">Quản Lý Kho</a></li>
-                                // <li><a href="?cod_dashboard">COD</a></li>
                         case 3:
                         case 6:
                             // Chỉ quản lý đơn hàng

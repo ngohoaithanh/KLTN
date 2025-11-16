@@ -11,7 +11,8 @@ $response = [];
 $requiredFields = [
     'CustomerName', 'Pick_up_address', 'Delivery_address', 
     'Recipient', 'RecipientPhone', 'Status', 
-    'COD_amount', 'Weight', 'PhoneNumber'
+    'COD_amount', 'Weight', 'PhoneNumber',
+    'Shippingfee'
 ];
 
 // Kiểm tra các trường dữ liệu yêu cầu
@@ -46,6 +47,7 @@ $Status = trim($_REQUEST['Status']);
 $CODAmount = floatval($_REQUEST['COD_amount']);
 $Note = isset($_REQUEST['Note']) ? trim($_REQUEST['Note']) : '';
 $Weight = floatval($_REQUEST['Weight']);
+$ShippingFee = floatval($_REQUEST['Shippingfee']);
 date_default_timezone_set('Asia/Ho_Chi_Minh');
 $Create_at = date('Y-m-d H:i:s');
 $CustomerID = 0;
@@ -97,15 +99,15 @@ if ($stmtVerify->num_rows == 0) {
 $stmtVerify->close();
 
 // Tính phí vận chuyển dựa trên khối lượng
-if ($Weight < 1) {
-    $ShippingFee = 15000;
-} elseif ($Weight <= 2) {
-    $ShippingFee = 18000;
-} else {
-    $extraWeight = $Weight - 2;
-    $extraFee = ceil($extraWeight * 2) * 2500;
-    $ShippingFee = 18000 + $extraFee;
-}
+// if ($Weight < 1) {
+//     $ShippingFee = 15000;
+// } elseif ($Weight <= 2) {
+//     $ShippingFee = 18000;
+// } else {
+//     $extraWeight = $Weight - 2;
+//     $extraFee = ceil($extraWeight * 2) * 2500;
+//     $ShippingFee = 18000 + $extraFee;
+// }
 
 // ===== Tính phí COD 2% với min/max, nhưng nếu CODAmount = 0 thì bằng 0 =====
 if ($CODAmount <= 0) {
