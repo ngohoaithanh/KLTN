@@ -1,3 +1,21 @@
+<style>
+    .login-footer-friendly {
+        background-color: #f8f9fa; /* Màu nền xám rất nhạt */
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+        border: 1px solid #eee;
+    }
+    .login-footer-friendly p {
+        margin: 0;
+        font-size: 14px;
+        color: #0780f9ff; /* Màu xám đậm hơn */
+    }
+    .login-footer-friendly i.fa-sun {
+        color: var(--warning-color); /* Màu vàng cam */
+        margin-right: 5px;
+    }
+</style>
 <?php
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -22,6 +40,7 @@ if (isset($_POST['submit'])) {
         $_SESSION['user']     = $result['user']['Username'];
         $_SESSION['user_id']  = $result['user']['ID'];
         $_SESSION['role']     = $result['user']['Role'];
+        $_SESSION['email']     = $result['user']['Email'];
         $_SESSION['login_success'] = "Đăng nhập thành công!";
         echo "<script>alert('{$_SESSION['login_success']}');</script>";
         header("Location: index.php");
@@ -69,9 +88,10 @@ if (isset($_POST['submit'])) {
         <div class="login-group">
             <button type="submit" name="submit">Đăng nhập</button>
         </div>
-        <div class="login-group text-center">
-            <p class="register-link">
-                Chưa có tài khoản? <a href="?register">Đăng ký ngay</a>
+        <div class="login-group text-center login-footer-friendly">
+            <p>
+                <i class="fas fa-sun"></i> 
+                <i>Chúc bạn có một ngày làm việc hiệu quả!</i>
             </p>
         </div>
     </form>

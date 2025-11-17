@@ -1,18 +1,17 @@
 <?php
+// FILE: views/list_customer/index.php (Đã nâng cấp cho giao diện mới)
+
 include_once('controllers/cUser.php');
 $p = new controlNguoiDung();
 
-if (isset($_REQUEST['submit'])) {
-    $tblSP = $p->searchUser($_REQUEST['search']); 
-} else {
-    $tblSP = $p->getAllCustomer(); 
-}
+// Xử lý logic lấy dữ liệu (đã được tối ưu hóa)
+$tblSP = (isset($_REQUEST['submit'])) ? $p->searchUser($_REQUEST['search']) : $p->getAllCustomer();
 
 $customers = [];
 
+// Hàm chuẩn hóa dữ liệu an toàn (đã có)
 function toArrayOfAssoc($raw) {
     if ($raw === false || $raw === null) return [];
-
     if ($raw instanceof mysqli_result) {
         $out = [];
         while ($row = $raw->fetch_assoc()) {
@@ -20,10 +19,8 @@ function toArrayOfAssoc($raw) {
         }
         return $out;
     }
-
     if (is_array($raw)) {
         if (isset($raw['error'])) return [];
-
         return array_values(array_filter($raw, 'is_array'));
     }
     return $raw;
@@ -38,61 +35,55 @@ if (is_string($normalized)) {
 
 foreach ($normalized as $row) {
     $customers[] = [
-        'id'             => $row['ID']          ?? '',
-        'username'       => $row['Username']    ?? '',
-        'phone'          => $row['PhoneNumber'] ?? '',
-        'email'          => $row['Email']       ?? '',
-        'role'           => $row['RoleName']    ?? '',
+        'id'             => $row['ID']             ?? '',
+        'username'       => $row['Username']       ?? '',
+        'phone'          => $row['PhoneNumber']    ?? '',
+        'email'          => $row['Email']          ?? '',
+        'role'           => $row['RoleName']       ?? '',
         'account_status' => $row['account_status'] ?? 'active',
     ];
 }
 ?>
+<div class="container-fluid" id="staff" style="margin-top: 20px;">
+<h1 class="h3 mb-4 text-gray-800">Quản Lý Khách Hàng</h1>
 
-
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Khách Hàng</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body>
-    <div class="container" id="staff" style="margin-top: 40px;">
-        <h2 style="margin-bottom: 20px;">Danh sách khách hàng </h2>
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Danh sách khách hàng</h6>
         
-        <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <form method="POST" action="#">
-                    <input type="text" id="searchInput" name="search" placeholder="Tìm kiếm khách hàng..." class="form-control" style="width: 300px; display: inline-block;">
-                    <button type="submit" class="btn btn-primary" style="margin-left: 10px;" name="submit">Tìm Kiếm</button>
-                </form>
-            </div>
+        <div class="d-flex align-items-center">
+            <form method="POST" action="#" class="d-inline-flex mr-3">
+                <input type="text" id="searchInput" name="search" placeholder="Tìm kiếm khách hàng..." class="form-control" style="width: 300px;">
+                <button type="submit" class="btn btn-primary ml-2" name="submit">Tìm</button>
+            </form>
+            
             <a href="?addUser&role=7" class="btn btn-success">+ Thêm Khách Hàng</a>
         </div>
-        
-        <table>
-            <thead>
-                <tr>
-                    <th>Mã KH</th>
-                    <th>Họ Tên</th>
-                    <th>SĐT</th>
-                    <th>Email</th>
-                    <th>Trạng thái TK</th> <th>Thao tác</th>
-                </tr>
-            </thead>
-            <tbody id="customerTableBody"> </tbody>
-        </table>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="customerTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Mã KH</th>
+                        <th>Họ Tên</th>
+                        <th>SĐT</th>
+                        <th>Email</th>
+                        <th>Trạng thái TK</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="customerTableBody">
+                    </tbody>
+            </table>
+        </div>
         
         <div style="display: flex; justify-content: center; margin-top: 20px;">
-            </div>
+             </div>
     </div>
+</div>
+</div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
 <script>
     // Mảng customer được server đẩy vào
     const customerList = <?php echo json_encode($customers); ?>;
@@ -100,7 +91,7 @@ foreach ($normalized as $row) {
     const searchInput = document.getElementById('searchInput');
     const tableBody = document.getElementById('customerTableBody');
 
-    // === HÀM HELPER TẠO BADGE (Giống hệt trang quanlyuser) ===
+    // === HÀM HELPER TẠO BADGE ===
     function getStatusBadge(status) {
         let badgeClass = 'badge-secondary';
         let statusText = status;
@@ -115,13 +106,14 @@ foreach ($normalized as $row) {
         return `<span class="badge ${badgeClass}">${statusText}</span>`;
     }
 
-    // === HÀM RENDER TABLE ĐÃ NÂNG CẤP ===
+    // === HÀM RENDER TABLE ===
     function renderTable(data) {
         tableBody.innerHTML = ''; // Xóa sạch bảng
-        if (data.length === 0) {
+        if (!data || data.length === 0) {
             tableBody.innerHTML = `
                 <tr>
-                    <td colspan="6"> <div class="alert alert-warning text-center" role="alert">
+                    <td colspan="6" class="text-center">
+                        <div class="alert alert-warning" role="alert">
                             Không có khách hàng nào được tìm thấy.
                         </div>
                     </td>
@@ -130,7 +122,6 @@ foreach ($normalized as $row) {
             return;
         }
         data.forEach(customer => {
-            // Lấy badge trạng thái
             const statusBadge = getStatusBadge(customer.account_status);
 
             // Logic cho nút Khóa/Mở khóa
@@ -159,14 +150,16 @@ foreach ($normalized as $row) {
                     <td>${customer.username}</td>
                     <td>${customer.phone}</td>
                     <td>${customer.email}</td>
-                    <td>${statusBadge}</td> <td>
-                        <a href="?deleteUser&&id=${customer.id}" onclick="return confirm('Bạn có chắc chắn muốn xóa khách hàng này?');" class="btn btn-danger btn-sm" title="Xóa">
-                            <i class="fas fa-trash-alt"></i>
-                        </a>
-                        <a href="?updateUser&&id=${customer.id}" class="btn btn-success btn-sm" title="Sửa">
+                    <td>${statusBadge}</td>
+                    <td>
+                        <a href="?updateUser&id=${customer.id}" class="btn btn-success btn-sm" title="Sửa">
                             <i class="fas fa-edit"></i>
                         </a>
-                        ${toggleButton} </td>
+                        ${toggleButton}
+                        <a href="?deleteUser&id=${customer.id}" onclick="return confirm('Bạn có chắc chắn muốn xóa khách hàng này?');" class="btn btn-danger btn-sm" title="Xóa">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </td>
                 </tr>
             `;
         });

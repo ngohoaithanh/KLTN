@@ -454,3 +454,30 @@ footer {
 .register-link a:hover {
     text-decoration: underline;
 }
+
+/* Định dạng cho văn bản "Xin chào, ..." */
+.nav-user-info {
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    font-size: 16px;
+    /* Dòng này sẽ đặt màu cho toàn bộ text bên trong */
+    color: white !important; 
+}
+
+/* Căn chỉnh icon */
+.nav-user-info i {
+    margin-right: 8px;
+    font-size: 1.2rem;
+}
+
+/* Định dạng cho nút "Đăng Xuất" */
+.nav-logout-btn {
+    background-color: var(--danger-color) !important;
+    color: white !important;
+    font-weight: bold;
+    transition: background-color 0.3s !important;
+}
+.nav-logout-btn:hover {
+    background-color: #c0392b !important;
+}

@@ -1,9 +1,10 @@
 <?php
-// FILE: views/quanlyuser/index.php (Đã nâng cấp)
+// FILE: views/quanlyuser/index.php (Đã nâng cấp cho giao diện mới)
 
 if (!isset($_SESSION["dangnhap"]) || ($_SESSION["role"] != 1 && $_SESSION["role"] != 2)) {
     echo "<script>alert('Bạn không có quyền truy cập!');</script>";
-    header("refresh:0; url=index.php");
+    // Chuyển hướng về index2.php (giao diện mới)
+    echo "<script>window.location.href = 'index2.php';</script>"; 
     exit();
 }
 
@@ -26,8 +27,7 @@ if (is_array($tblSP)) {
             'phone' => $row['PhoneNumber'],
             'email' => $row['Email'],
             'role' => $row['RoleName'],
-            'note' => $row['Note'] ?? '',
-            'account_status' => $row['account_status'], // <-- Dữ liệu mới
+            'account_status' => $row['account_status'],
         ];
     }
 } else {
@@ -36,60 +36,67 @@ if (is_array($tblSP)) {
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Nhân Viên</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body>
-    <div class="container" id="staff" style="margin-top: 40px;">
-        <h2 style="margin-bottom: 20px;">Quản Lý Nhân Viên </h2>
-        
-        <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <form method="POST" action="#">
-                    <input type="text" id="searchInput" name="search" placeholder="Tìm kiếm nhân viên..." class="form-control" style="width: 300px; display: inline-block;">
-                    <button type="submit" class="btn btn-primary" style="margin-left: 10px;" name="submit">Tìm Kiếm</button>
-                </form>
-            </div>
+<!-- ============================================= -->
+<!-- === PHẦN NỘI DUNG (ĐÃ XÓA HTML/HEAD/BODY) === -->
+<!-- ============================================= -->
 
-            <a href="?listCustomer" class="btn btn-outline-primary">Danh sách khách hàng</a>
-            <a href="?addUser" class="btn btn-success">+ Thêm Nhân Viên Mới</a>
-        </div>
+<!-- Tiêu đề trang (sử dụng style của template mới) -->
+<div class="container-fluid" id="staff" style="margin-top: 20px;">
+<h1 class="h3 mb-4 text-gray-800">Quản Lý Nhân Viên</h1>
+
+<!-- Bảng dữ liệu (sử dụng card-shadow của template mới) -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Danh sách nhân viên</h6>
         
-        <table>
-            <thead>
-                <tr>
-                    <th>Mã NV</th>
-                    <th>Họ Tên</th>
-                    <th>SĐT</th>
-                    <th>Email</th>
-                    <th>Chức vụ</th>
-                    <th>Tài khoản</th>
-                    <th>Thao tác</th>
-                </tr>
-            </thead>
-            <tbody id="staffTableBody">
-                </tbody>
-        </table>
-        
-        <div style="display: flex; justify-content: center; margin-top: 20px;">
-            <button class="btn btn-secondary" style="margin: 0 5px;">Trước</button>
-            <button class="btn" style="margin: 0 5px; background-color: #2980b9; color: white;">1</button>
-            <button class="btn btn-secondary" style="margin: 0 5px;">2</button>
-            <button class="btn btn-secondary" style="margin: 0 5px;">3</button>
-            <button class="btn btn-secondary" style="margin: 0 5px;">Sau</button>
+        <div class="d-flex align-items-center">
+            <!-- Form tìm kiếm -->
+            <form method="POST" action="#" class="d-inline-flex mr-3">
+                <input type="text" id="searchInput" name="search" placeholder="Tìm kiếm nhân viên..." class="form-control" style="width: 300px;">
+                <button type="submit" class="btn btn-primary ml-2" name="submit">Tìm</button>
+            </form>
+            
+            <a href="?listCustomer" class="btn btn-outline-primary mr-2">DS Khách hàng</a>
+            <a href="?addUser" class="btn btn-success">+ Thêm Mới</a>
         </div>
     </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="staffTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Mã NV</th>
+                        <th>Họ Tên</th>
+                        <th>SĐT</th>
+                        <th>Email</th>
+                        <th>Chức vụ</th>
+                        <th>Tài khoản</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="staffTableBody">
+                    <!-- JavaScript sẽ render nội dung vào đây -->
+                </tbody>
+            </table>
+            
+            <!-- Phần phân trang (giữ nguyên) -->
+            <div style="display: flex; justify-content: center; margin-top: 20px;">
+                <button class="btn btn-secondary" style="margin: 0 5px;">Trước</button>
+                <button class="btn btn-primary" style="margin: 0 5px;">1</button>
+                <button class="btn btn-secondary" style="margin: 0 5px;">2</button>
+                <button class="btn btn-secondary" style="margin: 0 5px;">3</button>
+                <button class="btn btn-secondary" style="margin: 0 5px;">Sau</button>
+            </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- ============================================= -->
+<!-- === SCRIPT CỦA RIÊNG TRANG NÀY === -->
+<!-- (Không cần include jQuery/Bootstrap nữa vì footer2.php đã có) -->
+<!-- ============================================= -->
 <script>
     // Mảng staff được server đẩy vào (PHP => JavaScript)
     const staffList = <?php echo json_encode($staffs); ?>;
@@ -97,10 +104,8 @@ if (is_array($tblSP)) {
     const searchInput = document.getElementById('searchInput');
     const tableBody = document.getElementById('staffTableBody');
 
-    // ================================================================
-    // === HÀM HELPER ĐỂ TẠO BADGE (Giữ nguyên) ===
-    // ================================================================
-    function getStatusBadge(status) {
+    // Hàm tạo badge Trạng thái Tài khoản
+    function getAccountStatusBadge(status) {
         let badgeClass = 'badge-secondary'; // Mặc định
         let statusText = status;
 
@@ -122,16 +127,14 @@ if (is_array($tblSP)) {
         return `<span class="badge ${badgeClass}">${statusText}</span>`;
     }
 
-    // ================================================================
-    // === HÀM renderTable (ĐÃ NÂNG CẤP VỚI NÚT KHÓA/MỞ) ===
-    // ================================================================
+    // Hàm render bảng
     function renderTable(data) {
         tableBody.innerHTML = ''; // Xóa sạch bảng
-        if (data.length === 0) {
+        if (!data || data.length === 0) {
             tableBody.innerHTML = `
                 <tr>
-                    <td colspan="7">
-                        <div class="alert alert-warning text-center" role="alert">
+                    <td colspan="7" class="text-center">
+                        <div class="alert alert-warning" role="alert">
                             Không có nhân viên nào được tìm thấy.
                         </div>
                     </td>
@@ -140,31 +143,15 @@ if (is_array($tblSP)) {
             return;
         }
         data.forEach(staff => {
-            // Gọi hàm helper để lấy badge
-            const statusBadge = getStatusBadge(staff.account_status);
-
-            // *** LOGIC CHO NÚT KHÓA/MỞ KHÓA MỚI ***
+            const statusBadge = getAccountStatusBadge(staff.account_status);
+            
+            // Logic cho nút Khóa/Mở khóa
             let toggleButton = '';
             if (staff.account_status == 'active') {
-                // Nếu đang hoạt động, hiển thị nút KHÓA
-                toggleButton = `
-                    <a href="?toggleUserStatus&id=${staff.id}&status=active&return=quanlyuser" 
-                       onclick="return confirm('Bạn có chắc chắn muốn KHÓA tài khoản này?');" 
-                       class="btn btn-warning btn-sm" title="Khóa tài khoản">
-                        <i class="fas fa-lock"></i>
-                    </a>
-                `;
+                toggleButton = `<a href="?toggleUserStatus&id=${staff.id}&status=active&return=quanlyuser" onclick="return confirm('Bạn có chắc chắn muốn KHÓA tài khoản này?');" class="btn btn-warning btn-sm" title="Khóa tài khoản"><i class="fas fa-lock"></i></a>`;
             } else {
-                // Nếu đang khóa hoặc chờ, hiển thị nút KÍCH HOẠT
-                toggleButton = `
-                    <a href="?toggleUserStatus&id=${staff.id}&status=${staff.account_status}&return=quanlyuser" 
-                       onclick="return confirm('Bạn có chắc chắn muốn KÍCH HOẠT tài khoản này?');" 
-                       class="btn btn-info btn-sm" title="Kích hoạt tài khoản">
-                        <i class="fas fa-lock-open"></i>
-                    </a>
-                `;
+                toggleButton = `<a href="?toggleUserStatus&id=${staff.id}&status=${staff.account_status}&return=quanlyuser" onclick="return confirm('Bạn có chắc chắn muốn KÍCH HOẠT tài khoản này?');" class="btn btn-info btn-sm" title="Kích hoạt tài khoản"><i class="fas fa-lock-open"></i></a>`;
             }
-            // *** HẾT LOGIC NÚT MỚI ***
 
             tableBody.innerHTML += `
                 <tr>
@@ -175,13 +162,13 @@ if (is_array($tblSP)) {
                     <td>${staff.role}</td>
                     <td>${statusBadge}</td>
                     <td>
-                        <a href="?deleteUser&&id=${staff.id}" onclick="return confirm('Bạn có chắc chắn muốn xóa nhân viên này?');" class="btn btn-danger btn-sm" title="Xóa">
-                            <i class="fas fa-trash-alt"></i>
-                        </a>
-                        <a href="?updateUser&&id=${staff.id}" class="btn btn-success btn-sm" title="Sửa">
+                        <a href="?updateUser&id=${staff.id}" class="btn btn-success btn-sm" title="Sửa">
                             <i class="fas fa-edit"></i>
                         </a>
-                        ${toggleButton} 
+                        ${toggleButton}
+                        <a href="?deleteUser&id=${staff.id}" onclick="return confirm('Bạn có chắc chắn muốn xóa nhân viên này?');" class="btn btn-danger btn-sm" title="Xóa">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
                     </td>
                 </tr>
             `;

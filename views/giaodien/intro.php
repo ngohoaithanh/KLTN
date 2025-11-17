@@ -33,7 +33,7 @@
                 <p>Phân bổ shipper hợp lý, đánh giá hiệu suất làm việc, quản lý thông tin và lịch sử giao hàng của từng shipper.</p>
             </div>
             
-            <div class="feature-card zoom-effect">
+            <!-- <div class="feature-card zoom-effect">
                 <div class="feature-icon">
                     <i class="fas fa-warehouse"></i>
                 </div>
@@ -55,7 +55,7 @@
                 </div>
                 <h3>Quản Lý Thu Hộ (COD)</h3>
                 <p>Theo dõi chính xác số tiền thu hộ, đối soát với shipper, cảnh báo đơn hàng chưa thu tiền.</p>
-            </div>
+            </div> -->
             
             <div class="feature-card zoom-effect">
                 <div class="feature-icon">

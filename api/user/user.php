@@ -28,7 +28,7 @@ $sql = "SELECT
             r.Description AS RoleDescription
         FROM users u
         LEFT JOIN roles r ON u.Role = r.ID 
-        WHERE u.Role !=7 AND hidden = 1
+        WHERE u.Role !=7 AND u. Role != 1 AND hidden = 1
         ORDER BY u.ID DESC";
 
 $result = $conn->query($sql);
