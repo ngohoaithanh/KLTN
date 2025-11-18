@@ -1,3 +1,10 @@
+<?php
+    if (!isset($_SESSION["dangnhap"]) || ($_SESSION["role"] !=1 && $_SESSION["role"] !=2)) {
+        echo "<script>alert('Bạn không có quyền truy cập!');</script>";
+        echo "<script>window.location.href = 'index.php';</script>";
+        exit();
+    }
+?>
 <style>
     /* CSS cho Marker */
     #shipper-map .marker { width: 40px; height: 40px; background-size: cover; border-radius: 50%; border: 2px solid white; cursor: pointer; }

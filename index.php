@@ -44,8 +44,6 @@ session_start();
         include_once("views/login/index.php");
     }elseif(isset($_GET["logout"])){
         include_once("views/logout/index.php");
-    }elseif(isset($_GET["register"])){
-        include_once("views/register/index.php");
     }elseif(isset($_GET["listCustomer"])){
         include_once("views/list_customer/index.php");
     }elseif(isset($_GET["trackOrder"])){
