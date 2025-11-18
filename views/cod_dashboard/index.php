@@ -1,5 +1,5 @@
 <?php
-    if (!isset($_SESSION["dangnhap"]) || ($_SESSION["role"] !=1 && $_SESSION["role"] !=2)) {
+    if (!isset($_SESSION["dangnhap"]) || ($_SESSION["role"] !=1 && $_SESSION["role"] !=2 && $_SESSION["role"] !=5)) {
         echo "<script>alert('Bạn không có quyền truy cập!');</script>";
         echo "<script>window.location.href = 'index.php';</script>";
         exit();
