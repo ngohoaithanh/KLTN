@@ -1,9 +1,9 @@
 <?php
 include_once("models/mUser.php");
 class controlNguoiDung{
-    public function getAllUser() {
+    public function getUsers($page = 1, $search = null) {
         $p = new modelNguoiDung();
-        return $p->selectAllUser();
+        return $p->getUsers($page, $search);
     }
 
     public function getAllCustomer() {
@@ -11,10 +11,10 @@ class controlNguoiDung{
         return $p->selectAllCustomer();
     }
 
-    public function searchUser($keyword) {
-        $p = new modelNguoiDung();
-        return $p->searchUserByName($keyword);
-    }
+    // public function searchUser($keyword) {
+    //     $p = new modelNguoiDung();
+    //     return $p->searchUserByName($keyword);
+    // }
 
     public function addUser($data) {
         $p = new modelNguoiDung();

@@ -2,9 +2,18 @@
 include_once("config/database.php");
 include_once("config/callApi.php");
 class modelNguoiDung{
-    public function selectAllUser() {
+    public function getUsers($page = 1, $search = null) {
         $url = "http://localhost/KLTN/api/user/user.php";
-        return callApi($url, 'GET');
+        
+        $data = [
+            'page' => $page
+        ];
+        if ($search !== null) {
+            $data['search'] = $search;
+        }
+        
+        // Gọi API với tham số (GET)
+        return callApi($url, 'GET', $data);
     }
 
     public function selectAllCustomer() {
@@ -12,19 +21,19 @@ class modelNguoiDung{
         return callApi($url, 'GET');
     }
 
-    public function searchUserByName($keyword) {
-        $url = "http://localhost/KLTN/api/user/search_user.php";
-        $response = callApi($url, 'GET', ["keyword" => $keyword]);
-        if (!is_array($response)) {
-            return [];
-        }
+    // public function searchUserByName($keyword) {
+    //     $url = "http://localhost/KLTN/api/user/search_user.php";
+    //     $response = callApi($url, 'GET', ["keyword" => $keyword]);
+    //     if (!is_array($response)) {
+    //         return [];
+    //     }
 
-        if (isset($response['error'])) {
-            return []; 
-        }
+    //     if (isset($response['error'])) {
+    //         return []; 
+    //     }
 
-        return $response;
-    }
+    //     return $response;
+    // }
     
     public function addUser($data) {
         $url = "http://localhost/KLTN/api/user/add_user.php";

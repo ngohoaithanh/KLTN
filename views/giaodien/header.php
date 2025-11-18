@@ -83,7 +83,7 @@ if (session_status() === PHP_SESSION_NONE) {
                         echo '<li><a href="?quanlyshipper">Shipper</a></li>';
                         echo '<li><a href="?dashboard">Báo Cáo & Thống Kê</a></li>';
                         echo '<li><a href="?cod_dashboard">COD</a></li>';
-                    }elseif ($role == 1 || $role == 2) {
+                    }elseif ($role == 5) {
                         echo '<li><a href="?dashboard">Báo Cáo & Thống Kê</a></li>';
                         echo '<li><a href="?cod_dashboard">COD</a></li>';
                     }
@@ -108,7 +108,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 } else {
                     // Chưa đăng nhập (Bên phải)
                     echo '<li style="margin-left: auto;"><a href="?login">Đăng Nhập</a></li>';
-                    echo '<li><a href="?register">Đăng Ký</a></li>';
+                    // echo '<li><a href="?register">Đăng Ký</a></li>';
                 }
                 ?>
             </ul>

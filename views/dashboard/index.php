@@ -1,6 +1,7 @@
 <div class="container-fluid" style="margin-top: 20px;">
+    <h1 class="h3 mb-0 text-gray-800 text-center">Dashboard Tổng Quan</h1>
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Dashboard Tổng Quan</h1>
+        <h1 class="h3 mb-0 text-gray-800 "></h1>
         <div class="d-flex align-items-center">
             <label for="date-range-filter" class="mb-0 mr-2">Xem theo:</label>
             <select id="date-range-filter" class="form-control mr-3" style="width: auto;">

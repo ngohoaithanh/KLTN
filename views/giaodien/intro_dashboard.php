@@ -1,8 +1,4 @@
 <?php
-// FILE: views/giaodien/intro_dashboard.php
-// (Đã thiết kế lại để dùng CSS của file style.css cũ)
-
-// Lấy thông tin vai trò (nếu đã đăng nhập)
 $user_role = $_SESSION['role'] ?? null;
 ?>
 
@@ -51,9 +47,24 @@ $user_role = $_SESSION['role'] ?? null;
         width: 20px; 
         text-align: center;
     }
+
+    .quick-links-widget .welcome-title {
+        color: var(--primary-color); /* Dùng màu xanh dương chủ đạo */
+        font-size: 26px;             /* Tăng kích thước chữ */
+        font-weight: 700;            /* Tăng độ đậm */
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee; /* Thêm một đường gạch chân mờ */
+    }
+
+    .quick-links-widget .welcome-title i {
+        margin-right: 12px;
+        color: var(--primary-color); /* Cho icon cùng màu */
+        opacity: 0.8;                /* Giảm độ sáng 1 chút */
+    }
 </style>
 <div class="container-fluid" id="staff" style="margin-top: 20px;">
-<h2 style="font-weight: 600; color: var(--dark-color); margin-bottom: 20px;">Bảng điều khiển nhanh</h2>
+<h2 style="font-weight: 600; color: var(--dark-color); margin-bottom: 20px; text-align:center;">Bảng điều khiển nhanh</h2>
 
 <div class="dashboard">
 
@@ -127,7 +138,9 @@ $user_role = $_SESSION['role'] ?? null;
 
     <div class="col-md-6">
         <div class="quick-links-widget">
-            <h3 class="card-header" style="border: none; padding-left: 0;">Chào mừng trở lại!</h3>
+            <h3 class="card-header welcome-title" style="border: none; padding: 0;">
+                <i class="fas fa-user-shield"></i> Chào mừng <?= htmlspecialchars($_SESSION['user']) ?> trở lại!
+            </h3>
             <p>Bạn có thể sử dụng menu bên trên để truy cập tất cả các chức năng. Các chỉ số hiệu suất chính được hiển thị ở đây để giúp bạn nắm bắt nhanh tình hình.</p>
             <p class="mb-0">Chúc bạn một ngày làm việc hiệu quả!</p>
         </div>

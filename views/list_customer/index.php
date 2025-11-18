@@ -45,7 +45,7 @@ foreach ($normalized as $row) {
 }
 ?>
 <div class="container-fluid" id="staff" style="margin-top: 20px;">
-<h1 class="h3 mb-4 text-gray-800">Quản Lý Khách Hàng</h1>
+<h1 class="h3 mb-4 text-gray-800 text-center">Quản Lý Khách Hàng</h1>
 
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">

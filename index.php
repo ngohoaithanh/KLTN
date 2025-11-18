@@ -63,20 +63,15 @@ session_start();
     }elseif(isset($_GET["profile"])){
         include_once("views/profile/index.php");
     }else{
-        // include_once("views/giaodien/intro.php");
-        if (isset($_SESSION['dangnhap']) && $_SESSION['dangnhap'] == 1 && $_SESSION['role'] != 7) { 
-        // Role 7 là Khách hàng, chúng ta cũng không muốn họ thấy BĐK nhanh
-        
-        // NẾU ĐÃ ĐĂNG NHẬP (Admin, Kế toán, QL Kho...):
-        // Hiển thị "Bảng điều khiển nhanh" (file mới)
-        include_once("views/giaodien/intro_dashboard.php"); 
+        if (!isset($_SESSION['dangnhap']) || $_SESSION['dangnhap'] != 1) {
+            include_once("views/giaodien/intro.php"); 
+            
+        } elseif ($_SESSION['role'] == 6 || $_SESSION['role'] == 7) {
+            include_once("views/giaodien/intro_app_redirect.php"); 
 
-    } else {
-        
-        // NẾU CHƯA ĐĂNG NHẬP (hoặc là Khách hàng):
-        // Hiển thị trang Landing Page (ảnh nâu) (file cũ của bạn)
-        include_once("views/giaodien/intro.php"); 
-    }
+        } else {
+            include_once("views/giaodien/intro_dashboard.php"); 
+        }
     }
     include_once("views/giaodien/footer.php");
     include_once("views/giaodien/back_to_top.php");

@@ -2,9 +2,18 @@
 include_once("config/database.php");
 include_once("config/callApi.php");
 class modelOrder{
-    public function selectAllOrder() {
-        $url = "http://localhost/KLTN/api/order/order.php";
-        return callApi($url, 'GET');
+    public function getPaginatedOrders($page = 1, $search = null) {
+        $url = "http://localhost/KLTN/api/order/get_orders.php"; // Gọi API mới
+        
+        $data = [
+            'page' => $page
+        ];
+        if ($search !== null) {
+            $data['search'] = $search;
+        }
+        
+        // Gọi API với tham số (GET)
+        return callApi($url, 'GET', $data);
     }
 
     public function selectAllOrderForShipper($shipperID) {

@@ -1,6 +1,6 @@
 <div class="container-fluid" style="margin-top: 20px;">
 
-    <h1 class="h3 mb-4 text-gray-800">Trung tâm Đối soát Phí COD</h1>
+    <h1 class="h3 mb-4 text-gray-800 text-center">Trung tâm Đối soát Phí COD</h1>
 
     <div class="row" id="kpi-cards-container">
         <div class="col-xl-3 col-md-6 mb-4">

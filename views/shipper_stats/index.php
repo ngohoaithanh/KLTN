@@ -7,9 +7,10 @@ if ($shipperId == 0) {
 }
 ?>
 
-<div class="container-fluid">
+<div class="container-fluid" id="staff" style="margin-top: 20px;">
+    <h1 class="h3 mb-0 text-gray-800" style="text-align:center;">Thống kê chi tiết Shipper: <span id="shipper-name-title">Đang tải...</span></h1>
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Thống kê chi tiết Shipper: <span id="shipper-name-title">Đang tải...</span></h1>
+        <h1 class="h3 mb-0 text-gray-800"></h1>
         <div class="d-flex align-items-center">
             <label for="date-range-filter" class="mb-0 mr-2">Xem theo:</label>
             <select id="date-range-filter" class="form-control mr-3" style="width: auto;">

@@ -1,9 +1,9 @@
 <?php
 include_once("models/mOrder.php");
 class controlOrder {
-    public function getAllOrder() {
+    public function getPaginatedOrders($page = 1, $search = null) {
         $p = new modelOrder();
-        return $p->selectAllOrder();
+        return $p->getPaginatedOrders($page, $search);
     }
 
     public function getAllOrderForShipper($shipperID) {
@@ -35,16 +35,6 @@ class controlOrder {
         $p = new modelOrder();
         return $p->updateOrder($data);
     }
-
-    // public function getPendingImports($warehouseID) {
-    //     $p = new modelOrder();
-    //     return $p->pendingOrdersByWarehouse($warehouseID);
-    // }
-
-    // public function getExportOrders($warehouseID) {
-    //     $p = new modelOrder();
-    //     return $p->exportOrdersByWarehouse($warehouseID);
-    // }
 
     public function setShipper($shipperID, $orderID) {
         $p = new modelOrder();
