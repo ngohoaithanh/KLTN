@@ -5,7 +5,7 @@
         exit();
     }
 ?>
-?>
+
 <div class="container-fluid" id="staff" style="margin-top: 20px;">
 <h1 class="h3 mb-4 text-gray-800 text-center">Quản Lý Đơn Hàng</h1>
 
