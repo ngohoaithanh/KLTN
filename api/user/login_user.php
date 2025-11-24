@@ -1,5 +1,12 @@
 <?php
-ini_set('session.cookie_path', '/KLTN/api/');
+// ini_set('session.cookie_path', '/KLTN/api/');
+// Tự động xác định đường dẫn cookie
+if ($_SERVER['HTTP_HOST'] === 'localhost') {
+    $cookiePath = '/KLTN/api/';
+} else {
+    $cookiePath = '/api/'; 
+}
+ini_set('session.cookie_path', $cookiePath);
 session_start();
 header('Content-Type: application/json; charset=utf-8');
 
