@@ -19,6 +19,8 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             u.Username AS UserName, u.Email AS CustomerEmail, u.PhoneNumber AS PhoneNumberCus,
             u2.Username AS ShipperName, u2.Email AS ShipperEmail,u2.PhoneNumber AS ShipperPhoneNumber,
             u2.rating AS ShipperRating,
+            u2.created_at AS ShipperJoinDate,
+            (SELECT COUNT(*) FROM orders WHERE ShipperID = u2.ID AND Status = 'delivered') AS ShipperTotalOrders,
             v.license_plate, v.model AS vehicle_model
         FROM orders o 
         LEFT JOIN users u ON o.CustomerID = u.ID 

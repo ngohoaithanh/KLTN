@@ -1,9 +1,25 @@
 <?php
 include_once("config/database.php");
 include_once("config/callApi.php");
+
 class modelNguoiDung{
+
+    // Hàm dùng chung để xác định BASE URL cho API
+    private function getApiBaseUrl() {
+        $hostName = $_SERVER['HTTP_HOST'] ?? 'localhost';
+
+        // Môi trường LOCAL: XAMPP / mạng LAN
+        if ($hostName === 'localhost' || strpos($hostName, '192.168.') === 0) {
+            return "http://localhost/KLTN/api";
+        }
+
+        // Môi trường HOSTING
+        return "https://dalvin.online/api";
+    }
+
     public function getUsers($page = 1, $search = null) {
-        $url = "http://localhost/KLTN/api/user/user.php";
+        $baseUrl = $this->getApiBaseUrl();
+        $url = $baseUrl . "/user/user.php";
         
         $data = [
             'page' => $page
@@ -17,40 +33,28 @@ class modelNguoiDung{
     }
 
     public function selectAllCustomer() {
-        $url = "http://localhost/KLTN/api/user/customer.php";
+        $baseUrl = $this->getApiBaseUrl();
+        $url = $baseUrl . "/user/customer.php";
         return callApi($url, 'GET');
     }
 
-    // public function searchUserByName($keyword) {
-    //     $url = "http://localhost/KLTN/api/user/search_user.php";
-    //     $response = callApi($url, 'GET', ["keyword" => $keyword]);
-    //     if (!is_array($response)) {
-    //         return [];
-    //     }
-
-    //     if (isset($response['error'])) {
-    //         return []; 
-    //     }
-
-    //     return $response;
-    // }
-    
     public function addUser($data) {
-        $url = "http://localhost/KLTN/api/user/add_user.php";
+        $baseUrl = $this->getApiBaseUrl();
+        $url = $baseUrl . "/user/add_user.php";
         return callApi($url, 'POST', $data);
     }
 
     public function deleteUser($id) {
-        $url = "http://localhost/KLTN/api/user/delete_user.php";
-        return callApi($url, "POST", ["id" => $id]);
+        $baseUrl = $this->getApiBaseUrl();
+        $url = $baseUrl . "/user/delete_user.php";
+        return callApi($url, 'POST', ["id" => $id]);
     }
 
     public function getUserById($id) {
-        include_once("config/database.php");
+        // Hàm này truy vấn trực tiếp DB, không qua API → giữ nguyên
         $db = new clsKetNoi();
         $conn = $db->moKetNoi();
 
-        // $stmt = $conn->prepare("SELECT * FROM users WHERE ID = ?");
         $stmt = $conn->prepare("
             SELECT 
                 u.*, 
@@ -79,17 +83,20 @@ class modelNguoiDung{
     }
 
     public function updateUser($data) {
-        $url = "http://localhost/KLTN/api/user/update_user.php";
+        $baseUrl = $this->getApiBaseUrl();
+        $url = $baseUrl . "/user/update_user.php";
         return callApi($url, 'POST', $data);
     }
 
     public function loginUser($data) {
-        $url = "http://localhost/KLTN/api/user/login_user.php";
+        $baseUrl = $this->getApiBaseUrl();
+        $url = $baseUrl . "/user/login_user.php";
         return callApi($url, 'POST', $data);
     }
     
     public function getUserByRole($role) {
-        $url = "http://localhost/KLTN/api/user/get_user_by_role.php";
+        $baseUrl = $this->getApiBaseUrl();
+        $url = $baseUrl . "/user/get_user_by_role.php";
         return callApi($url, 'GET', ["role" => $role]);
     }
 
@@ -108,11 +115,13 @@ class modelNguoiDung{
             $stmt_update = $conn->prepare("UPDATE vehicles SET license_plate = ?, model = ? WHERE shipper_id = ?");
             $stmt_update->bind_param("ssi", $license_plate, $vehicle_model, $shipper_id);
             $success = $stmt_update->execute();
+            $stmt_update->close();
         } else {
             // Nếu chưa có -> THÊM MỚI
             $stmt_insert = $conn->prepare("INSERT INTO vehicles (shipper_id, license_plate, model) VALUES (?, ?, ?)");
             $stmt_insert->bind_param("iss", $shipper_id, $license_plate, $vehicle_model);
             $success = $stmt_insert->execute();
+            $stmt_insert->close();
         }
         
         $db->dongKetNoi($conn);
@@ -135,10 +144,10 @@ class modelNguoiDung{
     }
 
     public function updateUserStatus($id, $new_status) {
-        $url = "http://localhost/KLTN/api/user/update_status.php";
+        $baseUrl = $this->getApiBaseUrl();
+        $url = $baseUrl . "/user/update_status.php";
         $data = ["id" => $id, "new_status" => $new_status];
         return callApi($url, 'POST', $data); 
     }
 }
-
 ?>
