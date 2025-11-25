@@ -30,6 +30,7 @@ $email    = trim($_POST['email']);
 $role     = intval($_POST['role']);
 $password = trim($_POST['password']);
 $note     = isset($_POST['note']) ? trim($_POST['note']) : '';
+$avatar_url = isset($_POST['avatar_url']) ? trim($_POST['avatar_url']) : null;
 $hashed_password = md5($password);
 
 try {
@@ -67,9 +68,9 @@ try {
     
     // 2. Nếu tất cả đều hợp lệ, thêm người dùng mới
     $stmt_insert = $conn->prepare(
-        "INSERT INTO users (Username, Email, Password, PhoneNumber, Role, Note, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())"
+        "INSERT INTO users (Username, Email, Password, PhoneNumber, Avatar, Role, Note, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())"
     );
-    $stmt_insert->bind_param("ssssis", $username, $email, $hashed_password, $phone, $role, $note);
+    $stmt_insert->bind_param("sssssis", $username, $email, $hashed_password, $phone, $avatar_url, $role, $note);
 
     if ($stmt_insert->execute()) {
         $new_user_id = $stmt_insert->insert_id;

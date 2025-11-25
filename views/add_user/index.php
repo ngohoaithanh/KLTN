@@ -77,12 +77,54 @@ if (isset($_POST['submit'])) {
         .add-form-title { text-align: center; margin-bottom: 25px; }
         .form-group label { font-weight: 500; }
         .btn-group { display: flex; justify-content: space-between; }
+        .avatar-wrapper {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+        }
+        #avatar-preview {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #e9ecef;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .upload-icon {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: #007bff;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid white;
+        }
+        .upload-icon:hover { background: #0056b3; }
     </style>
 </head>
 <body>
 <div class="add-form-container">
     <h2 class="add-form-title">Thêm Người Dùng Mới</h2>
-    <form method="POST">
+    <form method="POST" id="add-user-form">
+
+        <div class="form-group text-center">
+            <div class="avatar-wrapper">
+                <img id="avatar-preview" src="views/img/avt.png" alt="Avatar Preview">
+                <label for="avatar-input" class="upload-icon" title="Chọn ảnh">
+                    <i class="fas fa-camera"></i>
+                </label>
+            </div>
+            <input type="file" id="avatar-input" accept="image/*" style="display: none;">
+            <input type="hidden" name="avatar_url" id="avatar-url-hidden">
+            <small class="text-muted">Nhấn vào icon máy ảnh để tải ảnh lên</small>
+        </div>
         <div class="form-group"><label>Họ tên</label><input type="text" name="username" class="form-control" required></div>
         <div class="form-group"><label>Số điện thoại</label><input type="text" name="phone" class="form-control" required></div>
         <div class="form-group"><label>Email</label><input type="email" name="email" class="form-control" required></div>
@@ -92,8 +134,6 @@ if (isset($_POST['submit'])) {
             <select name="role" id="role-selector" class="form-control" required>
                 <option value="">-- Chọn chức vụ --</option>
                 <option value="2" <?= $default_role == 2 ? 'selected' : '' ?>>Quản lý</option>
-                <option value="3" <?= $default_role == 3 ? 'selected' : '' ?>>Nhân viên tiếp nhận</option>
-                <option value="4" <?= $default_role == 4 ? 'selected' : '' ?>>Quản lý kho</option>
                 <option value="5" <?= $default_role == 5 ? 'selected' : '' ?>>Kế toán</option>
                 <option value="6" <?= $default_role == 6 ? 'selected' : '' ?>>Shipper</option>
                 <option value="7" <?= $default_role == 7 ? 'selected' : '' ?>>Khách hàng</option>
@@ -126,6 +166,11 @@ if (isset($_POST['submit'])) {
 </div>
 
 <script>
+    const CLOUD_NAME = "dbaeafw6z";
+    const UPLOAD_PRESET = "user_avt";
+
+    const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
+
     document.addEventListener('DOMContentLoaded', function() {
         const roleSelector = document.getElementById('role-selector');
         const shipperFields = document.getElementById('shipper-fields');
@@ -143,6 +188,105 @@ if (isset($_POST['submit'])) {
 
         toggleShipperFields(); // Chạy lần đầu khi tải trang
         roleSelector.addEventListener('change', toggleShipperFields); // Lắng nghe sự kiện thay đổi
+
+        // --- 2. LOGIC UPLOAD CLOUDINARY ---
+        const avatarInput = document.getElementById('avatar-input');
+        const avatarPreview = document.getElementById('avatar-preview');
+        const form = document.getElementById('add-user-form');
+        const submitBtn = document.querySelector('button[name="submit"]');
+        let selectedFile = null;
+
+        // 2a. Xem trước ảnh
+        if(avatarInput) {
+            avatarInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    selectedFile = file;
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        if(avatarPreview) avatarPreview.src = e.target.result;
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // 2b. Xử lý Submit
+        if(form) {
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault(); 
+
+                const originalBtnText = submitBtn.innerText;
+                submitBtn.innerText = 'Đang xử lý...';
+                submitBtn.disabled = true;
+
+                try {
+                    let avatarUrl = '';
+
+                    // Bước A: Nếu có ảnh -> Upload lên Cloudinary
+                    if (selectedFile) {
+                        submitBtn.innerText = 'Đang tải ảnh lên...';
+                        
+                        const formData = new FormData();
+                        formData.append('file', selectedFile);
+                        formData.append('upload_preset', UPLOAD_PRESET);
+                        formData.append('folder', 'avatars');
+
+                        const cloudResponse = await fetch(CLOUDINARY_URL, {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        if (!cloudResponse.ok) {
+                            throw new Error('Lỗi khi upload ảnh lên Cloudinary');
+                        }
+
+                        const cloudData = await cloudResponse.json();
+                        avatarUrl = cloudData.secure_url; // Lấy URL ảnh
+                    }
+
+                    // Bước B: Gán URL vào input ẩn
+                    const hiddenInput = document.getElementById('avatar-url-hidden');
+                    if(hiddenInput) hiddenInput.value = avatarUrl;
+
+                    // Bước C: Gửi dữ liệu về Server PHP
+                    submitBtn.innerText = 'Đang lưu thông tin...';
+                    
+                    const formDataPHP = new FormData(form);
+                    // Đảm bảo URL được gửi đi (phòng khi input hidden chưa ăn)
+                    formDataPHP.set('avatar_url', avatarUrl); 
+
+                    const response = await fetch('api/user/add_user.php', {
+                        method: 'POST',
+                        body: formDataPHP
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Nếu là Shipper -> Thêm thông tin xe (nếu cần gọi API riêng)
+                        if (formDataPHP.get('role') == '6' && result.new_user_id) {
+                             // Gọi API addShipperVehicle tại đây nếu cần
+                             // (Hoặc tốt nhất là tích hợp logic này vào trong add_user.php luôn)
+                        }
+
+                        alert('Thêm người dùng thành công!');
+                        window.location.href = '?quanlyuser';
+                    } else {
+                        alert('Lỗi: ' + (result.error || result.message));
+                        submitBtn.innerText = originalBtnText;
+                        submitBtn.disabled = false;
+                    }
+
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra: ' + error.message);
+                    submitBtn.innerText = originalBtnText;
+                    submitBtn.disabled = false;
+                }
+            });
+        }
+
     });
 </script>
 </body>
