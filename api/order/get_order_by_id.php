@@ -20,6 +20,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             u2.Username AS ShipperName, u2.Email AS ShipperEmail,u2.PhoneNumber AS ShipperPhoneNumber,
             u2.rating AS ShipperRating,
             u2.created_at AS ShipperJoinDate,
+            u2.Avatar AS ShipperAvatar,
             (SELECT COUNT(*) FROM orders WHERE ShipperID = u2.ID AND Status = 'delivered') AS ShipperTotalOrders,
             v.license_plate, v.model AS vehicle_model
         FROM orders o 

@@ -41,6 +41,7 @@ if (isset($_POST['submit'])) {
         $_SESSION['user_id']  = $result['user']['ID'];
         $_SESSION['role']     = $result['user']['Role'];
         $_SESSION['email']     = $result['user']['Email'];
+        $_SESSION['avatar']     = $result['user']['Avatar'];
         $_SESSION['login_success'] = "Đăng nhập thành công!";
         echo "<script>alert('{$_SESSION['login_success']}');</script>";
         header("Location: index.php");

@@ -6,22 +6,13 @@
     }
 ?>
 <div class="container-fluid" style="margin-top: 20px;">
-
     <h1 class="h3 mb-4 text-gray-800 text-center">Trung tâm Đối soát Phí COD</h1>
 
     <div class="row" id="kpi-cards-container">
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-danger shadow h-100 py-2"><div class="card-body"><div class="row no-gutters align-items-center"><div class="col mr-2"><div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Tổng Phí COD đang nợ</div><div class="h5 mb-0 font-weight-bold text-gray-800" id="kpi-total-owed">...</div></div><div class="col-auto"><i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i></div></div></div></div>
-        </div>
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2"><div class="card-body"><div class="row no-gutters align-items-center"><div class="col mr-2"><div class="text-xs font-weight-bold text-success text-uppercase mb-1">Đã đối soát (Hôm nay)</div><div class="h5 mb-0 font-weight-bold text-gray-800" id="kpi-settled-today">...</div></div><div class="col-auto"><i class="fas fa-check-circle fa-2x text-gray-300"></i></div></div></div></div>
-        </div>
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2"><div class="card-body"><div class="row no-gutters align-items-center"><div class="col mr-2"><div class="text-xs font-weight-bold text-info text-uppercase mb-1">Phí đang chờ thu (Đang giao)</div><div class="h5 mb-0 font-weight-bold text-gray-800" id="kpi-fee-in-progress">...</div></div><div class="col-auto"><i class="fas fa-shipping-fast fa-2x text-gray-300"></i></div></div></div></div>
-        </div>
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2"><div class="card-body"><div class="row no-gutters align-items-center"><div class="col mr-2"><div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Phí phát sinh (Tháng này)</div><div class="h5 mb-0 font-weight-bold text-gray-800" id="kpi-fee-this-month">...</div></div><div class="col-auto"><i class="fas fa-calendar-alt fa-2x text-gray-300"></i></div></div></div></div>
-        </div>
+        <div class="col-xl-3 col-md-6 mb-4"><div class="card border-left-danger shadow h-100 py-2"><div class="card-body"><div class="row no-gutters align-items-center"><div class="col mr-2"><div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Tổng Phí COD đang nợ</div><div class="h5 mb-0 font-weight-bold text-gray-800" id="kpi-total-owed">...</div></div><div class="col-auto"><i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i></div></div></div></div></div>
+        <div class="col-xl-3 col-md-6 mb-4"><div class="card border-left-success shadow h-100 py-2"><div class="card-body"><div class="row no-gutters align-items-center"><div class="col mr-2"><div class="text-xs font-weight-bold text-success text-uppercase mb-1">Đã đối soát (Hôm nay)</div><div class="h5 mb-0 font-weight-bold text-gray-800" id="kpi-settled-today">...</div></div><div class="col-auto"><i class="fas fa-check-circle fa-2x text-gray-300"></i></div></div></div></div></div>
+        <div class="col-xl-3 col-md-6 mb-4"><div class="card border-left-info shadow h-100 py-2"><div class="card-body"><div class="row no-gutters align-items-center"><div class="col mr-2"><div class="text-xs font-weight-bold text-info text-uppercase mb-1">Phí đang chờ thu (Đang giao)</div><div class="h5 mb-0 font-weight-bold text-gray-800" id="kpi-fee-in-progress">...</div></div><div class="col-auto"><i class="fas fa-shipping-fast fa-2x text-gray-300"></i></div></div></div></div></div>
+        <div class="col-xl-3 col-md-6 mb-4"><div class="card border-left-primary shadow h-100 py-2"><div class="card-body"><div class="row no-gutters align-items-center"><div class="col mr-2"><div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Phí phát sinh (Tháng này)</div><div class="h5 mb-0 font-weight-bold text-gray-800" id="kpi-fee-this-month">...</div></div><div class="col-auto"><i class="fas fa-calendar-alt fa-2x text-gray-300"></i></div></div></div></div></div>
     </div>
 
     <div class="card shadow mb-4">
@@ -42,8 +33,7 @@
                             <th>Hành động</th>
                         </tr>
                     </thead>
-                    <tbody id="receivables-table-body">
-                        </tbody>
+                    <tbody id="receivables-table-body"></tbody>
                 </table>
             </div>
         </div>
@@ -68,31 +58,27 @@
                             <th>Thời gian</th>
                             <th>Tên Shipper</th>
                             <th>Số tiền nộp</th>
-                            <th>Mã đơn (nếu có)</th>
                             <th>Loại Giao dịch</th>
-                            <th>Ghi chú</th>
+                            <th>Minh chứng</th> <th>Ghi chú</th>
                         </tr>
                     </thead>
-                    <tbody id="transactions-table-body">
-                        </tbody>
+                    <tbody id="transactions-table-body"></tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="logPaymentModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+<div class="modal fade" id="logPaymentModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalTitle">Ghi nhận Shipper nộp tiền</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
+                <h5 class="modal-title">Ghi nhận Shipper nộp tiền</h5>
+                <button class="close" type="button" data-dismiss="modal"><span>×</span></button>
             </div>
             <div class="modal-body">
                 <form id="payment-form">
-                    <input type="hidden" id="modal-shipper-id" name="shipper_id">
+                    <input type="hidden" id="modal-shipper-id">
                     <div class="form-group">
                         <label>Tên Shipper:</label>
                         <input type="text" id="modal-shipper-name" class="form-control" readonly>
@@ -104,11 +90,23 @@
                     <hr>
                     <div class="form-group">
                         <label for="modal-amount-paid">Số tiền nộp</label>
-                        <input type="number" id="modal-amount-paid" name="amount" class="form-control" required>
+                        <input type="number" id="modal-amount-paid" class="form-control" required>
                     </div>
-                     <div class="form-group">
+                    
+                    <div class="form-group">
+                        <label>Minh chứng (Ảnh chuyển khoản/Biên lai)</label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="proof-image-input" accept="image/*">
+                            <label class="custom-file-label" for="proof-image-input">Chọn ảnh...</label>
+                        </div>
+                        <input type="hidden" id="proof-image-url">
+                        <div id="proof-preview-container" class="mt-2" style="display:none;">
+                            <img id="proof-preview" src="" style="max-height: 100px; border-radius: 5px; border: 1px solid #ddd;">
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="modal-note">Ghi chú (Tùy chọn)</label>
-                        <textarea id="modal-note" name="note" class="form-control" rows="2" placeholder="VD: Nộp tiền mặt cuối ngày..."></textarea>
+                        <textarea id="modal-note" class="form-control" rows="2"></textarea>
                     </div>
                 </form>
             </div>
@@ -121,231 +119,227 @@
 </div>
 
 <script>
-    // Hàm định dạng tiền tệ
+    // CẤU HÌNH CLOUDINARY (Dùng lại thông tin của bạn)
+    const CLOUD_NAME = "dbaeafw6z"; 
+    const UPLOAD_PRESET = "user_avt"; // Hoặc tạo preset mới nếu muốn
+    const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
+
     function formatCurrency(number) {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(number);
     }
 
-    /**
-     * Tải dữ liệu toàn trang (KPI, Bảng công nợ) và Lịch sử Giao dịch.
-     * Chỉ được gọi khi tải trang hoặc sau khi GHI NHẬN thanh toán.
-     */
+    // 1. HÀM TẢI DỮ LIỆU
     async function loadPageData(startDate = null, endDate = null) {
         try {
-            // Xác định URL API (có hoặc không có bộ lọc ngày)
             let apiUrl = 'api/cod_dashboard/get_receivables.php';
-            if (startDate && endDate) {
-                apiUrl += `?start_date=${startDate}&end_date=${endDate}`;
-            }
+            if (startDate && endDate) apiUrl += `?start_date=${startDate}&end_date=${endDate}`;
 
             const response = await fetch(apiUrl);
-            if (!response.ok) throw new Error(`Lỗi HTTP: ${response.status}`);
             const data = await response.json();
 
-            // 1. Render Thẻ KPI
-            document.getElementById('kpi-total-owed').textContent = formatCurrency(data.kpi.TotalFeeOwed);
-            document.getElementById('kpi-settled-today').textContent = formatCurrency(data.kpi.SettledToday);
-            document.getElementById('kpi-fee-in-progress').textContent = formatCurrency(data.kpi.FeeInProgress);
-            document.getElementById('kpi-fee-this-month').textContent = formatCurrency(data.kpi.FeeThisMonth);
-            
-            // 2. Render Bảng Công Nợ
-            const tableBody = document.getElementById('receivables-table-body');
-            tableBody.innerHTML = ''; 
-            
-            if (!data.shipper_balances || data.shipper_balances.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="7" class="text-center">Tuyệt vời! Không có shipper nào nợ phí COD.</td></tr>'; // Cập nhật colspan
-            } else {
-                data.shipper_balances.forEach(shipper => {
-                    const balance = shipper.Balance;
-                    const overdue = shipper.TotalOverdueFee;
-                    
-                    let balanceClass = balance > 0 ? 'text-danger font-weight-bold' : '';
-                    let overdueClass = overdue > 0 ? 'text-danger font-weight-bold' : '';
-                    
-                    let buttonHtml = `<button class="btn btn-success btn-sm log-payment-btn" data-id="${shipper.shipper_id}" data-name="${shipper.Username}" data-balance="${balance}">Ghi nhận</button>`;
-                    if (balance <= 0) {
-                        buttonHtml = `<button class="btn btn-secondary btn-sm" disabled>Đã nộp</button>`;
-                    }
-                    
-                    const row = `
-                        <tr>
-                            <td>${shipper.Username}</td>
-                            <td>${shipper.PhoneNumber}</td>
-                            <td>${formatCurrency(shipper.TotalFeeCollected)}</td>
-                            <td>${formatCurrency(shipper.TotalFeePaid)}</td>
-                            <td class="${overdueClass}">${formatCurrency(overdue)}</td>
-                            <td class="${balanceClass}">${formatCurrency(balance)}</td>
-                            <td>${buttonHtml}</td>
-                        </tr>
-                    `;
-                    tableBody.innerHTML += row;
-                });
+            if (!startDate) { 
+                document.getElementById('kpi-total-owed').textContent = formatCurrency(data.kpi.TotalFeeOwed);
+                document.getElementById('kpi-settled-today').textContent = formatCurrency(data.kpi.SettledToday);
+                document.getElementById('kpi-fee-in-progress').textContent = formatCurrency(data.kpi.FeeInProgress);
+                document.getElementById('kpi-fee-this-month').textContent = formatCurrency(data.kpi.FeeThisMonth);
+                renderReceivablesTable(data.shipper_balances);
             }
-
-            // 3. Render Bảng Lịch sử Giao dịch
             renderRecentTransactions(data.recent_transactions);
-
         } catch (error) {
-            console.error('Lỗi khi tải dữ liệu trang:', error);
-            alert('Lỗi nghiêm trọng khi tải dữ liệu trang. Vui lòng kiểm tra Console (F12).');
-        }
-    }
-    
-    /**
-     * Chỉ tải và render lại Bảng Lịch sử Giao dịch (được gọi khi nhấn "Lọc")
-     */
-    async function loadHistoryData(startDate, endDate) {
-         try {
-            let apiUrl = `api/cod_dashboard/get_receivables.php?start_date=${startDate}&end_date=${endDate}`;
-            const response = await fetch(apiUrl);
-            if (!response.ok) throw new Error(`Lỗi HTTP: ${response.status}`);
-            const data = await response.json();
-            
-            // Chỉ render lại Bảng Lịch sử
-            renderRecentTransactions(data.recent_transactions);
-
-        } catch (error) {
-            console.error('Lỗi khi tải lịch sử:', error);
-            alert('Lỗi khi tải lịch sử giao dịch.');
+            console.error('Lỗi tải dữ liệu:', error);
         }
     }
 
-    /**
-     * Hàm render Bảng Lịch sử Giao dịch
-     */
-    function renderRecentTransactions(transactions) {
-        const tableBody = document.getElementById('transactions-table-body');
-        tableBody.innerHTML = '';
-        
-        if (!transactions || transactions.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Không có giao dịch nào trong khoảng thời gian này.</td></tr>';
+    // 1b. Render Bảng Công Nợ
+    function renderReceivablesTable(balances) {
+        const tableBody = document.getElementById('receivables-table-body');
+        tableBody.innerHTML = ''; 
+        if (!balances || balances.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="7" class="text-center">Tuyệt vời! Không có shipper nào nợ phí COD.</td></tr>';
             return;
         }
-
-        transactions.forEach(tx => {
-            const txTime = new Date(tx.Created_at).toLocaleString('vi-VN');
-            const txAmount = formatCurrency(tx.Amount);
-            const txOrderID = tx.OrderID || '---'; 
-            let txTypeBadge = '';
-            if (tx.Type === 'deposit_cod') {
-                txTypeBadge = '<span class="badge badge-primary">Nộp phí COD</span>';
-            } else if (tx.Type === 'shipping_fee') {
-                txTypeBadge = '<span class="badge badge-success">Shipper thu phí VC</span>';
-            }else if (tx.Type === 'collect_cod') {
-                txTypeBadge = '<span class="badge badge-success">Shipper nhận tiền (COD + Phí)</span>';
-            }
-            const txNote = tx.Note || '';
-
-            const row = `
-                <tr>
-                    <td>${txTime}</td>
-                    <td>${tx.Username}</td>
-                    <td>${txAmount}</td>
-                    <td>${txOrderID}</td>
-                    <td>${txTypeBadge}</td>
-                    <td>${txNote}</td>
-                </tr>
-            `;
+        balances.forEach(shipper => {
+            const balance = shipper.Balance;
+            const overdue = shipper.TotalOverdueFee;
+            let btnClass = balance > 0 ? 'btn-success' : 'btn-secondary';
+            let btnDisabled = balance > 0 ? '' : 'disabled';
+            
+            let row = `<tr>
+                <td>${shipper.Username}</td>
+                <td>${shipper.PhoneNumber}</td>
+                <td>${formatCurrency(shipper.TotalFeeCollected)}</td>
+                <td>${formatCurrency(shipper.TotalFeePaid)}</td>
+                <td class="${overdue > 0 ? 'text-danger font-weight-bold' : ''}">${formatCurrency(overdue)}</td>
+                <td class="${balance > 0 ? 'text-danger font-weight-bold' : ''}">${formatCurrency(balance)}</td>
+                <td>
+                    <button class="btn ${btnClass} btn-sm log-payment-btn" 
+                        data-id="${shipper.shipper_id}" 
+                        data-name="${shipper.Username}" 
+                        data-balance="${balance}" ${btnDisabled}>
+                        Ghi nhận
+                    </button>
+                </td>
+            </tr>`;
             tableBody.innerHTML += row;
         });
     }
 
-    /**
-     * Cài đặt các trình lắng nghe cho Modal (Ghi nhận thanh toán)
-     */
-    function setupModalListeners() {
+    // 1c. Render Bảng Lịch sử
+    function renderRecentTransactions(transactions) {
+        const tableBody = document.getElementById('transactions-table-body');
+        tableBody.innerHTML = '';
+        if (!transactions || transactions.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Không có giao dịch.</td></tr>';
+            return;
+        }
+        transactions.forEach(tx => {
+            let badge = tx.Type === 'deposit_cod' ? '<span class="badge badge-primary">Nộp phí</span>' : '<span class="badge badge-success">Nộp thừa</span>';
+            
+            // Xử lý hiển thị ảnh minh chứng
+            let proofHtml = '<span class="text-muted small">Không có</span>';
+            if (tx.ProofImage) {
+                proofHtml = `<a href="${tx.ProofImage}" target="_blank" title="Xem ảnh lớn">
+                                <img src="${tx.ProofImage}" style="height: 30px; border-radius: 3px; border: 1px solid #ddd;">
+                             </a>`;
+            }
+
+            let row = `<tr>
+                <td>${new Date(tx.Created_at).toLocaleString('vi-VN')}</td>
+                <td>${tx.Username}</td>
+                <td>${formatCurrency(tx.Amount)}</td>
+                <td>${badge}</td>
+                <td class="text-center">${proofHtml}</td>
+                <td>${tx.Note || ''}</td>
+            </tr>`;
+            tableBody.innerHTML += row;
+        });
+    }
+
+    // 2. SỰ KIỆN
+    function setupListeners() {
+        // Mở modal
         $('#receivables-table-body').on('click', '.log-payment-btn', function() {
-            const shipperId = $(this).data('id');
-            const shipperName = $(this).data('name');
-            const balanceDue = $(this).data('balance');
-            $('#modal-shipper-id').val(shipperId);
-            $('#modal-shipper-name').val(shipperName);
-            $('#modal-balance-due').val(formatCurrency(balanceDue));
-            $('#modal-amount-paid').val(balanceDue); // Mặc định số tiền nộp = số tiền nợ
+            $('#modal-shipper-id').val($(this).data('id'));
+            $('#modal-shipper-name').val($(this).data('name'));
+            $('#modal-balance-due').val(formatCurrency($(this).data('balance')));
+            $('#modal-amount-paid').val($(this).data('balance'));
             $('#modal-note').val('');
+            
+            // Reset phần ảnh
+            $('#proof-image-input').val('');
+            $('#proof-image-url').val('');
+            $('#proof-preview-container').hide();
+            $('.custom-file-label').text('Chọn ảnh...');
+            
             $('#logPaymentModal').modal('show');
         });
-
-        $('#submit-payment-btn').on('click', async function() {
-            const shipperId = $('#modal-shipper-id').val();
-            const amount = $('#modal-amount-paid').val();
-            const note = $('#modal-note').val();
-
-            if (amount <= 0) {
-                alert('Số tiền nộp phải lớn hơn 0.');
-                return;
+        
+        // Xem trước ảnh khi chọn
+        $('#proof-image-input').on('change', function() {
+            const file = this.files[0];
+            if (file) {
+                $('.custom-file-label').text(file.name);
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#proof-preview').attr('src', e.target.result);
+                    $('#proof-preview-container').show();
+                }
+                reader.readAsDataURL(file);
             }
-            
-            $(this).prop('disabled', true).text('Đang xử lý...');
+        });
+
+        // Xử lý nút Xác nhận (Upload + Submit)
+        $('#submit-payment-btn').on('click', async function() {
+            const btn = $(this);
+            const originalText = btn.text();
+            const amount = $('#modal-amount-paid').val();
+            const fileInput = document.getElementById('proof-image-input');
+            const file = fileInput.files[0];
+
+            if (amount <= 0) { alert('Số tiền phải lớn hơn 0'); return; }
+
+            btn.prop('disabled', true).text('Đang xử lý...');
 
             try {
-                const response = await fetch('api/cod_dashboard/log_payment.php', {
+                let proofUrl = '';
+                
+                // A. Upload ảnh nếu có
+                if (file) {
+                    btn.text('Đang tải ảnh...');
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('upload_preset', UPLOAD_PRESET);
+                    formData.append('folder', 'transaction_proofs');
+                    
+                    const cloudRes = await fetch(CLOUDINARY_URL, { method: 'POST', body: formData });
+                    if (!cloudRes.ok) throw new Error('Lỗi upload ảnh');
+                    const cloudData = await cloudRes.json();
+                    proofUrl = cloudData.secure_url;
+                }
+
+                // B. Gửi dữ liệu về API PHP
+                btn.text('Đang lưu...');
+                const apiRes = await fetch('api/cod_dashboard/log_payment.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        shipper_id: shipperId,
+                        shipper_id: $('#modal-shipper-id').val(),
                         amount: amount,
-                        note: note
+                        note: $('#modal-note').val(),
+                        proof_image: proofUrl // Gửi URL ảnh
                     })
                 });
                 
-                const result = await response.json();
+                const result = await apiRes.json();
                 
                 if (result.success) {
-                    alert('Ghi nhận thanh toán thành công!');
+                    alert('Đã ghi nhận giao dịch thành công!');
                     $('#logPaymentModal').modal('hide');
-                    
-                    // Tải lại TOÀN BỘ dữ liệu (cả bảng công nợ và bảng lịch sử)
+                    // Tải lại dữ liệu
                     const start = $('#trans-start-date').val();
                     const end = $('#trans-end-date').val();
-                    loadPageData(start, end); 
+                     loadPageData(); 
+                    loadPageData(start, end);
+                    // loadHistoryData(start, end); // Nếu tách hàm
                 } else {
                     alert('Lỗi: ' + result.error);
                 }
 
             } catch (error) {
-                console.error('Lỗi khi gửi thanh toán:', error);
-                alert('Đã xảy ra lỗi kết nối.');
+                console.error(error);
+                alert('Có lỗi xảy ra.');
             } finally {
-                 $(this).prop('disabled', false).text('Xác nhận');
+                btn.prop('disabled', false).text(originalText);
             }
         });
-    }
-
-    /**
-     * Cài đặt bộ lọc ngày
-     */
-    function setupDateFilters() {
-        const startDateInput = document.getElementById('trans-start-date');
-        const endDateInput = document.getElementById('trans-end-date');
-        const filterButton = document.getElementById('filter-trans-btn');
-
-        // Set giá trị mặc định cho bộ lọc (7 ngày qua)
-        const today = new Date();
-        const sevenDaysAgo = new Date();
-        sevenDaysAgo.setDate(today.getDate() - 7);
         
-        startDateInput.value = sevenDaysAgo.toISOString().split('T')[0];
-        endDateInput.value = today.toISOString().split('T')[0];
-
-        // Gắn sự kiện click cho nút Lọc
-        filterButton.addEventListener('click', () => {
-            const start = startDateInput.value;
-            const end = endDateInput.value;
-            if (!start || !end) {
-                alert('Vui lòng chọn cả ngày bắt đầu và ngày kết thúc.');
-                return;
-            }
-            // Chỉ tải lại dữ liệu lịch sử
+        // Bộ lọc ngày
+        $('#filter-trans-btn').on('click', function() {
+            const start = $('#trans-start-date').val();
+            const end = $('#trans-end-date').val();
             loadHistoryData(start, end);
         });
     }
+    
+    // Hàm riêng để chỉ tải lịch sử (khi lọc)
+    async function loadHistoryData(start, end) {
+        try {
+            const res = await fetch(`api/cod_dashboard/get_receivables.php?start_date=${start}&end_date=${end}`);
+            const data = await res.json();
+            renderRecentTransactions(data.recent_transactions);
+        } catch(e) { console.error(e); }
+    }
 
-    // === KHỞI CHẠY ===
+    // KHỞI CHẠY
     document.addEventListener('DOMContentLoaded', function() {
-        // Tải dữ liệu toàn trang lần đầu (dùng ngày mặc định của API)
-        loadPageData(); 
-        setupModalListeners(); // Cài đặt các trình lắng nghe cho modal
-        setupDateFilters(); // Cài đặt bộ lọc ngày
+        // Set ngày mặc định cho bộ lọc
+        const today = new Date();
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(today.getDate() - 7);
+        document.getElementById('trans-start-date').value = sevenDaysAgo.toISOString().split('T')[0];
+        document.getElementById('trans-end-date').value = today.toISOString().split('T')[0];
+
+        loadPageData();
+        setupListeners();
     });
 </script>

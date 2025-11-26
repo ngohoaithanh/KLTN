@@ -86,8 +86,7 @@
       <div class="footer-col">
         <h4 class="footer-title">Về chúng tôi</h4>
         <p class="footer-text">
-          Hệ thống giao hàng toàn diện, hỗ trợ quản lý đơn hàng, nhân viên và
-          kho lưu trữ dễ dàng.
+          Hệ thống giao hàng toàn diện, hỗ trợ quản lý đơn hàng và nhân viên dễ dàng.
         </p>
       </div>
       <div class="footer-col">
@@ -110,7 +109,12 @@
       <p class="footer-bottom-text">
         &copy; 2025 LOGISMART. All rights reserved.
       </p>
-    </div>
+      
+      <p class="footer-bottom-text" style="font-size: 13px; margin-top: 5px; opacity: 0.8;">
+          Mọi vấn đề kỹ thuật vui lòng liên lạc qua email: 
+          <a href="mailto:thanhhuykks03@gmail.com" style="color: #fff; text-decoration: underline;">thanhhuykks03@gmail.com</a>
+      </p>
+      </div>
   </footer>
 </body>
 </html>

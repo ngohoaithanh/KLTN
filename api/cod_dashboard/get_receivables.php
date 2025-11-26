@@ -90,10 +90,12 @@ $end_date = isset($_GET['end_date']) ? $_GET['end_date'] : date('Y-m-d');
 $end_date_sql = date('Y-m-d', strtotime($end_date . ' +1 day'));
 
 $sql_history = $conn->prepare("
-    SELECT t.Created_at, u.Username, t.Amount, t.OrderID, t.Note, t.Type
+    SELECT 
+        t.Created_at, u.Username, t.Amount, t.OrderID, t.Note, t.Type, 
+        t.ProofImage  /* <-- THÊM CỘT NÀY */
     FROM transactions t
     JOIN users u ON t.UserID = u.ID
-    WHERE t.Type IN ('deposit_cod', 'collect_cod') 
+    WHERE t.Type IN ('deposit_cod', 'overpayment_cod') 
       AND t.Created_at >= ? AND t.Created_at < ? 
     ORDER BY t.Created_at DESC
 ");

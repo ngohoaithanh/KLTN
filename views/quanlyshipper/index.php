@@ -91,6 +91,12 @@
                 </button>
             </div>
             <div class="modal-body">
+                
+                <div class="text-center mb-4">
+                    <img id="detail-avatar" src="views/img/avt.png" alt="Avatar" 
+                         class="rounded-circle img-thumbnail" 
+                         style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #e3e6f0;">
+                </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span><i class="fas fa-toggle-on fa-fw mr-3 text-gray-500"></i>Trạng thái Online</span>
@@ -355,6 +361,9 @@
     }
 
     function showDetailModal(shipper) {
+        const avatarImg = document.getElementById('detail-avatar');
+        avatarImg.src = shipper.Avatar ? shipper.Avatar : 'views/img/avt.png';
+
         document.getElementById('detail-name-title').textContent = shipper.Username;
         document.getElementById('detail-email').textContent = shipper.Email || 'Chưa cập nhật';
         document.getElementById('detail-phone').textContent = shipper.PhoneNumber || 'Chưa cập nhật';

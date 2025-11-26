@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || $_SERVER['REQUEST_METHOD'] === 'GET
 
     // BƯỚC 1: BỎ kiểm tra `account_status` ở đây, nhưng LẤY nó ra
     $stmt = $conn->prepare("
-        SELECT ID, Username, Role, PhoneNumber, Password, rating, account_status , Email
+        SELECT ID, Username, Role, PhoneNumber, Password, rating, account_status , Email, Avatar
         FROM users 
         WHERE PhoneNumber = ? AND hidden = 1 
         LIMIT 1
@@ -48,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || $_SERVER['REQUEST_METHOD'] === 'GET
                 $_SESSION['user_id']  = $user['ID'];
                 $_SESSION['rating']   = $user['rating'];
                 $_SESSION['email']   = $user['Email'];
+                $_SESSION['avatar']   = $user['Avatar'];
 
                 unset($user['Password']);
                 echo json_encode(['success' => true, 'user' => $user,'session_id' => session_id()]);

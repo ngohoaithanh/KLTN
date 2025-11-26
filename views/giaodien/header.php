@@ -88,10 +88,17 @@ if (session_status() === PHP_SESSION_NONE) {
                         echo '<li><a href="?cod_dashboard">COD</a></li>';
                     }
                     
+                    $userAvatar = isset($_SESSION['avatar']) && !empty($_SESSION['avatar']) 
+                                ? $_SESSION['avatar'] 
+                                : 'views/img/avt.png';
+                    
                     echo '
                     <li style="margin-left: auto;" class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle nav-user-info" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-user-circle"></i>
+                            
+                            <img src="' . htmlspecialchars($userAvatar) . '" alt="Avatar" 
+                                style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; margin-right: 10px; border: 2px solid rgba(255,255,255,0.5);">
+                            
                             <strong>' . htmlspecialchars($_SESSION["user"]) . '</strong>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">

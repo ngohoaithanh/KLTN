@@ -1,6 +1,14 @@
 <?php
-session_start();
-session_unset();
-session_destroy();
-header("Location: index.php"); // Trang login hoặc trang chính
-exit;
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    $_SESSION = array();
+
+    session_destroy();
+
+    echo "<script>
+        alert('Đăng xuất thành công!');
+        window.location.href = 'index.php?login';
+    </script>";
+exit();
+?>
