@@ -4,6 +4,7 @@
 // 1. LẤY DỮ LIỆU BAN ĐẦU
 include_once('controllers/cUser.php');
 $p = new controlNguoiDung();
+include_once('config/env.php');
 
 // Lấy vai trò mặc định từ URL nếu có (khi click nút "Thêm Shipper")
 $default_role = isset($_GET['role']) ? intval($_GET['role']) : '';
@@ -166,8 +167,8 @@ if (isset($_POST['submit'])) {
 </div>
 
 <script>
-    const CLOUD_NAME = "dbaeafw6z";
-    const UPLOAD_PRESET = "user_avt";
+    const CLOUD_NAME = "<?php echo CLOUDINARY_CLOUD_NAME; ?>";
+    const UPLOAD_PRESET = "<?php echo CLOUDINARY_UPLOAD_PRESET; ?>";
 
     const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
 
@@ -201,6 +202,26 @@ if (isset($_POST['submit'])) {
             avatarInput.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (file) {
+                    // 1. Kiểm tra định dạng (Phải là ảnh)
+                    // Các loại ảnh phổ biến: image/jpeg, image/png, image/gif, image/webp
+                    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                    if (!validTypes.includes(file.type)) {
+                        alert('Lỗi: Vui lòng chỉ chọn file hình ảnh (.jpg, .png, .gif)!');
+                        this.value = ''; // Reset input
+                        selectedFile = null; // Xóa file đã chọn
+                        avatarPreview.src = 'views/img/avt.png'; // Trả về ảnh mặc định
+                        return; // Dừng lại
+                    }
+
+                    // 2. Kiểm tra kích thước (Ví dụ: Không quá 5MB)
+                    const maxSize = 5 * 1024 * 1024; // 5MB
+                    if (file.size > maxSize) {
+                        alert('Lỗi: Kích thước ảnh quá lớn! Vui lòng chọn ảnh dưới 5MB.');
+                        this.value = '';
+                        selectedFile = null;
+                        return;
+                    }
+
                     selectedFile = file;
                     const reader = new FileReader();
                     reader.onload = function(e) {

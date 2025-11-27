@@ -4,6 +4,7 @@
         echo "<script>window.location.href = 'index.php';</script>";
         exit();
     }
+    include_once('config/env.php');
 ?>
 <div class="container-fluid" style="margin-top: 20px;">
     <h1 class="h3 mb-4 text-gray-800 text-center">Trung tâm Đối soát Phí COD</h1>
@@ -120,8 +121,8 @@
 
 <script>
     // CẤU HÌNH CLOUDINARY (Dùng lại thông tin của bạn)
-    const CLOUD_NAME = "dbaeafw6z"; 
-    const UPLOAD_PRESET = "user_avt"; // Hoặc tạo preset mới nếu muốn
+    const CLOUD_NAME = "<?php echo CLOUDINARY_CLOUD_NAME; ?>";
+    const UPLOAD_PRESET = "<?php echo CLOUDINARY_UPLOAD_PRESET; ?>";
     const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
 
     function formatCurrency(number) {
@@ -238,6 +239,20 @@
         $('#proof-image-input').on('change', function() {
             const file = this.files[0];
             if (file) {
+                // Validate
+                const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+                if (!validTypes.includes(file.type)) {
+                    alert('Vui lòng chỉ chọn file ảnh!');
+                    $(this).val(''); // Reset input
+                    return;
+                }
+                
+                if (file.size > 5 * 1024 * 1024) { // 5MB
+                     alert('File ảnh quá lớn!');
+                     $(this).val('');
+                     return;
+                }
+
                 $('.custom-file-label').text(file.name);
                 const reader = new FileReader();
                 reader.onload = function(e) {

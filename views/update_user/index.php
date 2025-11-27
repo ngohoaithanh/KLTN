@@ -1,6 +1,6 @@
 <?php
 // FILE: views/update_user/index.php (Phiên bản Cloudinary)
-
+include_once('config/env.php');
 // 1. LẤY DỮ LIỆU NGƯỜI DÙNG HIỆN TẠI (PHP thuần để render form)
 include_once('controllers/cUser.php');
 $p = new controlNguoiDung();
@@ -113,8 +113,8 @@ $currentAvatar = !empty($user['Avatar']) ? $user['Avatar'] : 'views/img/avt.png'
 
 <script>
     // CẤU HÌNH CLOUDINARY (Copy từ trang Add User sang)
-    const CLOUD_NAME = "dbaeafw6z"; // <-- Đảm bảo đúng tên cloud
-    const UPLOAD_PRESET = "user_avt"; 
+    const CLOUD_NAME = "<?php echo CLOUDINARY_CLOUD_NAME; ?>";
+    const UPLOAD_PRESET = "<?php echo CLOUDINARY_UPLOAD_PRESET; ?>"; 
     const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -148,6 +148,25 @@ $currentAvatar = !empty($user['Avatar']) ? $user['Avatar'] : 'views/img/avt.png'
             avatarInput.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (file) {
+                    // --- VALIDATE ---
+                    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                    if (!validTypes.includes(file.type)) {
+                        alert('Lỗi: Chỉ chấp nhận file ảnh (.jpg, .png)!');
+                        this.value = ''; 
+                        selectedFile = null;
+                        // Reset lại ảnh cũ (lấy từ input ẩn hoặc src ban đầu)
+                        // avatarPreview.src = ... (Nếu muốn kỹ hơn thì lưu src cũ vào biến để restore)
+                        return;
+                    }
+
+                    const maxSize = 5 * 1024 * 1024; // 5MB
+                    if (file.size > maxSize) {
+                        alert('Lỗi: Ảnh quá lớn (Max 5MB)!');
+                        this.value = '';
+                        selectedFile = null;
+                        return;
+                    }
+
                     selectedFile = file;
                     const reader = new FileReader();
                     reader.onload = function(e) {
