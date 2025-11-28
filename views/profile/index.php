@@ -1,6 +1,11 @@
 <?php
+    if (!isset($_SESSION["dangnhap"]) || ($_SESSION["role"] !=1 && $_SESSION["role"] !=2 && $_SESSION["role"] !=5)) {
+            echo "<script>alert('Bạn không có quyền truy cập!');</script>";
+            echo "<script>window.location.href = 'index.php';</script>";
+            exit();
+        }
 // FILE: views/profile/index.php (Bố cục mới: Ảnh ở giữa)
-
+include_once('config/env.php');
 $user_id = $_SESSION['user_id'] ?? 0;
 $user_name = $_SESSION['user'] ?? 'N/A';
 $user_email = $_SESSION['email'] ?? 'N/A';
@@ -151,8 +156,8 @@ $user_avatar = (isset($_SESSION['avatar']) && !empty($_SESSION['avatar'])) ? $_S
 
 <script>
     // --- CẤU HÌNH CLOUDINARY ---
-    const CLOUD_NAME = "dbaeafw6z"; 
-    const UPLOAD_PRESET = "user_avt"; 
+    const CLOUD_NAME = "<?php echo CLOUDINARY_CLOUD_NAME; ?>";
+    const UPLOAD_PRESET = "<?php echo CLOUDINARY_UPLOAD_PRESET; ?>";
     const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -179,6 +184,24 @@ document.addEventListener('DOMContentLoaded', function() {
     avatarInput.addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {
+            // 1. Kiểm tra định dạng file
+            const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            if (!validTypes.includes(file.type)) {
+                alert('Lỗi: Định dạng không hợp lệ! Vui lòng chỉ chọn file ảnh (.jpg, .png, .gif).');
+                this.value = ''; // Xóa file vừa chọn khỏi input
+                selectedFile = null;
+                return; // Dừng lại ngay
+            }
+
+            // 2. Kiểm tra kích thước file (Giới hạn 5MB)
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            if (file.size > maxSize) {
+                alert('Lỗi: Ảnh quá lớn! Vui lòng chọn ảnh có dung lượng dưới 5MB.');
+                this.value = '';
+                selectedFile = null;
+                return;
+            }
+
             selectedFile = file;
             const reader = new FileReader();
             reader.onload = function(e) {

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th10 26, 2025 lúc 08:12 AM
+-- Thời gian đã tạo: Th10 28, 2025 lúc 09:09 AM
 -- Phiên bản máy phục vụ: 10.4.24-MariaDB
 -- Phiên bản PHP: 8.1.6
 
@@ -51,35 +51,38 @@ CREATE TABLE `orders` (
   `is_rated` tinyint(1) NOT NULL DEFAULT 0,
   `fee_payer` enum('sender','receiver') NOT NULL DEFAULT 'sender',
   `PickUp_Photo_Path` varchar(255) DEFAULT NULL,
-  `Delivery_Photo_Path` varchar(255) DEFAULT NULL
+  `Delivery_Photo_Path` varchar(255) DEFAULT NULL,
+  `distance` double NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Đang đổ dữ liệu cho bảng `orders`
 --
 
-INSERT INTO `orders` (`ID`, `CustomerID`, `ShipperID`, `Pick_up_address`, `Pick_up_lat`, `Pick_up_lng`, `Delivery_address`, `Delivery_lat`, `Delivery_lng`, `Recipient`, `status`, `COD_amount`, `CODFee`, `Weight`, `ShippingFee`, `Created_at`, `Accepted_at`, `Note`, `RecipientPhone`, `hidden`, `is_rated`, `fee_payer`, `PickUp_Photo_Path`, `Delivery_Photo_Path`) VALUES
-(9175208, 185, 141, 'Khoa Cơ Khí - IUH, Đại học Công nghiệp Tp.Hồ Chí Minh, 12 Nguyễn Văn Bảo, Phường 4, Gò Vấp, Hồ Chí Minh', '10.8221072', '106.6879015', 'Vinhomes Grand Park, Long Bình, Thủ Đức, Hồ Chí Minh', '10.8429630', '106.8407200', 'Zaa', 'delivered', '500000.00', '5000.00', '1.20', '18000.00', '2025-09-17 04:53:35', '2025-10-17 15:04:29', 'Hàng dễ vỡ', '0998998999', 1, 0, 'sender', NULL, NULL),
-(9178848, 185, 139, 'Vinschool, Nguyễn Hữu Cảnh, Bến Nghé, Quận 1, Hồ Chí Minh', '10.7862422', '106.7114781', 'Khoa Cơ Khí - IUH, Đại học Công nghiệp Tp.Hồ Chí Minh, 12 Nguyễn Văn Bảo, Phường 4, Gò Vấp, Hồ Chí Minh', '10.8221072', '106.6879015', 'Tom', 'delivery_failed', '0.00', '0.00', '1.00', '18000.00', '2025-09-17 04:03:20', '2025-10-09 04:07:35', 'Hàng điện tử', '0912345000', 1, 0, 'sender', NULL, NULL),
-(9182385, 185, 139, '66 D. Lê Lợi, Phường 1, Gò Vấp, Hồ Chí Minh 700000, Việt Nam', '10.8205291', '106.6863567', '66b Nguyễn Sỹ Sách, Phường 15, Tân Bình, Hồ Chí Minh 70000, Việt Nam', '10.8199509', '106.6358395', 'Nguyễn Lâm', 'delivered', '0.00', '0.00', '1.00', '18000.00', '2025-09-18 10:33:01', '2025-10-14 02:42:46', 'Hàng điện tử', '0999888909', 1, 0, 'sender', NULL, NULL),
-(9186174, 185, 141, '167/2/5 Ngô Tất Tố, P. 22, Phường 22, Bình Thạnh, Hồ Chí Minh 700000, Việt Nam', '10.7911801', '106.7148782', 'Khoa Cơ Khí - IUH, Đại học Công nghiệp Tp.Hồ Chí Minh, 12 Nguyễn Văn Bảo, Phường 4, Gò Vấp, Hồ Chí Minh', '10.8221072', '106.6879015', 'Trần An', 'delivered', '120000.00', '5000.00', '2.00', '18000.00', '2025-09-18 10:45:51', '2025-10-11 10:28:12', 'Hàng dễ vỡ', '0912098002', 1, 0, 'sender', NULL, 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F9186174%2Fdelivered_1762094015859.jpg?alt=media&token=bcd081fb-6ac6-47c0-9da3-697d1e7ec19b'),
-(9186919, 185, NULL, '144 Xuân Thủy, Dịch Vọng Hậu, Cầu Giấy, Hà Nội', '21.0368282', '105.7820251', '222 Trần Duy Hưng, Cầu Giấy', '21.0069095', '105.7933494', 'Lê Phong', 'pending', '0.00', '0.00', '1.00', '18000.00', '2025-09-18 13:53:32', NULL, 'Hàng dễ vỡ', '0921876987', 1, 0, 'sender', NULL, NULL),
-(9221121, 185, 141, 'Trạm ép giấy Xuân Trường, Nguyễn Văn Quỳ, Tân Thuận Đông, Quận 7, Hồ Chí Minh', '10.7429218', '106.7390444', 'Sân Bay Tân Sơn Nhất - Trường Sơn, Cảng hàng không Quốc tế Tân Sơn Nhất, Phường 2, Tân Bình, Hồ Chí Minh', '10.8156395', '106.6638113', 'Lê Anh', 'delivered', '0.00', '0.00', '1.00', '18000.00', '2025-09-21 17:38:24', '2025-10-11 09:43:24', 'Hàng dễ vỡ', '0934999210', 1, 0, 'sender', NULL, NULL),
-(9229334, 185, NULL, 'Trạm ép giấy Xuân Trường, Nguyễn Văn Quỳ, Tân Thuận Đông, Quận 7, Hồ Chí Minh', '10.7429218', '106.7390444', 'Chợ Thủ Đức B, Đoàn Công Hớn, Trường Thọ, Thủ Đức, Hồ Chí Minh', '10.8502291', '106.7557012', 'Trần Lam', 'pending', '0.00', '0.00', '2.00', '18000.00', '2025-09-21 17:40:03', '2025-10-04 04:29:10', '', '0924666892', 1, 0, 'sender', NULL, NULL),
-(10046774, 185, 141, '81 Đ. Võ Duy Ninh, Phường 22, Bình Thạnh, Hồ Chí Minh 90000, Việt Nam', '10.7919236', '106.7159995', 'Nguyễn Văn Bảo/Số 12 ĐH Công Nghiệp, Phường 1, Gò Vấp, Hồ Chí Minh 71408, Việt Nam', '10.8221589', '106.6868454', 'Nguyễn Sa', 'delivered', '0.00', '0.00', '1.00', '18000.00', '2025-10-04 06:44:46', '2025-10-21 03:08:00', 'Tập tài liệu', '0900000878', 1, 0, 'sender', 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F10046774%2Fpicked_up_1762097162482.jpg?alt=media&token=2af76a8b-b56a-4457-a656-200e6eed5c39', 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F10046774%2Fdelivered_1762436311009.jpg?alt=media&token=091edaba-2ff9-4377-b8a2-c9060b09d855'),
-(10046898, 185, 141, 'Katinat, 91 Đồng Khởi, Bến Nghé, Quận 1, Hồ Chí Minh', '10.7747667', '106.7043670', '66B Nguyễn Sỹ Sách, Phường 15, Tân Bình, Hồ Chí Minh', '10.8199447', '106.6358023', 'Lê Lam', 'delivered', '0.00', '0.00', '0.50', '15000.00', '2025-10-04 04:15:03', '2025-10-11 02:57:25', 'Hàng dễ vỡ', '0909000231', 1, 1, 'sender', NULL, NULL),
-(10067527, 185, NULL, 'Katinat Phan Văn Trị, 18A Đ. Phan Văn Trị, Phường 1, Gò Vấp, Hồ Chí Minh, Việt Nam', NULL, NULL, 'Cheese Coffee, 190C Đ. Phan Văn Trị, Phường 14, Bình Thạnh, Hồ Chí Minh, Việt Nam', NULL, NULL, 'Nguyen Bao', 'cancelled', '0.00', '0.00', '0.30', '15000.00', '2025-10-06 01:14:57', NULL, 'Tai lieu', '0989878465', 1, 0, 'sender', NULL, NULL),
-(10142116, 187, NULL, 'Lê Văn Khương, Thới An, Quận 12, Ho Chi Minh City', '10.8632542', '106.6497280', 'Đại học Văn Lang (Cơ sở 3), 68 Hẻm 80 Dương Quảng Hàm, Phường 5, Gò Vấp, Hồ Chí Minh', '10.8270654', '106.6987296', 'Hồ Bảo Ngọc', 'pending', '0.00', '0.00', '2.00', '18000.00', '2025-10-14 02:07:33', NULL, 'Hàng dễ vỡ', '0379654880', 1, 0, 'sender', NULL, NULL),
-(10146432, 185, NULL, 'Chợ Đông Thạnh, Đặng Thúc Vịnh, Đông Thạnh, Hóc Môn, Hồ Chí Minh', '10.9043722', '106.6367921', 'KTX Đại Học Công Nghiệp ( IUHer), Nguyễn Văn Bảo, phường 4, Gò Vấp, Hồ Chí Minh', '10.8218768', '106.6870616', 'Lê Tú', 'delivery_failed', '0.00', '0.00', '1.00', '18000.00', '2025-10-13 17:26:59', NULL, 'Tài liệu giấy', '0923888970', 1, 0, 'sender', NULL, NULL),
-(10174039, 185, 139, 'Chợ Đông Thạnh, Đặng Thúc Vịnh, Đông Thạnh, Hóc Môn, Hồ Chí Minh', '10.9043722', '106.6367921', '366 Đ. Phan Văn Trị, Phường 5, Gò Vấp, Thành phố Hồ Chí Minh, Việt Nam', '10.8238822', '106.6933738', 'Nguyễn Lâm Anh', 'delivered', '120000.00', '5000.00', '1.00', '18000.00', '2025-10-17 06:02:30', '2025-11-01 15:17:41', 'Tài liệu', '0361897001', 1, 0, 'receiver', 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F10174039%2Fpicked_up_1762010296206.jpg?alt=media&token=3cc8d74c-5cf5-49f1-9eff-1287bc6944dc', 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F10174039%2Fdelivered_1762010411554.jpg?alt=media&token=669e8cbf-4eda-4245-8819-949e086ac529'),
-(10174717, 187, NULL, 'LOTTE Mart Gò Vấp, 18 Đ. Phan Văn Trị, Phường 10, Gò Vấp, Thành phố Hồ Chí Minh, Việt Nam', '10.8382576', '106.6708474', 'AEON MALL TÂN PHÚ, 30 Đ. Tân Thắng, Sơn Kỳ, Tân Phú, Thành phố Hồ Chí Minh 700000, Việt Nam\\', '10.8034355', '106.6178294', 'Tran Thi Đinh Tam', 'pending', '200000.00', '5000.00', '3.00', '23000.00', '2025-10-17 05:40:02', NULL, 'Giao trong giờ hành chính', '0367781923', 1, 0, 'sender', NULL, NULL),
-(10178154, 185, NULL, '208 Nguyễn Hữu Cảnh, Vinhomes Tân Cảng, Bình Thạnh, Thành phố Hồ Chí Minh 700000, Việt Nam', '10.7940264', '106.7206721', '2B Đ. Phổ Quang, Phường 2, Tân Bình, Thành phố Hồ Chí Minh 700000, Việt Nam', '10.8029270', '106.6659258', 'Tran Thi Đinh Tam', 'pending', '200000.00', '5000.00', '3.00', '23000.00', '2025-10-17 05:52:02', '2025-11-01 04:16:48', 'Giao trong giờ hành chính', '0367781923', 1, 0, 'sender', NULL, NULL),
-(10216894, 185, NULL, 'Empire 88 Tower - Empire City, Thủ Thiêm, Thủ Đức, Hồ Chí Minh', '10.7697001', '106.7160034', 'Landmark 81, Vinhomes Central Park, Phường 22, Bình Thạnh, Hồ Chí Minh', '10.7948522', '106.7218363', 'Nguyen Van B', 'pending', '120000.00', '5000.00', '1.00', '18000.00', '2025-10-21 03:02:52', '2025-11-01 04:56:00', 'Hang de vo', '0379546210', 1, 0, 'sender', NULL, NULL),
-(11019179, 185, 139, '256/39/31e ấp 2, Đường Đông Thạnh 2-5, Hóc Môn, Hồ Chí Minh', '10.9066919', '106.6348243', 'Katinat, 3 Tháng 2, Phường 12, Quận 10, Hồ Chí Minh', '10.7778520', '106.6810900', 'Lê Ân Linh', 'in_transit', '99000.00', '5000.00', '1.00', '18000.00', '2025-11-01 15:16:15', '2025-11-01 15:20:38', 'Hàng thực phẩm', '0986421357', 1, 0, 'receiver', 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F11019179%2Fpicked_up_1762010981122.jpg?alt=media&token=ab4d6e63-87a6-4349-88a6-944b09b85c4b', NULL),
-(11021978, 194, 141, 'KFC Đặng Thúc Vịnh, 253-287 Âp 7, Đông Thạnh, Hóc Môn, Hồ Chí Minh', '10.9039511', '106.6358836', 'Ways station Gym & Billiard, 395 Đ. An Dương Vương, Phường 10, Quận 6, Hồ Chí Minh', '10.7419791', '106.6235623', 'Vũ Hà Linh', 'delivered', '69000.00', '5000.00', '1.00', '15000.00', '2025-11-02 14:00:19', '2025-11-06 13:46:11', 'Thực phẩm', '0383645978', 1, 0, 'sender', 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F11021978%2Fpicked_up_1762675243576.jpg?alt=media&token=5aca71b7-c66c-4b12-a2fa-f79ab58fce2b', 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F11021978%2Fdelivered_1762679347413.jpg?alt=media&token=abc9d780-5c42-48ee-b863-72c08f9197da'),
-(11068347, 185, NULL, 'Lê Văn Khương, Thới An, Quận 12, Ho Chi Minh City', '10.8632542', '106.6497280', 'Anh ngữ Ms Hoa TOEIC, 82 Lê Văn Việt, Hiệp Phú, Thủ Đức, Hồ Chí Minh', '10.8469475', '106.7769739', 'Nguyễn Diệu Anh', 'cancelled', '0.00', '0.00', '1.00', '15000.00', '2025-11-06 15:42:43', NULL, 'Tài liệu', '0379645888', 1, 0, 'sender', NULL, NULL),
-(11094471, 194, 141, '256/39/31e ấp 2, Đường Đông Thạnh 2-5, Hóc Môn, Hồ Chí Minh', '10.9067210', '106.6348573', 'Cầu vượt Tân Thới Hiệp, Thới An, Quận 12, Hồ Chí Minh', '10.8619885', '106.6499294', 'Lê văn trung', 'delivered', '99000.00', '5000.00', '1.00', '18000.00', '2025-11-09 14:17:07', '2025-11-10 16:50:00', 'Thực phẩm', '0986368996', 1, 0, 'sender', 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F11094471%2Fpicked_up_1762794068532.jpg?alt=media&token=e3ef70d3-dc80-4c59-ac37-0a0f64c75c39', 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F11094471%2Fdelivered_1764131899219.jpg?alt=media&token=6920627b-dfaf-4d4c-bccf-52e551519e7a'),
-(11166554, 185, 139, '256/39/31e ấp 2, Đường Đông Thạnh 2-5, Hóc Môn, Hồ Chí Minh', '10.9067034', '106.6348626', 'Bitexco Financial Tower, 2 Hải Triều, Bến Nghé, Quận 1, Hồ Chí Minh', '10.7718433', '106.7044222', 'Hoàng Oanh', 'cancelled', '0.00', '0.00', '1.00', '15000.00', '2025-11-16 08:51:51', '2025-11-17 10:21:42', 'Hàng dễ vỡ', '0963456880', 1, 0, 'receiver', NULL, NULL);
+INSERT INTO `orders` (`ID`, `CustomerID`, `ShipperID`, `Pick_up_address`, `Pick_up_lat`, `Pick_up_lng`, `Delivery_address`, `Delivery_lat`, `Delivery_lng`, `Recipient`, `status`, `COD_amount`, `CODFee`, `Weight`, `ShippingFee`, `Created_at`, `Accepted_at`, `Note`, `RecipientPhone`, `hidden`, `is_rated`, `fee_payer`, `PickUp_Photo_Path`, `Delivery_Photo_Path`, `distance`) VALUES
+(9175208, 185, 141, 'Khoa Cơ Khí - IUH, Đại học Công nghiệp Tp.Hồ Chí Minh, 12 Nguyễn Văn Bảo, Phường 4, Gò Vấp, Hồ Chí Minh', '10.8221072', '106.6879015', 'Vinhomes Grand Park, Long Bình, Thủ Đức, Hồ Chí Minh', '10.8429630', '106.8407200', 'Zaa', 'delivered', '500000.00', '5000.00', '1.20', '18000.00', '2025-09-17 04:53:35', '2025-10-17 15:04:29', 'Hàng dễ vỡ', '0998998999', 1, 0, 'sender', NULL, NULL, 0),
+(9178848, 185, 139, 'Vinschool, Nguyễn Hữu Cảnh, Bến Nghé, Quận 1, Hồ Chí Minh', '10.7862422', '106.7114781', 'Khoa Cơ Khí - IUH, Đại học Công nghiệp Tp.Hồ Chí Minh, 12 Nguyễn Văn Bảo, Phường 4, Gò Vấp, Hồ Chí Minh', '10.8221072', '106.6879015', 'Tom', 'delivery_failed', '0.00', '0.00', '1.00', '18000.00', '2025-09-17 04:03:20', '2025-10-09 04:07:35', 'Hàng điện tử', '0912345000', 1, 0, 'sender', NULL, NULL, 0),
+(9182385, 185, 139, '66 D. Lê Lợi, Phường 1, Gò Vấp, Hồ Chí Minh 700000, Việt Nam', '10.8205291', '106.6863567', '66b Nguyễn Sỹ Sách, Phường 15, Tân Bình, Hồ Chí Minh 70000, Việt Nam', '10.8199509', '106.6358395', 'Nguyễn Lâm', 'delivered', '0.00', '0.00', '1.00', '18000.00', '2025-09-18 10:33:01', '2025-10-14 02:42:46', 'Hàng điện tử', '0999888909', 1, 0, 'sender', NULL, NULL, 0),
+(9186174, 185, 141, '167/2/5 Ngô Tất Tố, P. 22, Phường 22, Bình Thạnh, Hồ Chí Minh 700000, Việt Nam', '10.7911801', '106.7148782', 'Khoa Cơ Khí - IUH, Đại học Công nghiệp Tp.Hồ Chí Minh, 12 Nguyễn Văn Bảo, Phường 4, Gò Vấp, Hồ Chí Minh', '10.8221072', '106.6879015', 'Trần An', 'delivered', '120000.00', '5000.00', '2.00', '18000.00', '2025-09-18 10:45:51', '2025-10-11 10:28:12', 'Hàng dễ vỡ', '0912098002', 1, 0, 'sender', NULL, 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F9186174%2Fdelivered_1762094015859.jpg?alt=media&token=bcd081fb-6ac6-47c0-9da3-697d1e7ec19b', 0),
+(9186919, 185, NULL, '144 Xuân Thủy, Dịch Vọng Hậu, Cầu Giấy, Hà Nội', '21.0368282', '105.7820251', '222 Trần Duy Hưng, Cầu Giấy', '21.0069095', '105.7933494', 'Lê Phong', 'pending', '0.00', '0.00', '1.00', '18000.00', '2025-09-18 13:53:32', NULL, 'Hàng dễ vỡ', '0921876987', 1, 0, 'sender', NULL, NULL, 0),
+(9221121, 185, 141, 'Trạm ép giấy Xuân Trường, Nguyễn Văn Quỳ, Tân Thuận Đông, Quận 7, Hồ Chí Minh', '10.7429218', '106.7390444', 'Sân Bay Tân Sơn Nhất - Trường Sơn, Cảng hàng không Quốc tế Tân Sơn Nhất, Phường 2, Tân Bình, Hồ Chí Minh', '10.8156395', '106.6638113', 'Lê Anh', 'delivered', '0.00', '0.00', '1.00', '18000.00', '2025-09-21 17:38:24', '2025-10-11 09:43:24', 'Hàng dễ vỡ', '0934999210', 1, 0, 'sender', NULL, NULL, 0),
+(9229334, 185, NULL, 'Trạm ép giấy Xuân Trường, Nguyễn Văn Quỳ, Tân Thuận Đông, Quận 7, Hồ Chí Minh', '10.7429218', '106.7390444', 'Chợ Thủ Đức B, Đoàn Công Hớn, Trường Thọ, Thủ Đức, Hồ Chí Minh', '10.8502291', '106.7557012', 'Trần Lam', 'pending', '0.00', '0.00', '2.00', '18000.00', '2025-09-21 17:40:03', '2025-10-04 04:29:10', '', '0924666892', 1, 0, 'sender', NULL, NULL, 0),
+(10046774, 185, 141, '81 Đ. Võ Duy Ninh, Phường 22, Bình Thạnh, Hồ Chí Minh 90000, Việt Nam', '10.7919236', '106.7159995', 'Nguyễn Văn Bảo/Số 12 ĐH Công Nghiệp, Phường 1, Gò Vấp, Hồ Chí Minh 71408, Việt Nam', '10.8221589', '106.6868454', 'Nguyễn Sa', 'delivered', '0.00', '0.00', '1.00', '18000.00', '2025-10-04 06:44:46', '2025-10-21 03:08:00', 'Tập tài liệu', '0900000878', 1, 0, 'sender', 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F10046774%2Fpicked_up_1762097162482.jpg?alt=media&token=2af76a8b-b56a-4457-a656-200e6eed5c39', 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F10046774%2Fdelivered_1762436311009.jpg?alt=media&token=091edaba-2ff9-4377-b8a2-c9060b09d855', 0),
+(10046898, 185, 141, 'Katinat, 91 Đồng Khởi, Bến Nghé, Quận 1, Hồ Chí Minh', '10.7747667', '106.7043670', '66B Nguyễn Sỹ Sách, Phường 15, Tân Bình, Hồ Chí Minh', '10.8199447', '106.6358023', 'Lê Lam', 'delivered', '0.00', '0.00', '0.50', '15000.00', '2025-10-04 04:15:03', '2025-10-11 02:57:25', 'Hàng dễ vỡ', '0909000231', 1, 1, 'sender', NULL, NULL, 0),
+(10067527, 185, NULL, 'Katinat Phan Văn Trị, 18A Đ. Phan Văn Trị, Phường 1, Gò Vấp, Hồ Chí Minh, Việt Nam', NULL, NULL, 'Cheese Coffee, 190C Đ. Phan Văn Trị, Phường 14, Bình Thạnh, Hồ Chí Minh, Việt Nam', NULL, NULL, 'Nguyen Bao', 'cancelled', '0.00', '0.00', '0.30', '15000.00', '2025-10-06 01:14:57', NULL, 'Tai lieu', '0989878465', 1, 0, 'sender', NULL, NULL, 0),
+(10142116, 187, NULL, 'Lê Văn Khương, Thới An, Quận 12, Ho Chi Minh City', '10.8632542', '106.6497280', 'Đại học Văn Lang (Cơ sở 3), 68 Hẻm 80 Dương Quảng Hàm, Phường 5, Gò Vấp, Hồ Chí Minh', '10.8270654', '106.6987296', 'Hồ Bảo Ngọc', 'pending', '0.00', '0.00', '2.00', '18000.00', '2025-10-14 02:07:33', NULL, 'Hàng dễ vỡ', '0379654880', 1, 0, 'sender', NULL, NULL, 0),
+(10146432, 185, NULL, 'Chợ Đông Thạnh, Đặng Thúc Vịnh, Đông Thạnh, Hóc Môn, Hồ Chí Minh', '10.9043722', '106.6367921', 'KTX Đại Học Công Nghiệp ( IUHer), Nguyễn Văn Bảo, phường 4, Gò Vấp, Hồ Chí Minh', '10.8218768', '106.6870616', 'Lê Tú', 'delivery_failed', '0.00', '0.00', '1.00', '18000.00', '2025-10-13 17:26:59', NULL, 'Tài liệu giấy', '0923888970', 1, 0, 'sender', NULL, NULL, 0),
+(10174039, 185, 139, 'Chợ Đông Thạnh, Đặng Thúc Vịnh, Đông Thạnh, Hóc Môn, Hồ Chí Minh', '10.9043722', '106.6367921', '366 Đ. Phan Văn Trị, Phường 5, Gò Vấp, Thành phố Hồ Chí Minh, Việt Nam', '10.8238822', '106.6933738', 'Nguyễn Lâm Anh', 'delivered', '120000.00', '5000.00', '1.00', '18000.00', '2025-10-17 06:02:30', '2025-11-01 15:17:41', 'Tài liệu', '0361897001', 1, 0, 'receiver', 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F10174039%2Fpicked_up_1762010296206.jpg?alt=media&token=3cc8d74c-5cf5-49f1-9eff-1287bc6944dc', 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F10174039%2Fdelivered_1762010411554.jpg?alt=media&token=669e8cbf-4eda-4245-8819-949e086ac529', 0),
+(10174717, 187, NULL, 'LOTTE Mart Gò Vấp, 18 Đ. Phan Văn Trị, Phường 10, Gò Vấp, Thành phố Hồ Chí Minh, Việt Nam', '10.8382576', '106.6708474', 'AEON MALL TÂN PHÚ, 30 Đ. Tân Thắng, Sơn Kỳ, Tân Phú, Thành phố Hồ Chí Minh 700000, Việt Nam\\', '10.8034355', '106.6178294', 'Tran Thi Đinh Tam', 'pending', '200000.00', '5000.00', '3.00', '23000.00', '2025-10-17 05:40:02', NULL, 'Giao trong giờ hành chính', '0367781923', 1, 0, 'sender', NULL, NULL, 0),
+(10178154, 185, NULL, '208 Nguyễn Hữu Cảnh, Vinhomes Tân Cảng, Bình Thạnh, Thành phố Hồ Chí Minh 700000, Việt Nam', '10.7940264', '106.7206721', '2B Đ. Phổ Quang, Phường 2, Tân Bình, Thành phố Hồ Chí Minh 700000, Việt Nam', '10.8029270', '106.6659258', 'Tran Thi Đinh Tam', 'pending', '200000.00', '5000.00', '3.00', '23000.00', '2025-10-17 05:52:02', '2025-11-01 04:16:48', 'Giao trong giờ hành chính', '0367781923', 1, 0, 'sender', NULL, NULL, 0),
+(10216894, 185, NULL, 'Empire 88 Tower - Empire City, Thủ Thiêm, Thủ Đức, Hồ Chí Minh', '10.7697001', '106.7160034', 'Landmark 81, Vinhomes Central Park, Phường 22, Bình Thạnh, Hồ Chí Minh', '10.7948522', '106.7218363', 'Nguyen Van B', 'pending', '120000.00', '5000.00', '1.00', '18000.00', '2025-10-21 03:02:52', '2025-11-01 04:56:00', 'Hang de vo', '0379546210', 1, 0, 'sender', NULL, NULL, 0),
+(11019179, 185, 139, '256/39/31e ấp 2, Đường Đông Thạnh 2-5, Hóc Môn, Hồ Chí Minh', '10.9066919', '106.6348243', 'Katinat, 3 Tháng 2, Phường 12, Quận 10, Hồ Chí Minh', '10.7778520', '106.6810900', 'Lê Ân Linh', 'in_transit', '99000.00', '5000.00', '1.00', '18000.00', '2025-11-01 15:16:15', '2025-11-01 15:20:38', 'Hàng thực phẩm', '0986421357', 1, 0, 'receiver', 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F11019179%2Fpicked_up_1762010981122.jpg?alt=media&token=ab4d6e63-87a6-4349-88a6-944b09b85c4b', NULL, 0),
+(11021978, 194, 141, 'KFC Đặng Thúc Vịnh, 253-287 Âp 7, Đông Thạnh, Hóc Môn, Hồ Chí Minh', '10.9039511', '106.6358836', 'Ways station Gym & Billiard, 395 Đ. An Dương Vương, Phường 10, Quận 6, Hồ Chí Minh', '10.7419791', '106.6235623', 'Vũ Hà Linh', 'delivered', '69000.00', '5000.00', '1.00', '15000.00', '2025-11-02 14:00:19', '2025-11-06 13:46:11', 'Thực phẩm', '0383645978', 1, 0, 'sender', 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F11021978%2Fpicked_up_1762675243576.jpg?alt=media&token=5aca71b7-c66c-4b12-a2fa-f79ab58fce2b', 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F11021978%2Fdelivered_1762679347413.jpg?alt=media&token=abc9d780-5c42-48ee-b863-72c08f9197da', 0),
+(11068347, 185, NULL, 'Lê Văn Khương, Thới An, Quận 12, Ho Chi Minh City', '10.8632542', '106.6497280', 'Anh ngữ Ms Hoa TOEIC, 82 Lê Văn Việt, Hiệp Phú, Thủ Đức, Hồ Chí Minh', '10.8469475', '106.7769739', 'Nguyễn Diệu Anh', 'cancelled', '0.00', '0.00', '1.00', '15000.00', '2025-11-06 15:42:43', NULL, 'Tài liệu', '0379645888', 1, 0, 'sender', NULL, NULL, 0),
+(11094471, 194, 141, '256/39/31e ấp 2, Đường Đông Thạnh 2-5, Hóc Môn, Hồ Chí Minh', '10.9067210', '106.6348573', 'Cầu vượt Tân Thới Hiệp, Thới An, Quận 12, Hồ Chí Minh', '10.8619885', '106.6499294', 'Lê văn trung', 'delivered', '99000.00', '5000.00', '1.00', '18000.00', '2025-11-09 14:17:07', '2025-11-10 16:50:00', 'Thực phẩm', '0986368996', 1, 0, 'sender', 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F11094471%2Fpicked_up_1762794068532.jpg?alt=media&token=e3ef70d3-dc80-4c59-ac37-0a0f64c75c39', 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F11094471%2Fdelivered_1764131899219.jpg?alt=media&token=6920627b-dfaf-4d4c-bccf-52e551519e7a', 0),
+(11166554, 185, 141, '256/39/31e ấp 2, Đường Đông Thạnh 2-5, Hóc Môn, Hồ Chí Minh', '10.9067034', '106.6348626', 'Bitexco Financial Tower, 2 Hải Triều, Bến Nghé, Quận 1, Hồ Chí Minh', '10.7718433', '106.7044222', 'Hoàng Oanh', 'delivered', '0.00', '0.00', '1.00', '15000.00', '2025-11-16 08:51:51', '2025-11-28 03:03:24', 'Hàng dễ vỡ', '0963456880', 1, 0, 'receiver', 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F11166554%2Fpicked_up_1764301844518.jpg?alt=media&token=b8d9a53e-912d-4797-93bf-d910020dcbc3', 'https://firebasestorage.googleapis.com/v0/b/kltn-97864.firebasestorage.app/o/shipper_proofs%2F11166554%2Fdelivered_1764315805518.jpg?alt=media&token=3fee3382-adc0-4226-8d6e-c331ba675f3c', 0),
+(11283885, 185, NULL, 'Chợ Đông Thạnh, Đặng Thúc Vịnh, Đông Thạnh, Hóc Môn, Hồ Chí Minh', '10.9043722', '106.6367921', 'Bến xe An Sương, Quốc Lộ 22, Bà Điểm, Hóc Môn, Hồ Chí Minh', '10.8439389', '106.6134854', 'Ngô Hoài Lâm', 'pending', '0.00', '0.00', '1.00', '44000.00', '2025-11-28 07:18:07', NULL, 'Hàng dễ vỡ', '0963456996', 1, 0, 'sender', NULL, NULL, 8.425),
+(11289907, 190, NULL, '12 Nguyen Van Bao, Go Vap, TP.HCM', NULL, NULL, '35 Hai Ba Trung, Quan 1, TP.HCM', NULL, NULL, 'Tran Thi Đinh Tam', 'pending', '200000.00', '5000.00', '3.00', '44000.00', '2025-11-28 07:17:55', NULL, 'Giao trong giờ hành chính', '0367781923', 1, 0, 'sender', NULL, NULL, 5);
 
 -- --------------------------------------------------------
 
@@ -149,7 +152,7 @@ CREATE TABLE `shipper_locations` (
 
 INSERT INTO `shipper_locations` (`shipper_id`, `lat`, `lng`, `accuracy`, `speed`, `heading`, `status`, `updated_at`) VALUES
 (139, 10.9016663, 106.6450596, NULL, NULL, NULL, 'offline', '2025-11-17 10:24:11'),
-(141, 10.9063552, 106.634529, NULL, NULL, NULL, 'online', '2025-11-26 04:56:33'),
+(141, 10.9067028, 106.6348687, NULL, NULL, NULL, 'online', '2025-11-28 08:06:12'),
 (157, 10.7703004, 106.7170031, NULL, NULL, NULL, 'offline', '2025-10-12 16:19:04'),
 (158, 10.9066972, 106.6348068, NULL, NULL, NULL, 'offline', '2025-11-02 14:01:04'),
 (188, 10.906494, 106.634823, NULL, NULL, NULL, 'offline', '2025-11-23 16:18:17');
@@ -236,9 +239,16 @@ INSERT INTO `trackings` (`ID`, `OrderID`, `Status`, `Location`, `Updated_at`) VA
 (295, 11094471, 'Shipper đã lấy hàng thành công.', NULL, '2025-11-10 17:01:20'),
 (296, 11094471, 'Đơn hàng đang trên đường giao đến bạn.', NULL, '2025-11-10 17:01:23'),
 (297, 11166554, 'Đơn hàng đã được tạo.', NULL, '2025-11-16 08:51:51'),
-(300, 11166554, 'Shipper 141 đã nhận đơn.', NULL, '2025-11-16 14:12:41'),
-(301, 11166554, 'Shipper đã hủy đơn. Lý do: Không liên lạc được người gửi', NULL, '2025-11-16 14:24:03'),
-(304, 11094471, 'Giao hàng thành công!', NULL, '2025-11-26 04:38:34');
+(304, 11094471, 'Giao hàng thành công!', NULL, '2025-11-26 04:38:34'),
+(306, 11166554, 'Shipper 141 đã nhận đơn.', NULL, '2025-11-28 03:03:24'),
+(307, 11166554, 'Shipper đã lấy hàng thành công.', NULL, '2025-11-28 03:16:02'),
+(309, 11166554, 'Shipper đã lấy hàng thành công.', NULL, '2025-11-28 03:37:15'),
+(310, 11166554, 'Đơn hàng đang trên đường giao đến bạn.', NULL, '2025-11-28 03:37:24'),
+(311, 11166554, 'Shipper đã lấy hàng thành công.', NULL, '2025-11-28 03:51:00'),
+(312, 11166554, 'Đơn hàng đang trên đường giao đến bạn.', NULL, '2025-11-28 03:51:05'),
+(313, 11289907, 'Đơn hàng đã được tạo.', NULL, '2025-11-28 07:17:55'),
+(314, 11283885, 'Đơn hàng đã được tạo.', NULL, '2025-11-28 07:18:07'),
+(315, 11166554, 'Giao hàng thành công!', NULL, '2025-11-28 07:43:39');
 
 -- --------------------------------------------------------
 
@@ -280,7 +290,8 @@ INSERT INTO `transactions` (`ID`, `OrderID`, `UserID`, `Type`, `Amount`, `Status
 (42, 11021978, 141, 'deposit_cod', '5000.00', 'completed', '', '2025-11-23 16:09:16', NULL),
 (43, 11094471, 141, 'shipping_fee', '18000.00', 'completed', NULL, '2025-11-26 04:38:34', NULL),
 (44, 11094471, 141, 'collect_cod', '104000.00', 'completed', NULL, '2025-11-26 04:38:34', NULL),
-(55, 11094471, 141, 'deposit_cod', '5000.00', 'completed', 'Chuyển khoản', '2025-11-26 06:54:44', 'https://res.cloudinary.com/dbaeafw6z/image/upload/v1764140082/transaction_proofs/byqfb4h0yqxm3akpt4ym.png');
+(56, 11094471, 141, 'deposit_cod', '5000.00', 'completed', 'Test serc ck', '2025-11-27 04:04:09', 'https://res.cloudinary.com/dbaeafw6z/image/upload/v1764216246/transaction_proofs/t8kk32ewntri2p0zsfwo.png'),
+(57, 11166554, 141, 'shipping_fee', '15000.00', 'completed', NULL, '2025-11-28 07:43:39', NULL);
 
 -- --------------------------------------------------------
 
@@ -346,7 +357,8 @@ INSERT INTO `users` (`ID`, `Username`, `Email`, `Password`, `PhoneNumber`, `Avat
 (191, 'Nguyễn Văn Ba', 'nguyenba@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0379111666', NULL, 6, 'active', NULL, '', 1, 0, 0, '2025-10-20 16:25:07'),
 (192, 'test3210', 'ts321@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0987987909', NULL, 6, 'active', NULL, '', 1, 0, 0, '2025-10-31 02:54:39'),
 (194, 'Trong Phat Le', 'trongphat@gmail.com', 'e10adc3949ba59abbe56e057f20f883e', '0379974903', NULL, 7, 'active', NULL, '', 1, 0, 0, '2025-10-31 03:10:49'),
-(196, 'Test Shipper Image2', 'shipperanh@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0379974000', 'https://res.cloudinary.com/dbaeafw6z/image/upload/v1764087923/avatars/nwpsa5c8qwc5m5neddiz.png', 6, 'active', NULL, 'test', 1, 0, 0, '2025-11-25 16:10:06');
+(196, 'Test Shipper Image2', 'shipperanh@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0379974000', 'https://res.cloudinary.com/dbaeafw6z/image/upload/v1764087923/avatars/nwpsa5c8qwc5m5neddiz.png', 6, 'active', NULL, 'test', 1, 0, 0, '2025-11-25 16:10:06'),
+(197, 'testSerc2', 'tsr@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0989777882', 'https://res.cloudinary.com/dbaeafw6z/image/upload/v1764216117/avatars/nesh7mvbnufwxjfvezkg.png', 2, 'active', NULL, 'testS', 1, 0, 0, '2025-11-27 04:00:38');
 
 -- --------------------------------------------------------
 
@@ -471,19 +483,19 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT cho bảng `trackings`
 --
 ALTER TABLE `trackings`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=305;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=316;
 
 --
 -- AUTO_INCREMENT cho bảng `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT cho bảng `users`
 --
 ALTER TABLE `users`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=197;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=198;
 
 --
 -- AUTO_INCREMENT cho bảng `vehicles`

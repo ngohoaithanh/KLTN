@@ -52,7 +52,7 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
 $Create_at = date('Y-m-d H:i:s');
 $CustomerID = 0;
 $feePayer = isset($_REQUEST['fee_payer']) ? trim($_REQUEST['fee_payer']) : 'sender';
-
+$distance = floatval($_REQUEST['distance']);
 $PhoneNumber = isset($_REQUEST['PhoneNumber']) ? trim($_REQUEST['PhoneNumber']) : '';  // Lấy 'PhoneNumber' từ form
 
 
@@ -149,12 +149,12 @@ if ($ID == 0) {
 $sqlInsertOrder = "INSERT INTO orders 
 (ID, CustomerID, Pick_up_address, Pick_up_lat, Pick_up_lng, 
  Delivery_address, Delivery_lat, Delivery_lng, 
- Recipient, RecipientPhone, Status, COD_amount, Created_at, Note, ShippingFee, Weight, CODFee, fee_payer)
-VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?)";
+ Recipient, RecipientPhone, Status, COD_amount, Created_at, Note, ShippingFee, Weight, CODFee, fee_payer, distance)
+VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?, ?)";
 
 $stmtOrder = $conn->prepare($sqlInsertOrder);
 $stmtOrder->bind_param(
-    "iisddsddsssdssddds",  
+    "iisddsddsssdssdddsd",  
     $ID,
     $CustomerID,
     $PickUpAddress,
@@ -172,7 +172,8 @@ $stmtOrder->bind_param(
     $ShippingFee,
     $Weight,
     $CODFee,
-    $feePayer
+    $feePayer,
+    $distance
 );
 
 

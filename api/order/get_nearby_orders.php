@@ -155,6 +155,7 @@ $sql = "
     o.Pick_up_address,  o.Pick_up_lat,  o.Pick_up_lng,
     o.Delivery_address, o.Delivery_lat, o.Delivery_lng,
     o.Recipient, o.RecipientPhone, o.Status,
+    o.distance AS order_distance,
     o.COD_amount, o.Weight, o.ShippingFee, o.Note, o.Created_at,
     (6371000 * 2 * ASIN(SQRT(
         POWER(SIN(RADIANS((? - COALESCE(o.Pick_up_lat,  o.Delivery_lat))/2)),2) +
@@ -225,7 +226,8 @@ while ($r = $res->fetch_assoc()) {
     'Created_at'      => $r['Created_at'],
     'distance'        => floatval($r['distance']),
     'hint_feasible'   => $hint_feasible,
-    'hint_reason'     => $hint_reason
+    'hint_reason'     => $hint_reason,
+    'order_distance' => floatval($r['order_distance'])
   ];
 }
 $stmt->close();
