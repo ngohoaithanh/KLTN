@@ -1,3 +1,9 @@
+<?php
+$FILE_ID = "1gAhsEe1w9s07Fvs64G3lT1bPNn-WfIyH";
+
+$APK_URL = "https://drive.google.com/uc?export=download&id=" . $FILE_ID;
+$QR_URL  = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" . urlencode($APK_URL);
+?>
 <style>
     @keyframes pulse-fade-in {
         0% { opacity: 0; transform: scale(0.95); }
@@ -43,9 +49,7 @@
                     
                     <div class="mt-4">
                         <strong>Tải ứng dụng tại đây:</strong><br>
-                        
-                        <img src="views/img/qr_app.png" alt="Tải ứng dụng" style="width: 200px; height: 200px; margin-top: 15px; margin-left:0px;">
-                        
+                        <img src="<?= htmlspecialchars($QR_URL) ?>" class="ls-qr-img" alt="QR Code tải LOGISMART">
                         <p class="small text-muted">(Quét mã QR để tải ứng dụng)</p>
                     </div>
                 </div>

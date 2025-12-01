@@ -96,6 +96,11 @@
           <li><a href="?quanlydonhang">Đơn hàng</a></li>
           <li><a href="?quanlyuser">Nhân viên</a></li>
           <li><a href="?dashboard">Báo cáo</a></li>
+          <li>
+              <a href="?download" style="color: #ffc107;">
+                  <i class="fas fa-download" style="margin-right: 5px;"></i> Tải Ứng Dụng
+              </a>
+          </li>
         </ul>
       </div>
       <div class="footer-col">
