@@ -51,6 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || $_SERVER['REQUEST_METHOD'] === 'GET
                 $_SESSION['avatar']   = $user['Avatar'];
 
                 unset($user['Password']);
+                include_once('../../controllers/cLog.php');
+                controlLog::record($user['ID'], 'LOGIN', 'users', $user['ID'], 'Đăng nhập vào hệ thống thành công');
                 echo json_encode(['success' => true, 'user' => $user,'session_id' => session_id()]);
                 exit;
             } else {

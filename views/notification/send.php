@@ -1,5 +1,12 @@
-<div class="container-fluid">
-    <h1 class="h3 mb-4 text-gray-800">Gửi Thông Báo Hệ Thống</h1>
+<?php
+    if (!isset($_SESSION["dangnhap"]) || ($_SESSION["role"] !=1 && $_SESSION["role"] !=2)) {
+        echo "<script>alert('Bạn không có quyền truy cập!');</script>";
+        echo "<script>window.location.href = 'index.php';</script>";
+        exit();
+    }
+?>
+<div class="container-fluid" style="margin-top: 20px;">
+    <h1 class="h3 mb-4 text-gray-800 text-center">Gửi Thông Báo Hệ Thống</h1>
 
     <div class="row">
         <div class="col-lg-8">

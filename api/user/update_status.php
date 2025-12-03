@@ -37,6 +37,14 @@ try {
     $stmt->bind_param("si", $new_status, $id);
 
     if ($stmt->execute()) {
+        //log
+        if (session_status() === PHP_SESSION_NONE) session_start();
+        $admin_id = $_SESSION['user_id'] ?? 0;
+        include_once("../../controllers/cLog.php");
+        $action = ($new_status == 'active') ? 'UNLOCK_USER' : 'LOCK_USER';
+        $desc = "Đổi trạng thái tài khoản #$id thành: $new_status";
+        controlLog::record($admin_id, $action, 'users', $id, $desc);
+
         $title = ($new_status == 'active') ? "Tài khoản đã được kích hoạt" : "Tài khoản đã bị khóa";
         $msg   = ($new_status == 'active') 
                 ? "Chúc mừng! Tài khoản của bạn đã được kích hoạt. Bạn có thể bắt đầu sử dụng dịch vụ." 

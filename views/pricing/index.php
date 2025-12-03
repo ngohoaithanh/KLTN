@@ -1,3 +1,10 @@
+<?php
+    if (!isset($_SESSION["dangnhap"]) || ($_SESSION["role"] !=1 && $_SESSION["role"] !=2)) {
+        echo "<script>alert('Bạn không có quyền truy cập!');</script>";
+        echo "<script>window.location.href = 'index.php';</script>";
+        exit();
+    }
+?>
 <div class="container-fluid"style="margin-top: 20px;">
      <h1 class="h3 mb-0 text-gray-800 text-center">Quản lý Bảng giá & Cước phí</h1>
     <div class="d-sm-flex align-items-center justify-content-between mb-4">

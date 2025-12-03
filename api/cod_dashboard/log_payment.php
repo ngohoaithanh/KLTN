@@ -124,6 +124,14 @@ try {
     controlNotification::add($shipper_id, "Thanh toán công nợ thành công", $msg, "system", $receipt_id);
 
     $conn->commit();
+    // === GHI LOG ===
+    if (session_status() === PHP_SESSION_NONE) session_start();
+    $actor_id = $_SESSION['user_id'] ?? 0; // ID của kế toán
+    
+    include_once("../../controllers/cLog.php");
+    $log_desc = "Đã lập phiếu thu #$receipt_code. Số tiền: " . number_format($payment_amount) . "đ. Shipper: $shipper_id";
+    controlLog::record($actor_id, 'CREATE_RECEIPT', 'receipts', $receipt_id, $log_desc);
+
     $response = ['success' => true, 'message' => 'Đã ghi nhận phiếu thu thành công.'];
 
 } catch (Exception $e) {

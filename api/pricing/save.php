@@ -27,6 +27,21 @@ try {
     }
 
     if ($stmt->execute()) {
+        // === GHI LOG ===
+        if (session_status() === PHP_SESSION_NONE) session_start();
+        $admin_id = $_SESSION['user_id'] ?? 0;
+        
+        include_once("../../controllers/cLog.php");
+        
+        // Xác định là Thêm mới hay Cập nhật
+        $is_update = (isset($data['ID']) && $data['ID'] > 0);
+        $action = $is_update ? 'UPDATE_PRICING' : 'CREATE_PRICING';
+        $target_id = $is_update ? $data['ID'] : $conn->insert_id;
+        
+        $desc = "$action: $name (Giá cơ bản: $basePrice)";
+        controlLog::record($admin_id, $action, 'pricing_rules', $target_id, $desc);
+        // ==============
+        
         $response['success'] = true;
     } else {
         $response['error'] = $stmt->error;

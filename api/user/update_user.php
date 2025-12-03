@@ -107,6 +107,13 @@ try {
         $stmt_veh->close();
     }
 
+    // === GHI LOG ===
+    include_once('../../controllers/cLog.php');
+    session_start(); 
+    $adminId = $_SESSION['user_id'] ?? 0; 
+    
+    controlLog::record($adminId, 'UPDATE_USER', 'users', $id, "Cập nhật thông tin user: $username");
+    // ===============
     // Nếu mọi thứ ok, Commit giao dịch
     $conn->commit();
     echo json_encode(['success' => true, 'message' => 'Cập nhật thành công']);

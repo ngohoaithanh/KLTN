@@ -74,6 +74,16 @@ try {
 
     if ($stmt_insert->execute()) {
         $new_user_id = $stmt_insert->insert_id;
+        //log
+        if (session_status() === PHP_SESSION_NONE) session_start();
+        $admin_id = $_SESSION['user_id'] ?? 0;
+        
+        include_once("../../controllers/cLog.php");
+        $role_name = ($role == 6) ? "Shipper" : "User Role $role";
+        $desc = "Đã tạo tài khoản mới: $username ($role_name)";
+        
+        controlLog::record($admin_id, 'CREATE_USER', 'users', $new_user_id, $desc);
+
         http_response_code(201); // Created
         echo json_encode([
             'success' => true,
