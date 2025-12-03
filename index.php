@@ -1,5 +1,5 @@
 <?php
-// error_reporting(0);
+error_reporting(0);
 session_start();
 ?>
 <!DOCTYPE html>
@@ -61,6 +61,10 @@ session_start();
         include_once("views/lock_user/toggle_user_status.php");   
     }elseif(isset($_GET["profile"])){
         include_once("views/profile/index.php");
+    }elseif(isset($_GET["pricing"])){
+        include_once("views/pricing/index.php");
+    }elseif(isset($_GET["send_notification"])){
+        include_once("views/notification/send.php");
     }else{
         if (!isset($_SESSION['dangnhap']) || $_SESSION['dangnhap'] != 1) {
             include_once("views/giaodien/intro.php"); 

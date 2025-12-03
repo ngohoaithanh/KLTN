@@ -3,7 +3,7 @@
 // PHIÊN BẢN NÂNG CẤP: Chấp nhận dữ liệu từ Form (x-www-form-urlencoded)
 
 header('Content-Type: application/json; charset=utf-8');
-
+include_once("../../controllers/cNotification.php");
 include_once('../../config/database.php');
 $db = new clsKetNoi();
 $conn = $db->moKetNoi();
@@ -37,6 +37,12 @@ try {
     $stmt->bind_param("si", $new_status, $id);
 
     if ($stmt->execute()) {
+        $title = ($new_status == 'active') ? "Tài khoản đã được kích hoạt" : "Tài khoản đã bị khóa";
+        $msg   = ($new_status == 'active') 
+                ? "Chúc mừng! Tài khoản của bạn đã được kích hoạt. Bạn có thể bắt đầu sử dụng dịch vụ." 
+                : "Tài khoản của bạn đã bị khóa bởi quản trị viên. Vui lòng liên hệ để biết thêm chi tiết.";
+
+        controlNotification::add($id, $title, $msg, "system");
         http_response_code(200);
         echo json_encode(['success' => true, 'message' => 'Cập nhật trạng thái thành công']);
     } else {

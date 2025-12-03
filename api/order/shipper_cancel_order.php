@@ -71,6 +71,28 @@ if (isset($_POST['order_id']) && isset($_POST['reason'])) {
         $stmt_update_rating->execute();
         $stmt_update_rating->close();
 
+        // notify
+        // A. Lấy CustomerID trước
+        $stmt_get_cust = $conn->prepare("SELECT CustomerID FROM orders WHERE ID = ?");
+        $stmt_get_cust->bind_param("i", $orderId);
+        $stmt_get_cust->execute();
+        $custRes = $stmt_get_cust->get_result()->fetch_assoc();
+        $customerId = $custRes ? $custRes['CustomerID'] : null; // Lấy ID
+        $stmt_get_cust->close();
+        
+        // B. Nếu có CustomerID thì mới ghi thông báo
+        if ($customerId) {
+            $title = "Đơn hàng bị hủy";
+            $msg = "Tài xế đã hủy đơn hàng #" . $orderId . ". Lý do: " . $reason;
+            
+            $stmt_noti = $conn->prepare("INSERT INTO notifications (UserID, Title, Message, Type, ReferenceID) VALUES (?, ?, ?, ?, ?)");
+            // Lưu ý: 'order_cancel' là type hợp lý để hiển thị icon khác ở App
+            $type = "order_cancel"; 
+            $stmt_noti->bind_param("isssi", $customerId, $title, $msg, $type, $orderId);
+            $stmt_noti->execute();
+            $stmt_noti->close();
+        }
+
         // --- HOÀN TẤT ---
         $conn->commit();
         $response['success'] = true;

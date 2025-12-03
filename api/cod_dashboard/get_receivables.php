@@ -91,13 +91,16 @@ $end_date_sql = date('Y-m-d', strtotime($end_date . ' +1 day'));
 
 $sql_history = $conn->prepare("
     SELECT 
-        t.Created_at, u.Username, t.Amount, t.OrderID, t.Note, t.Type, 
-        t.ProofImage  /* <-- THÊM CỘT NÀY */
-    FROM transactions t
-    JOIN users u ON t.UserID = u.ID
-    WHERE t.Type IN ('deposit_cod', 'overpayment_cod') 
-      AND t.Created_at >= ? AND t.Created_at < ? 
-    ORDER BY t.Created_at DESC
+        r.Created_at, 
+        r.Code, 
+        u.Username, 
+        r.TotalAmount AS Amount, 
+        r.ProofImage, 
+        r.Note
+    FROM receipts r
+    JOIN users u ON r.ShipperID = u.ID
+    WHERE r.Created_at >= ? AND r.Created_at < ? 
+    ORDER BY r.Created_at DESC
 ");
 $sql_history->bind_param("ss", $start_date, $end_date_sql);
 $sql_history->execute();

@@ -55,6 +55,27 @@ $feePayer = isset($_REQUEST['fee_payer']) ? trim($_REQUEST['fee_payer']) : 'send
 $distance = floatval($_REQUEST['distance']);
 $PhoneNumber = isset($_REQUEST['PhoneNumber']) ? trim($_REQUEST['PhoneNumber']) : '';  // Lấy 'PhoneNumber' từ form
 
+// Mặc định lấy bảng giá xe máy đang kích hoạt
+$vehicleType = isset($_REQUEST['vehicle_type']) ? trim($_REQUEST['vehicle_type']) : 'motorbike';
+$pricingRuleID = null;
+
+// Tìm ID bảng giá phù hợp nhất
+$stmtPrice = $conn->prepare("SELECT ID FROM pricing_rules WHERE VehicleType = ? AND IsActive = 1 LIMIT 1");
+$stmtPrice->bind_param("s", $vehicleType);
+$stmtPrice->execute();
+$stmtPrice->bind_result($pricingRuleID);
+$stmtPrice->fetch();
+$stmtPrice->close();
+
+// Nếu không tìm thấy bảng giá cụ thể, thử lấy bảng giá mặc định đầu tiên
+if (!$pricingRuleID) {
+    $resDefault = $conn->query("SELECT ID FROM pricing_rules WHERE IsActive = 1 LIMIT 1");
+    if ($resDefault && $resDefault->num_rows > 0) {
+        $rowDefault = $resDefault->fetch_assoc();
+        $pricingRuleID = $rowDefault['ID'];
+    }
+}
+
 
 // Kiểm tra khách hàng
 $sqlCheck = "SELECT ID FROM users WHERE Username = ? LIMIT 1";
@@ -98,17 +119,6 @@ if ($stmtVerify->num_rows == 0) {
 }
 $stmtVerify->close();
 
-// Tính phí vận chuyển dựa trên khối lượng
-// if ($Weight < 1) {
-//     $ShippingFee = 15000;
-// } elseif ($Weight <= 2) {
-//     $ShippingFee = 18000;
-// } else {
-//     $extraWeight = $Weight - 2;
-//     $extraFee = ceil($extraWeight * 2) * 2500;
-//     $ShippingFee = 18000 + $extraFee;
-// }
-
 // ===== Tính phí COD 2% với min/max, nhưng nếu CODAmount = 0 thì bằng 0 =====
 if ($CODAmount <= 0) {
     $CODFee = 0.0;
@@ -149,12 +159,12 @@ if ($ID == 0) {
 $sqlInsertOrder = "INSERT INTO orders 
 (ID, CustomerID, Pick_up_address, Pick_up_lat, Pick_up_lng, 
  Delivery_address, Delivery_lat, Delivery_lng, 
- Recipient, RecipientPhone, Status, COD_amount, Created_at, Note, ShippingFee, Weight, CODFee, fee_payer, distance)
-VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?, ?)";
+ Recipient, RecipientPhone, Status, COD_amount, Created_at, Note, ShippingFee, Weight, CODFee, fee_payer, distance, PricingRuleID)
+VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?, ?, ?)";
 
 $stmtOrder = $conn->prepare($sqlInsertOrder);
 $stmtOrder->bind_param(
-    "iisddsddsssdssdddsd",  
+    "iisddsddsssdssdddsdi",  
     $ID,
     $CustomerID,
     $PickUpAddress,
@@ -173,7 +183,8 @@ $stmtOrder->bind_param(
     $Weight,
     $CODFee,
     $feePayer,
-    $distance
+    $distance,
+    $pricingRuleID
 );
 
 
@@ -181,19 +192,6 @@ if (!$stmtOrder->execute()) {
     echo json_encode(['success' => false, 'error' => 'Lỗi thêm đơn hàng: ' . $stmtOrder->error]);
     exit();
 }
-
-// Lấy ID của đơn hàng vừa chèn
-// $orderID = $stmtOrder->insert_id;
-
-// // Cập nhật lại trường Created_at
-// $sqlUpdateDate = "UPDATE orders SET Created_at = ? WHERE ID = ?";
-// $stmtUpdateDate = $conn->prepare($sqlUpdateDate);
-// $stmtUpdateDate->bind_param("si", $Create_at, $orderID);
-// if (!$stmtUpdateDate->execute()) {
-//     echo json_encode(['success' => false, 'error' => 'Lỗi cập nhật Created_at: ' . $stmtUpdateDate->error]);
-//     exit();
-// }
-// $stmtUpdateDate->close();
 
 //create tracking
 $trackingStatus = 'Đơn hàng đã được tạo.';

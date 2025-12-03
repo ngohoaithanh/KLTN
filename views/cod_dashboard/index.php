@@ -1,12 +1,5 @@
-<?php
-    if (!isset($_SESSION["dangnhap"]) || ($_SESSION["role"] !=1 && $_SESSION["role"] !=2 && $_SESSION["role"] !=5)) {
-        echo "<script>alert('Bạn không có quyền truy cập!');</script>";
-        echo "<script>window.location.href = 'index.php';</script>";
-        exit();
-    }
-    include_once('config/env.php');
-?>
 <div class="container-fluid" style="margin-top: 20px;">
+
     <h1 class="h3 mb-4 text-gray-800 text-center">Trung tâm Đối soát Phí COD</h1>
 
     <div class="row" id="kpi-cards-container">
@@ -59,8 +52,9 @@
                             <th>Thời gian</th>
                             <th>Tên Shipper</th>
                             <th>Số tiền nộp</th>
-                            <th>Loại Giao dịch</th>
-                            <th>Minh chứng</th> <th>Ghi chú</th>
+                            <th>Mã Phiếu Thu</th> <th>Loại</th>
+                            <th>Minh chứng</th>
+                            <th>Ghi chú</th>
                         </tr>
                     </thead>
                     <tbody id="transactions-table-body"></tbody>
@@ -101,8 +95,9 @@
                             <label class="custom-file-label" for="proof-image-input">Chọn ảnh...</label>
                         </div>
                         <input type="hidden" id="proof-image-url">
-                        <div id="proof-preview-container" class="mt-2" style="display:none;">
-                            <img id="proof-preview" src="" style="max-height: 100px; border-radius: 5px; border: 1px solid #ddd;">
+                        
+                        <div id="proof-preview-container" class="mt-2" style="display:none; text-align: center;">
+                            <img id="proof-preview" src="" style="max-height: 150px; border-radius: 5px; border: 1px solid #ddd; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
                         </div>
                     </div>
                     <div class="form-group">
@@ -120,9 +115,9 @@
 </div>
 
 <script>
-    // CẤU HÌNH CLOUDINARY (Dùng lại thông tin của bạn)
-    const CLOUD_NAME = "<?php echo CLOUDINARY_CLOUD_NAME; ?>";
-    const UPLOAD_PRESET = "<?php echo CLOUDINARY_UPLOAD_PRESET; ?>";
+    // CẤU HÌNH CLOUDINARY
+    const CLOUD_NAME = "dbaeafw6z"; 
+    const UPLOAD_PRESET = "user_avt"; // Hoặc tạo preset riêng "receipt_proofs" nếu muốn
     const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
 
     function formatCurrency(number) {
@@ -138,6 +133,7 @@
             const response = await fetch(apiUrl);
             const data = await response.json();
 
+            // Render KPI và Bảng Công Nợ (Chỉ khi không lọc ngày)
             if (!startDate) { 
                 document.getElementById('kpi-total-owed').textContent = formatCurrency(data.kpi.TotalFeeOwed);
                 document.getElementById('kpi-settled-today').textContent = formatCurrency(data.kpi.SettledToday);
@@ -145,6 +141,7 @@
                 document.getElementById('kpi-fee-this-month').textContent = formatCurrency(data.kpi.FeeThisMonth);
                 renderReceivablesTable(data.shipper_balances);
             }
+            // Luôn render Bảng Lịch sử
             renderRecentTransactions(data.recent_transactions);
         } catch (error) {
             console.error('Lỗi tải dữ liệu:', error);
@@ -185,33 +182,45 @@
         });
     }
 
-    // 1c. Render Bảng Lịch sử
+    // 1c. Render Bảng Lịch sử (Đã có cột Minh chứng)
+    // === 2. HÀM RENDER BẢNG LỊCH SỬ (ĐÃ CẬP NHẬT CHO PHIẾU THU) ===
     function renderRecentTransactions(transactions) {
         const tableBody = document.getElementById('transactions-table-body');
         tableBody.innerHTML = '';
+        
         if (!transactions || transactions.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Không có giao dịch.</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="7" class="text-center">Chưa có phiếu thu nào.</td></tr>';
             return;
         }
+
         transactions.forEach(tx => {
-            let badge = tx.Type === 'deposit_cod' ? '<span class="badge badge-primary">Nộp phí</span>' : '<span class="badge badge-success">Nộp thừa</span>';
+            const txTime = new Date(tx.Created_at).toLocaleString('vi-VN');
+            const txAmount = formatCurrency(tx.Amount);
             
+            // Dùng tx.Code (Mã phiếu thu) thay vì tx.OrderID
+            const txCode = tx.Code ? `<span class="font-weight-bold text-primary">${tx.Code}</span>` : '---';
+            
+            // Mặc định là Phiếu thu
+            const typeBadge = '<span class="badge badge-success">Phiếu thu</span>';
+
             // Xử lý hiển thị ảnh minh chứng
             let proofHtml = '<span class="text-muted small">Không có</span>';
             if (tx.ProofImage) {
                 proofHtml = `<a href="${tx.ProofImage}" target="_blank" title="Xem ảnh lớn">
-                                <img src="${tx.ProofImage}" style="height: 30px; border-radius: 3px; border: 1px solid #ddd;">
-                             </a>`;
+                                <img src="${tx.ProofImage}" style="height: 40px; border-radius: 4px; border: 1px solid #ddd; padding: 2px;">
+                            </a>`;
             }
 
-            let row = `<tr>
-                <td>${new Date(tx.Created_at).toLocaleString('vi-VN')}</td>
-                <td>${tx.Username}</td>
-                <td>${formatCurrency(tx.Amount)}</td>
-                <td>${badge}</td>
-                <td class="text-center">${proofHtml}</td>
-                <td>${tx.Note || ''}</td>
-            </tr>`;
+            const row = `
+                <tr>
+                    <td>${txTime}</td>
+                    <td>${tx.Username}</td>
+                    <td>${txAmount}</td>
+                    <td>${txCode}</td> <td>${typeBadge}</td>
+                    <td class="text-center">${proofHtml}</td>
+                    <td>${tx.Note || ''}</td>
+                </tr>
+            `;
             tableBody.innerHTML += row;
         });
     }
@@ -228,9 +237,9 @@
             
             // Reset phần ảnh
             $('#proof-image-input').val('');
-            $('#proof-image-url').val('');
+            $('#proof-image-url').val(''); // Reset URL ẩn
             $('#proof-preview-container').hide();
-            $('.custom-file-label').text('Chọn ảnh...');
+            $('.custom-file-label').text('Chọn ảnh minh chứng...');
             
             $('#logPaymentModal').modal('show');
         });
@@ -239,16 +248,15 @@
         $('#proof-image-input').on('change', function() {
             const file = this.files[0];
             if (file) {
-                // Validate
+                // Validate cơ bản
                 const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
                 if (!validTypes.includes(file.type)) {
                     alert('Vui lòng chỉ chọn file ảnh!');
-                    $(this).val(''); // Reset input
+                    $(this).val('');
                     return;
                 }
-                
-                if (file.size > 5 * 1024 * 1024) { // 5MB
-                     alert('File ảnh quá lớn!');
+                if (file.size > 5 * 1024 * 1024) {
+                     alert('File ảnh quá lớn (Max 5MB)!');
                      $(this).val('');
                      return;
                 }
@@ -263,7 +271,7 @@
             }
         });
 
-        // Xử lý nút Xác nhận (Upload + Submit)
+        // Xử lý nút Xác nhận (Upload -> Submit)
         $('#submit-payment-btn').on('click', async function() {
             const btn = $(this);
             const originalText = btn.text();
@@ -284,16 +292,16 @@
                     const formData = new FormData();
                     formData.append('file', file);
                     formData.append('upload_preset', UPLOAD_PRESET);
-                    formData.append('folder', 'transaction_proofs');
+                    formData.append('folder', 'transaction_proofs'); // Gom vào folder riêng
                     
                     const cloudRes = await fetch(CLOUDINARY_URL, { method: 'POST', body: formData });
-                    if (!cloudRes.ok) throw new Error('Lỗi upload ảnh');
+                    if (!cloudRes.ok) throw new Error('Lỗi upload ảnh lên Cloudinary');
                     const cloudData = await cloudRes.json();
                     proofUrl = cloudData.secure_url;
                 }
 
                 // B. Gửi dữ liệu về API PHP
-                btn.text('Đang lưu...');
+                btn.text('Đang lưu phiếu thu...');
                 const apiRes = await fetch('api/cod_dashboard/log_payment.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -301,28 +309,27 @@
                         shipper_id: $('#modal-shipper-id').val(),
                         amount: amount,
                         note: $('#modal-note').val(),
-                        proof_image: proofUrl // Gửi URL ảnh
+                        proof_image: proofUrl // Gửi URL ảnh (nếu có)
                     })
                 });
                 
                 const result = await apiRes.json();
                 
                 if (result.success) {
-                    alert('Đã ghi nhận giao dịch thành công!');
+                    alert('Đã lập phiếu thu thành công!');
                     $('#logPaymentModal').modal('hide');
                     // Tải lại dữ liệu
                     const start = $('#trans-start-date').val();
                     const end = $('#trans-end-date').val();
-                     loadPageData(); 
-                    loadPageData(start, end);
-                    // loadHistoryData(start, end); // Nếu tách hàm
+                    loadPageData(null, null); // Tải lại KPI và Bảng công nợ
+                    loadHistoryData(start, end); // Tải lại lịch sử
                 } else {
                     alert('Lỗi: ' + result.error);
                 }
 
             } catch (error) {
                 console.error(error);
-                alert('Có lỗi xảy ra.');
+                alert('Có lỗi xảy ra: ' + error.message);
             } finally {
                 btn.prop('disabled', false).text(originalText);
             }

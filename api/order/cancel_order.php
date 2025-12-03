@@ -27,6 +27,26 @@ if (isset($_POST['order_id'])) {
                 $stmt_insert->bind_param("is", $orderId, $trackingMessage);
                 $stmt_insert->execute();
 
+                // 1. Lấy ID Shipper đang nhận đơn này (nếu có)
+                $stmt_get_shipper = $conn->prepare("SELECT ShipperID FROM orders WHERE ID = ?");
+                $stmt_get_shipper->bind_param("i", $orderId);
+                $stmt_get_shipper->execute();
+                $res = $stmt_get_shipper->get_result()->fetch_assoc();
+                $shipperId = $res['ShipperID'];
+                $stmt_get_shipper->close();
+
+                // 2. Nếu đã có Shipper nhận, gửi thông báo cho họ
+                if ($shipperId) {
+                    $title = "Đơn hàng đã bị hủy";
+                    $msg = "Khách hàng đã hủy đơn hàng #" . $orderId . ". Bạn không cần đến lấy hàng nữa.";
+                    $type = "order_cancel"; // Icon màu đỏ
+
+                    $stmt_noti = $conn->prepare("INSERT INTO notifications (UserID, Title, Message, Type, ReferenceID) VALUES (?, ?, ?, ?, ?)");
+                    $stmt_noti->bind_param("isssi", $shipperId, $title, $msg, $type, $orderId);
+                    $stmt_noti->execute();
+                    $stmt_noti->close();
+                }
+
                 $conn->commit();
                 $response = ['success' => true, 'message' => 'Hủy đơn hàng thành công.'];
             } else {

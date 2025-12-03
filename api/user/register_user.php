@@ -31,6 +31,27 @@ if (isset($_POST['phone_number']) && isset($_POST['full_name']) && isset($_POST[
         $stmt->bind_param("ssssi", $fullName, $fakeEmail, $hashedPassword, $phone, $role);
 
         if ($stmt->execute()) {
+            $newUserId = $stmt->insert_id; // Lấy ID vừa tạo
+
+            // --- THÊM ĐOẠN NÀY: GỬI THÔNG BÁO CHÀO MỪNG ---
+            $title = "Chào mừng bạn!";
+            $msg = "";
+            $type = "system";
+
+            if ($role == 6) { // Shipper
+                $msg = "Chào mừng bạn gia nhập đội ngũ! Hãy cập nhật thông tin xe và nạp tiền để bắt đầu nhận đơn.";
+            } elseif ($role == 7) { // Khách hàng
+                $msg = "Chào mừng bạn đến với QLGH! Nhập mã TANTHU để được giảm giá cho đơn hàng đầu tiên.";
+            }
+
+            if (!empty($msg)) {
+                $sqlNoti = "INSERT INTO notifications (UserID, Title, Message, Type, ReferenceID) VALUES (?, ?, ?, ?, 0)";
+                $stmtNoti = $conn->prepare($sqlNoti);
+                $stmtNoti->bind_param("isss", $newUserId, $title, $msg, $type);
+                $stmtNoti->execute();
+                $stmtNoti->close();
+            }
+
             $response['success'] = true;
             $response['message'] = "Đăng ký thành công!";
         } else {

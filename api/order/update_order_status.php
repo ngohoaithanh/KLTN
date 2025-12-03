@@ -93,6 +93,39 @@ if (isset($_POST['order_id']) && isset($_POST['new_status'])) {
                     break;
             }
 
+            $stmt_get_cust = $conn->prepare("SELECT CustomerID FROM orders WHERE ID = ?");
+            $stmt_get_cust->bind_param("i", $orderId);
+            $stmt_get_cust->execute();
+            $custRes = $stmt_get_cust->get_result()->fetch_assoc();
+            $customerId = $custRes['CustomerID'];
+            $stmt_get_cust->close();
+
+            if ($customerId) {
+                $title = ""; $msg = "";
+                
+                if ($newStatus == 'picked_up') {
+                    $title = "Đã lấy hàng";
+                    $msg = "Tài xế đã lấy hàng và đang đi giao.";
+                } elseif ($newStatus == 'delivered') {
+                    $title = "Giao hàng thành công";
+                    $msg = "Đơn hàng #" . $orderId . " đã được giao thành công. Hãy đánh giá tài xế nhé!";
+                } elseif ($newStatus == 'delivery_failed') {
+                    $title = "Giao hàng thất bại";
+                    $msg = "Rất tiếc, đơn hàng #" . $orderId . " giao không thành công.";
+                    if (!empty($reason)) {
+                        $msg .= " Lý do: " . $reason;
+                    }
+                    // Type = 'warning' (để hiển thị icon cảnh báo vàng/cam)
+                }
+                
+                if (!empty($title)) {
+                    $stmt_noti = $conn->prepare("INSERT INTO notifications (UserID, Title, Message, Type, ReferenceID) VALUES (?, ?, ?, ?, ?)");
+                    $stmt_noti->bind_param("isssi", $customerId, $title, $msg, "order", $orderId);
+                    $stmt_noti->execute();
+                    $stmt_noti->close();
+                }
+            }
+
             if (!empty($trackingMessage)) {
                 $stmt_insert = $conn->prepare("INSERT INTO trackings (OrderID, Status) VALUES (?, ?)");
                 $stmt_insert->bind_param("is", $orderId, $trackingMessage);

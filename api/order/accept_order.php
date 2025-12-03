@@ -153,6 +153,27 @@ try {
   }
   $u->close();
 
+  // notify
+    // 1. Lấy ID Khách hàng (Người cần nhận thông báo)
+  $stmt_get_cust = $conn->prepare("SELECT CustomerID FROM orders WHERE ID = ?");
+  $stmt_get_cust->bind_param("i", $order_id);
+  $stmt_get_cust->execute();
+  $custRes = $stmt_get_cust->get_result()->fetch_assoc();
+  $customerId = $custRes['CustomerID'];
+  $stmt_get_cust->close();
+
+  // 2. Ghi thông báo cho Khách hàng
+  if ($customerId) {
+      $title = "Tài xế đã nhận đơn";
+      $msg = "Tài xế đang trên đường đến lấy hàng. Mã đơn: #" . $order_id;
+      $type = "order";
+      
+      $stmt_noti = $conn->prepare("INSERT INTO notifications (UserID, Title, Message, Type, ReferenceID) VALUES (?, ?, ?, ?, ?)");
+      $stmt_noti->bind_param("isssi", $customerId, $title, $msg, $type, $order_id);
+      $stmt_noti->execute();
+      $stmt_noti->close();
+  }
+
   /* 7) Tracking (tuỳ chọn) */
   $msg = 'Shipper '.$shipper_id.' đã nhận đơn.';
   $t = $conn->prepare("INSERT INTO trackings (OrderID, Status, Updated_at) VALUES (?, ?, NOW())");

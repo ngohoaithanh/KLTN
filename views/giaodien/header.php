@@ -83,6 +83,8 @@ if (session_status() === PHP_SESSION_NONE) {
                         echo '<li><a href="?quanlyshipper">Shipper</a></li>';
                         echo '<li><a href="?dashboard">Báo Cáo & Thống Kê</a></li>';
                         echo '<li><a href="?cod_dashboard">COD</a></li>';
+                        echo '<li><a href="?pricing">Giá cước</a></li>';
+                        echo '<li><a href="?send_notification">Gửi Thông Báo</a></li>';
                     }elseif ($role == 5) {
                         echo '<li><a href="?dashboard">Báo Cáo & Thống Kê</a></li>';
                         echo '<li><a href="?cod_dashboard">COD</a></li>';

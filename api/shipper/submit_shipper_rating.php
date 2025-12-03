@@ -50,9 +50,15 @@ if (isset($_POST['shipper_id']) && isset($_POST['rating']) && isset($_POST['orde
                     $stmt_update_user->bind_param("iidi", $new_sum, $new_count, $new_average, $shipperId);
                     $stmt_update_user->execute();
 
-                    // =======================================================
-                    // ## PHẦN 2 (BỊ THIẾU): ĐÁNH DẤU ĐƠN HÀNG ĐÃ ĐƯỢC ĐÁNH GIÁ ##
-                    // =======================================================
+                    $title = "Bạn nhận được đánh giá mới";
+                    $msg = "Khách hàng vừa đánh giá " . $newRating . " sao cho đơn hàng #" . $orderId . ".";
+                    $type = "rating"; // Icon ngôi sao
+
+                    $stmt_noti = $conn->prepare("INSERT INTO notifications (UserID, Title, Message, Type, ReferenceID) VALUES (?, ?, ?, ?, ?)");
+                    $stmt_noti->bind_param("isssi", $shipperId, $title, $msg, $type, $orderId);
+                    $stmt_noti->execute();
+                    $stmt_noti->close();
+
                     $stmt_update_order = $conn->prepare("UPDATE orders SET is_rated = TRUE WHERE ID = ?");
                     $stmt_update_order->bind_param("i", $orderId);
                     $stmt_update_order->execute();
