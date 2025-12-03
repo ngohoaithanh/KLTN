@@ -1,5 +1,5 @@
 <?php
-$FILE_ID = "1gAhsEe1w9s07Fvs64G3lT1bPNn-WfIyH";
+$FILE_ID = "1zT-H5iKQ0JpDTMCTY6KoXvNVA2DjSqWU";
 
 $APK_URL = "https://drive.google.com/uc?export=download&id=" . $FILE_ID;
 $QR_URL  = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" . urlencode($APK_URL);
