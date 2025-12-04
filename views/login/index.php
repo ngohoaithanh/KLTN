@@ -1,28 +1,12 @@
-<style>
-    .login-footer-friendly {
-        background-color: #f8f9fa; /* Màu nền xám rất nhạt */
-        padding: 15px;
-        border-radius: 8px;
-        margin-top: 20px;
-        border: 1px solid #eee;
-    }
-    .login-footer-friendly p {
-        margin: 0;
-        font-size: 14px;
-        color: #0780f9ff; /* Màu xám đậm hơn */
-    }
-    .login-footer-friendly i.fa-sun {
-        color: var(--warning-color); /* Màu vàng cam */
-        margin-right: 5px;
-    }
-</style>
 <?php
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
 if (isset($_SESSION["dangnhap"])) {
-    header("refresh: 0; url=index.php");
+    // header("refresh: 0; url=index.php");
+    header("Location: index.php");
+exit();
 }
 
 include_once('controllers/cUser.php');
@@ -43,7 +27,7 @@ if (isset($_POST['submit'])) {
         $_SESSION['email']     = $result['user']['Email'];
         $_SESSION['avatar']     = $result['user']['Avatar'];
         $_SESSION['login_success'] = "Đăng nhập thành công!";
-        echo "<script>alert('{$_SESSION['login_success']}');</script>";
+        // echo "<script>alert('{$_SESSION['login_success']}');</script>";
         header("Location: index.php");
         exit();
     } else {
@@ -58,6 +42,24 @@ if (isset($_POST['submit'])) {
     <title>Đăng nhập</title>
     <link rel="stylesheet" href="views/css/style.css">
 </head>
+<style>
+    .login-footer-friendly {
+        background-color: #f8f9fa; /* Màu nền xám rất nhạt */
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+        border: 1px solid #eee;
+    }
+    .login-footer-friendly p {
+        margin: 0;
+        font-size: 14px;
+        color: #0780f9ff; /* Màu xám đậm hơn */
+    }
+    .login-footer-friendly i.fa-sun {
+        color: var(--warning-color); /* Màu vàng cam */
+        margin-right: 5px;
+    }
+</style>
 <body>
 
 <div class="login-wrapper">

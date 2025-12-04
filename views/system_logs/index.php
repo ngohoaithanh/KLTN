@@ -36,7 +36,7 @@ if (!isset($_SESSION["dangnhap"]) || $_SESSION["role"] != 1) {
                 </table>
             </div>
 
-            <nav aria-label="Page navigation" class="mt-3">
+            <nav aria-label="Page navigation" class="mt-3" style="background-color: white;">
                 <ul class="pagination justify-content-center" id="logs-pagination"></ul>
             </nav>
         </div>

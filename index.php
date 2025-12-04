@@ -1,6 +1,12 @@
 <?php
 error_reporting(0);
 session_start();
+if (!empty($_SESSION['login_success'])) {
+    $msg = $_SESSION['login_success'];
+    unset($_SESSION['login_success']);
+    echo "<script>alert('{$msg}');</script>";
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -65,6 +71,8 @@ session_start();
         include_once("views/pricing/index.php");
     }elseif(isset($_GET["send_notification"])){
         include_once("views/notification/send.php");
+    }elseif(isset($_GET["incident_reports"])){
+        include_once("views/incident/index.php");
     }elseif(isset($_GET["system_logs"])){
         include_once("views/system_logs/index.php");
     }else{
