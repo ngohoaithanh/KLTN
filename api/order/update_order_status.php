@@ -12,65 +12,55 @@ $response = array();
 // --- BƯỚC 1: KIỂM TRA DỮ LIỆU ĐẦU VÀO ---
 if (isset($_POST['order_id']) && isset($_POST['new_status'])) {
 
-    // --- BƯỚC 2: KẾT NỐI CSDL ---
     $db = new clsKetNoi();
     $conn = $db->moKetNoi();
 
     if ($conn) {
-        $orderId = intval($_POST['order_id']);
-        $newStatus = $_POST['new_status'];
-        
-        // Lấy tham số Reason (TÙY CHỌN, dùng cho delivery_failed)
-        $reason = isset($_POST['reason']) ? trim($_POST['reason']) : null;
-        // Lấy tham số Photo URL (TÙY CHỌN, dùng cho picked_up/delivered)
-        $photoUrl = isset($_POST['photo_url']) ? trim($_POST['photo_url']) : null; 
-        
-        // --- BƯỚC 3: SỬ DỤNG TRANSACTION ---
+        $orderId   = intval($_POST['order_id']);
+        $newStatus = trim($_POST['new_status']);
+
+        // Lý do (cho delivery_failed)
+        $reason  = isset($_POST['reason'])    ? trim($_POST['reason'])    : null;
+        // URL ảnh minh chứng (cho picked_up / delivered)
+        $photoUrl = isset($_POST['photo_url']) ? trim($_POST['photo_url']) : null;
+
+        // BẮT ĐẦU TRANSACTION
         $conn->begin_transaction();
 
         try {
-            // 1. XÁC ĐỊNH CỘT ẢNH CẦN CẬP NHẬT
+            /* ==================== 1. UPDATE BẢNG orders ==================== */
+
+            // Xác định cột ảnh cần cập nhật (nếu có)
             $photoColumn = null;
             if ($newStatus === 'picked_up') {
                 $photoColumn = 'PickUp_Photo_Path';
-            } else if ($newStatus === 'delivered') {
+            } elseif ($newStatus === 'delivered') {
                 $photoColumn = 'Delivery_Photo_Path';
             }
 
-            // 2. TẠO CÂU LỆNH SQL CẬP NHẬT `orders` (Linh hoạt cho status và photo)
-            $setClauses = ["status = ?"];
-            $bindTypes = "s";
-            $bindParams = [&$newStatus]; // Tham số status BẮT BUỘC
-            
-            // Xử lý tham số ảnh (Nếu có URL và trạng thái yêu cầu)
             if ($photoColumn && !empty($photoUrl)) {
-                $setClauses[] = "$photoColumn = ?";
-                $bindTypes .= "s";
-                $bindParams[] = &$photoUrl; // Tham số photoUrl
-            }
-            // Không cần xử lý reason ở đây, vì bạn đã quyết định lưu reason vào bảng trackings
-
-            // Hoàn thành câu lệnh SQL
-            $sql = "UPDATE orders SET " . implode(', ', $setClauses) . " WHERE ID = ?";
-            $bindTypes .= "i"; // Thêm kiểu cho orderId
-            $bindParams[] = &$orderId; // Tham số orderId
-
-            // Chuẩn bị và thực thi câu lệnh SQL
-            $stmt_update = $conn->prepare($sql);
-            
-            // Chèn $bindTypes vào đầu mảng $bindParams để sử dụng trong bind_param
-            array_unshift($bindParams, $bindTypes);
-            
-            // Gọi bind_param động
-            if ($stmt_update) {
-                call_user_func_array(array($stmt_update, 'bind_param'), $bindParams);
-                $stmt_update->execute();
-                $stmt_update->close();
+                // Có ảnh & có cột tương ứng
+                $sql = "UPDATE orders SET status = ?, $photoColumn = ? WHERE ID = ?";
+                $stmt_update = $conn->prepare($sql);
+                if (!$stmt_update) {
+                    throw new Exception("Lỗi chuẩn bị UPDATE (có ảnh): " . $conn->error);
+                }
+                $stmt_update->bind_param("ssi", $newStatus, $photoUrl, $orderId);
             } else {
-                 throw new Exception("Lỗi khi chuẩn bị câu lệnh UPDATE: " . $conn->error);
+                // Không có ảnh (hoặc trạng thái không cần ảnh)
+                $sql = "UPDATE orders SET status = ? WHERE ID = ?";
+                $stmt_update = $conn->prepare($sql);
+                if (!$stmt_update) {
+                    throw new Exception("Lỗi chuẩn bị UPDATE (không ảnh): " . $conn->error);
+                }
+                $stmt_update->bind_param("si", $newStatus, $orderId);
             }
 
-            // 3. THÊM VÀO BẢNG `trackings`
+            $stmt_update->execute();
+            $stmt_update->close();
+
+            /* ==================== 2. Tracking message ==================== */
+
             $trackingMessage = "";
             switch ($newStatus) {
                 case 'accepted':
@@ -93,91 +83,110 @@ if (isset($_POST['order_id']) && isset($_POST['new_status'])) {
                     break;
             }
 
+            // Lấy CustomerID để bắn notification
+            $customerId = null;
             $stmt_get_cust = $conn->prepare("SELECT CustomerID FROM orders WHERE ID = ?");
-            $stmt_get_cust->bind_param("i", $orderId);
-            $stmt_get_cust->execute();
-            $custRes = $stmt_get_cust->get_result()->fetch_assoc();
-            $customerId = $custRes['CustomerID'];
-            $stmt_get_cust->close();
+            if ($stmt_get_cust) {
+                $stmt_get_cust->bind_param("i", $orderId);
+                $stmt_get_cust->execute();
+                $resultCust = $stmt_get_cust->get_result();
+                if ($resultCust) {
+                    $custRes = $resultCust->fetch_assoc();
+                    if ($custRes && isset($custRes['CustomerID'])) {
+                        $customerId = $custRes['CustomerID'];
+                    }
+                }
+                $stmt_get_cust->close();
+            }
 
-            if ($customerId) {
-                $title = ""; $msg = "";
-                
+            if (!empty($customerId)) {
+                $title = "";
+                $msg   = "";
+                $type  = "order";
+
                 if ($newStatus == 'picked_up') {
                     $title = "Đã lấy hàng";
-                    $msg = "Tài xế đã lấy hàng và đang đi giao.";
+                    $msg   = "Tài xế đã lấy hàng và đang đi giao.";
                 } elseif ($newStatus == 'delivered') {
                     $title = "Giao hàng thành công";
-                    $msg = "Đơn hàng #" . $orderId . " đã được giao thành công. Hãy đánh giá tài xế nhé!";
+                    $msg   = "Đơn hàng #" . $orderId . " đã được giao thành công. Hãy đánh giá tài xế nhé!";
                 } elseif ($newStatus == 'delivery_failed') {
                     $title = "Giao hàng thất bại";
-                    $msg = "Rất tiếc, đơn hàng #" . $orderId . " giao không thành công.";
+                    $msg   = "Rất tiếc, đơn hàng #" . $orderId . " giao không thành công.";
                     if (!empty($reason)) {
                         $msg .= " Lý do: " . $reason;
                     }
-                    // Type = 'warning' (để hiển thị icon cảnh báo vàng/cam)
                 }
-                
+
                 if (!empty($title)) {
                     $stmt_noti = $conn->prepare("INSERT INTO notifications (UserID, Title, Message, Type, ReferenceID) VALUES (?, ?, ?, ?, ?)");
-                    $stmt_noti->bind_param("isssi", $customerId, $title, $msg, "order", $orderId);
-                    $stmt_noti->execute();
-                    $stmt_noti->close();
-                }
-            }
-
-            if (!empty($trackingMessage)) {
-                $stmt_insert = $conn->prepare("INSERT INTO trackings (OrderID, Status) VALUES (?, ?)");
-                $stmt_insert->bind_param("is", $orderId, $trackingMessage);
-                $stmt_insert->execute();
-                $stmt_insert->close();
-            }
-
-            // 4. GHI GIAO DỊCH (CHỈ KHI DELIVERED) (Logic giữ nguyên)
-            if ($newStatus == 'delivered') {
-                // ... (Logic ghi transactions giữ nguyên) ...
-                $stmt_get_order = $conn->prepare("SELECT ShipperID, Shippingfee, COD_amount, CODFee FROM orders WHERE ID = ?");
-                $stmt_get_order->bind_param("i", $orderId);
-                $stmt_get_order->execute();
-                $order_details = $stmt_get_order->get_result()->fetch_assoc();
-                $stmt_get_order->close();
-
-                if ($order_details && $order_details['ShipperID'] != null) { 
-                    $shipperId = $order_details['ShipperID'];
-                    $shippingFee = $order_details['Shippingfee'];
-                    $codAmount = $order_details['COD_amount'];
-                    $codFee = $order_details['CODFee'];
-
-                    // Ghi nhận thu nhập Phí Ship
-                    $stmt_ship = $conn->prepare("INSERT INTO transactions (UserID, OrderID, Type, Amount, Status) VALUES (?, ?, 'shipping_fee', ?, 'completed')");
-                    $stmt_ship->bind_param("iid", $shipperId, $orderId, $shippingFee);
-                    $stmt_ship->execute();
-                    $stmt_ship->close();
-
-                    // Ghi nhận việc Thu COD
-                    if ($codAmount > 0 || $codFee > 0) {
-                        $totalCodCollected = $codAmount + $codFee;
-                        $stmt_cod = $conn->prepare("INSERT INTO transactions (UserID, OrderID, Type, Amount, Status) VALUES (?, ?, 'collect_cod', ?, 'completed')");
-                        $stmt_cod->bind_param("iid", $shipperId, $orderId, $totalCodCollected);
-                        $stmt_cod->execute();
-                        $stmt_cod->close();
+                    if ($stmt_noti) {
+                        $stmt_noti->bind_param("isssi", $customerId, $title, $msg, $type, $orderId);
+                        $stmt_noti->execute();
+                        $stmt_noti->close();
                     }
                 }
             }
-            
+
+            // Ghi vào trackings (nếu có message)
+            if (!empty($trackingMessage)) {
+                $stmt_insert = $conn->prepare("INSERT INTO trackings (OrderID, Status) VALUES (?, ?)");
+                if ($stmt_insert) {
+                    $stmt_insert->bind_param("is", $orderId, $trackingMessage);
+                    $stmt_insert->execute();
+                    $stmt_insert->close();
+                }
+            }
+
+            /* ==================== 3. Transactions khi DELIVERED ==================== */
+
+            if ($newStatus == 'delivered') {
+                $stmt_get_order = $conn->prepare("SELECT ShipperID, Shippingfee, COD_amount, CODFee FROM orders WHERE ID = ?");
+                if ($stmt_get_order) {
+                    $stmt_get_order->bind_param("i", $orderId);
+                    $stmt_get_order->execute();
+                    $order_details = $stmt_get_order->get_result()->fetch_assoc();
+                    $stmt_get_order->close();
+
+                    if ($order_details && !empty($order_details['ShipperID'])) {
+                        $shipperId   = (int)$order_details['ShipperID'];
+                        $shippingFee = (float)$order_details['Shippingfee'];
+                        $codAmount   = (float)$order_details['COD_amount'];
+                        $codFee      = (float)$order_details['CODFee'];
+
+                        // Ghi nhận thu nhập Phí Ship
+                        $stmt_ship = $conn->prepare("INSERT INTO transactions (UserID, OrderID, Type, Amount, Status) VALUES (?, ?, 'shipping_fee', ?, 'completed')");
+                        if ($stmt_ship) {
+                            $stmt_ship->bind_param("iid", $shipperId, $orderId, $shippingFee);
+                            $stmt_ship->execute();
+                            $stmt_ship->close();
+                        }
+
+                        // Ghi nhận việc Thu COD
+                        if ($codAmount > 0 || $codFee > 0) {
+                            $totalCodCollected = $codAmount + $codFee;
+                            $stmt_cod = $conn->prepare("INSERT INTO transactions (UserID, OrderID, Type, Amount, Status) VALUES (?, ?, 'collect_cod', ?, 'completed')");
+                            if ($stmt_cod) {
+                                $stmt_cod->bind_param("iid", $shipperId, $orderId, $totalCodCollected);
+                                $stmt_cod->execute();
+                                $stmt_cod->close();
+                            }
+                        }
+                    }
+                }
+            }
+
             // Commit Transaction
             $conn->commit();
             $response['success'] = true;
             $response['message'] = "Cập nhật trạng thái và tracking thành công!";
 
         } catch (Exception $e) {
-            // Rollback Transaction
             $conn->rollback();
             $response['success'] = false;
             $response['message'] = "Có lỗi xảy ra trong quá trình cập nhật: " . $e->getMessage();
         }
 
-        // Đóng kết nối
         $db->dongKetNoi($conn);
 
     } else {
@@ -189,6 +198,5 @@ if (isset($_POST['order_id']) && isset($_POST['new_status'])) {
     $response['message'] = "Thiếu tham số `order_id` hoặc `new_status`.";
 }
 
-// --- BƯỚC 4: TRẢ KẾT QUẢ VỀ CHO ANDROID ---
+// Trả JSON về cho Android
 echo json_encode($response);
-?>

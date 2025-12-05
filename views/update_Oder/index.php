@@ -1,4 +1,7 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -53,7 +56,8 @@ if (isset($_POST['submit'])) {
         "ShippingFee" => $shippingFee, // Thêm phí ship vào dữ liệu
         "Status" => $_POST['Status'],
         "COD_amount" => $_POST['COD_amount'],
-        "Note" => $_POST['Note']
+        "Note" => $_POST['Note'],
+        "UpdatedBy" => $_SESSION['user_id'] ?? 0
     ];
 
     // Cập nhật đơn hàng

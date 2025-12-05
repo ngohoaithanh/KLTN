@@ -4,9 +4,8 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 if (isset($_SESSION["dangnhap"])) {
-    // header("refresh: 0; url=index.php");
-    header("Location: index.php");
-exit();
+    echo "<script>window.location.href='index.php';</script>";
+    exit();
 }
 
 include_once('controllers/cUser.php');
@@ -27,8 +26,8 @@ if (isset($_POST['submit'])) {
         $_SESSION['email']     = $result['user']['Email'];
         $_SESSION['avatar']     = $result['user']['Avatar'];
         $_SESSION['login_success'] = "Đăng nhập thành công!";
-        // echo "<script>alert('{$_SESSION['login_success']}');</script>";
-        header("Location: index.php");
+
+        echo "<script>window.location.href='index.php';</script>";
         exit();
     } else {
         $error = $result['message'];

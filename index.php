@@ -1,11 +1,11 @@
 <?php
-error_reporting(0);
+// error_reporting(0);
 session_start();
-if (!empty($_SESSION['login_success'])) {
-    $msg = $_SESSION['login_success'];
-    unset($_SESSION['login_success']);
-    echo "<script>alert('{$msg}');</script>";
-}
+// if (!empty($_SESSION['login_success'])) {
+//     $msg = $_SESSION['login_success'];
+//     unset($_SESSION['login_success']);
+//     echo "<script>alert('{$msg}');</script>";
+// }
 
 ?>
 <!DOCTYPE html>

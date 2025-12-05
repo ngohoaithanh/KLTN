@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th12 03, 2025 lúc 04:05 PM
+-- Thời gian đã tạo: Th12 04, 2025 lúc 05:40 AM
 -- Phiên bản máy phục vụ: 10.4.24-MariaDB
 -- Phiên bản PHP: 8.1.6
 
@@ -20,6 +20,34 @@ SET time_zone = "+00:00";
 --
 -- Cơ sở dữ liệu: `kltn`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `incident_reports`
+--
+
+CREATE TABLE `incident_reports` (
+  `ID` int(11) NOT NULL,
+  `OrderID` int(11) NOT NULL,
+  `ReporterID` int(11) NOT NULL COMMENT 'Người báo cáo (Shipper hoặc Khách)',
+  `Type` varchar(50) NOT NULL COMMENT 'Loại: Hư hỏng, Thất lạc, Thái độ, Khác',
+  `Description` text NOT NULL,
+  `ProofImage` varchar(255) DEFAULT NULL COMMENT 'Link ảnh bằng chứng',
+  `Status` enum('pending','processing','resolved','rejected') DEFAULT 'pending',
+  `Resolution` text DEFAULT NULL COMMENT 'Hướng giải quyết của Admin',
+  `Created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Đang đổ dữ liệu cho bảng `incident_reports`
+--
+
+INSERT INTO `incident_reports` (`ID`, `OrderID`, `ReporterID`, `Type`, `Description`, `ProofImage`, `Status`, `Resolution`, `Created_at`) VALUES
+(1, 11166554, 185, 'Hư hỏng hàng hóa', 'test incident', 'https://res.cloudinary.com/dbaeafw6z/image/upload/v1764782299/incident_proofs/zkdu4htvyb30dnjcj7yw.jpg', 'pending', 'Admin đang xác minh', '2025-12-03 17:18:20'),
+(2, 12038893, 141, 'Không liên lạc được khách', 'test shipper incident', 'https://res.cloudinary.com/dbaeafw6z/image/upload/v1764783931/incident_proofs/nc7jszdxal2c2vcmvqup.jpg', 'resolved', 'Test xử lý', '2025-12-03 17:45:32'),
+(3, 11094471, 141, 'Không liên lạc được khách', 'Test to admin notification', 'https://res.cloudinary.com/dbaeafw6z/image/upload/v1764822275/incident_proofs/mjwzqf3ujkz86h7lzjdu.jpg', 'pending', NULL, '2025-12-04 04:24:36'),
+(4, 11166554, 141, 'Không liên lạc được khách', 'test to admin notification', 'https://res.cloudinary.com/dbaeafw6z/image/upload/v1764822483/incident_proofs/n44kccyk1znjh39qcpw1.jpg', 'pending', NULL, '2025-12-04 04:28:05');
 
 -- --------------------------------------------------------
 
@@ -148,7 +176,25 @@ INSERT INTO `notifications` (`ID`, `UserID`, `Title`, `Message`, `Type`, `Refere
 (125, 141, 'Tài khoản đã bị khóa', 'Tài khoản của bạn đã bị khóa bởi quản trị viên. Vui lòng liên hệ để biết thêm chi tiết.', 'system', NULL, 1, '2025-12-03 14:19:23'),
 (126, 141, 'Tài khoản đã được kích hoạt', 'Chúc mừng! Tài khoản của bạn đã được kích hoạt. Bạn có thể bắt đầu sử dụng dịch vụ.', 'system', NULL, 1, '2025-12-03 14:20:19'),
 (128, 141, 'Thông báo cá nhân', 'ádasdsad', 'system', NULL, 1, '2025-12-03 14:56:32'),
-(129, 141, 'Thanh toán công nợ thành công', 'Kế toán đã xác nhận khoản nộp 15,000đ. Ghi chú: CK', 'system', 4, 1, '2025-12-03 15:03:20');
+(129, 141, 'Thanh toán công nợ thành công', 'Kế toán đã xác nhận khoản nộp 15,000đ. Ghi chú: CK', 'system', 4, 1, '2025-12-03 15:03:20'),
+(130, 141, 'Thanh toán công nợ thành công', 'Kế toán đã xác nhận khoản nộp 15,000đ. Ghi chú: Chuyển khoản', 'system', 5, 1, '2025-12-03 15:41:41'),
+(131, 141, 'Báo cáo sự cố đã được xử lý', 'Về đơn hàng #12038893: Test xử lý', 'system', 12038893, 1, '2025-12-04 02:38:03'),
+(132, 185, 'Báo cáo sự cố bị từ chối', 'Về đơn hàng #11166554: Admin đang xác minh', 'system', 11166554, 0, '2025-12-04 02:46:21'),
+(133, 159, 'Tài khoản đã bị khóa', 'Tài khoản của bạn đã bị khóa bởi quản trị viên. Vui lòng liên hệ để biết thêm chi tiết.', 'system', NULL, 0, '2025-12-04 03:31:08'),
+(134, 159, 'Tài khoản đã được kích hoạt', 'Chúc mừng! Tài khoản của bạn đã được kích hoạt. Bạn có thể bắt đầu sử dụng dịch vụ.', 'system', NULL, 0, '2025-12-04 03:31:18'),
+(135, 1, 'Sự cố mới từ Shipper', 'Shipper vừa báo cáo sự cố cho đơn hàng #. Vui lòng kiểm tra.', 'system', NULL, 1, '2025-12-04 04:24:36'),
+(136, 2, 'Sự cố mới từ Shipper', 'Shipper vừa báo cáo sự cố cho đơn hàng #. Vui lòng kiểm tra.', 'system', NULL, 0, '2025-12-04 04:24:36'),
+(137, 3, 'Sự cố mới từ Shipper', 'Shipper vừa báo cáo sự cố cho đơn hàng #. Vui lòng kiểm tra.', 'system', NULL, 0, '2025-12-04 04:24:36'),
+(138, 4, 'Sự cố mới từ Shipper', 'Shipper vừa báo cáo sự cố cho đơn hàng #. Vui lòng kiểm tra.', 'system', NULL, 0, '2025-12-04 04:24:36'),
+(139, 77, 'Sự cố mới từ Shipper', 'Shipper vừa báo cáo sự cố cho đơn hàng #. Vui lòng kiểm tra.', 'system', NULL, 0, '2025-12-04 04:24:36'),
+(140, 197, 'Sự cố mới từ Shipper', 'Shipper vừa báo cáo sự cố cho đơn hàng #. Vui lòng kiểm tra.', 'system', NULL, 0, '2025-12-04 04:24:36'),
+(141, 1, 'Sự cố mới từ Shipper', 'Shipper vừa báo cáo sự cố cho đơn hàng #11166554. Vui lòng kiểm tra.', 'system', 4, 1, '2025-12-04 04:28:05'),
+(142, 2, 'Sự cố mới từ Shipper', 'Shipper vừa báo cáo sự cố cho đơn hàng #11166554. Vui lòng kiểm tra.', 'system', 4, 0, '2025-12-04 04:28:05'),
+(143, 3, 'Sự cố mới từ Shipper', 'Shipper vừa báo cáo sự cố cho đơn hàng #11166554. Vui lòng kiểm tra.', 'system', 4, 0, '2025-12-04 04:28:05'),
+(144, 4, 'Sự cố mới từ Shipper', 'Shipper vừa báo cáo sự cố cho đơn hàng #11166554. Vui lòng kiểm tra.', 'system', 4, 0, '2025-12-04 04:28:05'),
+(145, 77, 'Sự cố mới từ Shipper', 'Shipper vừa báo cáo sự cố cho đơn hàng #11166554. Vui lòng kiểm tra.', 'system', 4, 0, '2025-12-04 04:28:05'),
+(146, 197, 'Sự cố mới từ Shipper', 'Shipper vừa báo cáo sự cố cho đơn hàng #11166554. Vui lòng kiểm tra.', 'system', 4, 1, '2025-12-04 04:28:05'),
+(147, 12, 'Tài khoản đã bị khóa', 'Tài khoản của bạn đã bị khóa bởi quản trị viên. Vui lòng liên hệ để biết thêm chi tiết.', 'system', NULL, 0, '2025-12-04 04:39:29');
 
 -- --------------------------------------------------------
 
@@ -241,7 +287,7 @@ CREATE TABLE `pricing_rules` (
 
 INSERT INTO `pricing_rules` (`ID`, `Name`, `VehicleType`, `BaseDistance`, `BasePrice`, `PricePerKm`, `PricePerKg`, `FreeWeight`, `IsActive`, `Created_at`) VALUES
 (1, 'Giao hàng Xe máy Tiêu chuẩn', 'motorbike', '2.00', '15000.00', '5000.00', '2500.00', '3.00', 1, '2025-12-03 03:33:21'),
-(2, 'Giá tiêu chuẩn tháng 1/2026', 'motorbike', '2.00', '15000.00', '5500.00', '2000.00', '3.00', 0, '2025-12-03 04:13:30');
+(2, 'Giá tiêu chuẩn tháng 1/2026', 'motorbike', '2.00', '15000.00', '5500.00', '2500.00', '3.00', 0, '2025-12-03 04:13:30');
 
 -- --------------------------------------------------------
 
@@ -286,8 +332,7 @@ CREATE TABLE `receipts` (
 --
 
 INSERT INTO `receipts` (`ID`, `Code`, `ShipperID`, `TotalAmount`, `ProofImage`, `Note`, `Created_at`) VALUES
-(2, 'PT20251203034721_141', 141, '10000.00', 'https://res.cloudinary.com/dbaeafw6z/image/upload/v1764730039/transaction_proofs/jfajiaio0a21cfs1b2el.png', 'CK', '2025-12-03 02:47:21'),
-(4, 'PT20251203160320_141', 141, '15000.00', 'https://res.cloudinary.com/dbaeafw6z/image/upload/v1764774200/transaction_proofs/omxbsxbqrn6oopd86lvl.png', 'CK', '2025-12-03 15:03:20');
+(5, 'PT20251203164141_141', 141, '15000.00', 'https://res.cloudinary.com/dbaeafw6z/image/upload/v1764776500/transaction_proofs/qke0gob5n7vq5llufcrh.png', 'Chuyển khoản', '2025-12-03 15:41:41');
 
 -- --------------------------------------------------------
 
@@ -335,10 +380,71 @@ CREATE TABLE `shipper_locations` (
 
 INSERT INTO `shipper_locations` (`shipper_id`, `lat`, `lng`, `accuracy`, `speed`, `heading`, `status`, `updated_at`) VALUES
 (139, 10.9066998, 106.6348802, NULL, NULL, NULL, 'offline', '2025-12-03 03:47:39'),
-(141, 10.8290492, 106.6826537, NULL, NULL, NULL, 'offline', '2025-12-03 14:48:49'),
+(141, 10.9066226, 106.6348919, NULL, NULL, NULL, 'offline', '2025-12-04 04:25:50'),
 (157, 10.7703004, 106.7170031, NULL, NULL, NULL, 'offline', '2025-10-12 16:19:04'),
 (158, 10.9066972, 106.6348068, NULL, NULL, NULL, 'offline', '2025-11-02 14:01:04'),
 (188, 10.906494, 106.634823, NULL, NULL, NULL, 'offline', '2025-11-23 16:18:17');
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `system_logs`
+--
+
+CREATE TABLE `system_logs` (
+  `ID` int(11) NOT NULL,
+  `UserID` int(11) DEFAULT NULL COMMENT 'Người thực hiện (Có thể NULL nếu là lỗi hệ thống)',
+  `Action` varchar(50) NOT NULL COMMENT 'Tên hành động: LOGIN, INSERT, UPDATE, DELETE...',
+  `TargetTable` varchar(50) DEFAULT NULL COMMENT 'Bảng bị tác động (VD: orders)',
+  `TargetID` int(11) DEFAULT NULL COMMENT 'ID của dòng bị tác động',
+  `Description` text DEFAULT NULL COMMENT 'Mô tả chi tiết (VD: Đổi giá tiền từ A sang B)',
+  `IPAddress` varchar(45) DEFAULT NULL COMMENT 'IP của người dùng',
+  `UserAgent` varchar(255) DEFAULT NULL COMMENT 'Trình duyệt/Thiết bị',
+  `Created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Đang đổ dữ liệu cho bảng `system_logs`
+--
+
+INSERT INTO `system_logs` (`ID`, `UserID`, `Action`, `TargetTable`, `TargetID`, `Description`, `IPAddress`, `UserAgent`, `Created_at`) VALUES
+(1, 141, 'LOGIN', 'users', 141, 'Đăng nhập vào hệ thống thành công', '192.168.1.15', 'okhttp/4.11.0', '2025-12-03 15:12:37'),
+(2, 1, 'UPDATE_USER', 'users', 197, 'Cập nhật thông tin user: testSerc2Upd', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-12-03 15:15:08'),
+(3, 197, 'LOGIN', 'users', 197, 'Đăng nhập vào hệ thống thành công', '::1', 'UNKNOWN', '2025-12-03 15:16:31'),
+(4, 1, 'LOGIN', 'users', 1, 'Đăng nhập vào hệ thống thành công', '::1', 'UNKNOWN', '2025-12-03 15:22:45'),
+(5, 194, 'LOGIN', 'users', 194, 'Đăng nhập vào hệ thống thành công', '192.168.1.10', 'okhttp/4.11.0', '2025-12-03 15:31:16'),
+(6, 1, 'LOGIN', 'users', 1, 'Đăng nhập vào hệ thống thành công', '::1', 'UNKNOWN', '2025-12-03 15:31:56'),
+(7, 141, 'LOGIN', 'users', 141, 'Đăng nhập vào hệ thống thành công', '::1', 'UNKNOWN', '2025-12-03 15:34:43'),
+(8, 1, 'LOGIN', 'users', 1, 'Đăng nhập vào hệ thống thành công', '::1', 'UNKNOWN', '2025-12-03 15:36:15'),
+(9, 1, 'CREATE_RECEIPT', 'receipts', 5, 'Đã lập phiếu thu #PT20251203164141_141. Số tiền: 15,000đ. Shipper: 141', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-12-03 15:41:41'),
+(10, 141, 'LOGIN', 'users', 141, 'Đăng nhập vào hệ thống thành công', '192.168.1.15', 'okhttp/4.11.0', '2025-12-03 15:58:41'),
+(11, 1, 'UPDATE_PRICING', 'pricing_rules', 2, 'UPDATE_PRICING: Giá tiêu chuẩn tháng 1/2026 (Giá cơ bản: 15000)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-12-03 16:06:37'),
+(12, 141, 'LOGIN', 'users', 141, 'Đăng nhập vào hệ thống thành công', '192.168.1.10', 'okhttp/4.11.0', '2025-12-03 16:16:39'),
+(13, 185, 'LOGIN', 'users', 185, 'Đăng nhập vào hệ thống thành công', '192.168.1.10', 'okhttp/4.11.0', '2025-12-03 17:17:27'),
+(14, 141, 'LOGIN', 'users', 141, 'Đăng nhập vào hệ thống thành công', '192.168.1.10', 'okhttp/4.11.0', '2025-12-03 17:35:17'),
+(15, 185, 'LOGIN', 'users', 185, 'Đăng nhập vào hệ thống thành công', '192.168.1.10', 'okhttp/4.11.0', '2025-12-03 17:40:23'),
+(16, 141, 'LOGIN', 'users', 141, 'Đăng nhập vào hệ thống thành công', '192.168.1.10', 'okhttp/4.11.0', '2025-12-03 17:41:00'),
+(17, 141, 'LOGIN', 'users', 141, 'Đăng nhập vào hệ thống thành công', '192.168.1.15', 'okhttp/4.11.0', '2025-12-03 17:41:36'),
+(18, 185, 'LOGIN', 'users', 185, 'Đăng nhập vào hệ thống thành công', '192.168.1.15', 'okhttp/4.11.0', '2025-12-03 17:44:28'),
+(19, 1, 'LOGIN', 'users', 1, 'Đăng nhập vào hệ thống thành công', '::1', 'UNKNOWN', '2025-12-04 02:26:18'),
+(20, 1, 'UPDATE_INCIDENT', 'incident_reports', 2, 'Đã xử lý báo cáo #2. Trạng thái: resolved. Nội dung: Test xử lý', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2025-12-04 02:38:03'),
+(22, 197, 'LOGIN', 'users', 197, 'Đăng nhập vào hệ thống thành công', '::1', 'UNKNOWN', '2025-12-04 03:07:52'),
+(23, 1, 'LOGIN', 'users', 1, 'Đăng nhập vào hệ thống thành công', '::1', 'UNKNOWN', '2025-12-04 03:08:10'),
+(24, 197, 'LOGIN', 'users', 197, 'Đăng nhập vào hệ thống thành công', '::1', 'UNKNOWN', '2025-12-04 03:26:41'),
+(25, 1, 'LOGIN', 'users', 1, 'Đăng nhập vào hệ thống thành công', '::1', 'UNKNOWN', '2025-12-04 03:26:52'),
+(26, 197, 'LOGIN', 'users', 197, 'Đăng nhập vào hệ thống thành công', '::1', 'UNKNOWN', '2025-12-04 03:28:29'),
+(27, 1, 'LOGIN', 'users', 1, 'Đăng nhập vào hệ thống thành công', '::1', 'UNKNOWN', '2025-12-04 03:28:58'),
+(28, 1, 'LOGIN', 'users', 1, 'Đăng nhập vào hệ thống thành công', '::1', 'UNKNOWN', '2025-12-04 03:29:11'),
+(29, 141, 'LOGIN', 'users', 141, 'Đăng nhập vào hệ thống thành công', '::1', 'UNKNOWN', '2025-12-04 03:29:44'),
+(30, 197, 'LOGIN', 'users', 197, 'Đăng nhập vào hệ thống thành công', '::1', 'UNKNOWN', '2025-12-04 03:30:41'),
+(33, 1, 'LOGIN', 'users', 1, 'Đăng nhập vào hệ thống thành công', '::1', 'UNKNOWN', '2025-12-04 03:31:27'),
+(34, 1, 'LOGIN', 'users', 1, 'Đăng nhập vào hệ thống thành công', '::1', 'UNKNOWN', '2025-12-04 03:34:13'),
+(35, 197, 'LOGIN', 'users', 197, 'Đăng nhập vào hệ thống thành công', '::1', 'UNKNOWN', '2025-12-04 03:34:46'),
+(36, 1, 'LOGIN', 'users', 1, 'Đăng nhập vào hệ thống thành công', '::1', 'UNKNOWN', '2025-12-04 03:34:55'),
+(37, 1, 'LOGIN', 'users', 1, 'Đăng nhập vào hệ thống thành công', '::1', 'UNKNOWN', '2025-12-04 03:53:55'),
+(38, 1, 'LOGIN', 'users', 1, 'Đăng nhập vào hệ thống thành công', '::1', 'UNKNOWN', '2025-12-04 04:15:40'),
+(39, 141, 'LOGIN', 'users', 141, 'Đăng nhập vào hệ thống thành công', '::1', 'UNKNOWN', '2025-12-04 04:16:44'),
+(40, 1, 'LOGIN', 'users', 1, 'Đăng nhập vào hệ thống thành công', '::1', 'UNKNOWN', '2025-12-04 04:16:55');
 
 -- --------------------------------------------------------
 
@@ -477,9 +583,9 @@ INSERT INTO `transactions` (`ID`, `OrderID`, `UserID`, `Type`, `Amount`, `Status
 (43, 11094471, 141, 'shipping_fee', '18000.00', 'completed', NULL, '2025-11-26 04:38:34', NULL, NULL),
 (44, 11094471, 141, 'collect_cod', '104000.00', 'completed', NULL, '2025-11-26 04:38:34', NULL, NULL),
 (57, 11166554, 141, 'shipping_fee', '15000.00', 'completed', NULL, '2025-11-28 07:43:39', NULL, NULL),
-(65, 9186174, 141, 'deposit_cod', '5000.00', 'completed', 'Thanh toán theo phiếu thu #PT20251203160320_141', '2025-12-03 15:03:20', NULL, 4),
-(66, 11021978, 141, 'deposit_cod', '5000.00', 'completed', 'Thanh toán theo phiếu thu #PT20251203160320_141', '2025-12-03 15:03:20', NULL, 4),
-(67, 11094471, 141, 'deposit_cod', '5000.00', 'completed', 'Thanh toán theo phiếu thu #PT20251203160320_141', '2025-12-03 15:03:20', NULL, 4);
+(68, 9186174, 141, 'deposit_cod', '5000.00', 'completed', 'Thanh toán theo phiếu thu #PT20251203164141_141', '2025-12-03 15:41:41', NULL, 5),
+(69, 11021978, 141, 'deposit_cod', '5000.00', 'completed', 'Thanh toán theo phiếu thu #PT20251203164141_141', '2025-12-03 15:41:41', NULL, 5),
+(70, 11094471, 141, 'deposit_cod', '5000.00', 'completed', 'Thanh toán theo phiếu thu #PT20251203164141_141', '2025-12-03 15:41:41', NULL, 5);
 
 -- --------------------------------------------------------
 
@@ -516,7 +622,7 @@ INSERT INTO `users` (`ID`, `Username`, `Email`, `Password`, `PhoneNumber`, `Avat
 (9, 'ketoan1', 'ketoan1@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0901234508', NULL, 5, 'active', NULL, 'test update', 1, 0, 0, '2025-10-14 05:30:32'),
 (10, 'ketoan2', 'ketoan2@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0901234509', NULL, 5, 'active', NULL, '', 1, 0, 0, '2025-10-14 05:30:32'),
 (11, 'shipper1', 'shipper1@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0901234510', NULL, 6, 'active', NULL, 'Go Vap-Binh Thanh', 1, 0, 0, '2025-10-14 05:30:32'),
-(12, 'shipper2', 'shipper2@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0901234511', NULL, 6, 'active', NULL, 'Cu Chi - Hoc Mon', 1, 0, 0, '2025-10-14 05:30:32'),
+(12, 'shipper2', 'shipper2@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0901234511', NULL, 6, 'locked', NULL, 'Cu Chi - Hoc Mon', 1, 0, 0, '2025-10-14 05:30:32'),
 (75, 'Tom', 'tom@gmail.com', '15de21c670ae7c3f6f3f1f37029303c9', '0979345532', NULL, 7, 'active', NULL, '', 1, 0, 0, '2025-10-14 05:30:32'),
 (77, 'Dom', 'dom2@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0989777666', NULL, 2, 'active', NULL, '', 1, 0, 0, '2025-10-14 05:30:32'),
 (139, 'shipper3', 'shipper3@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0379111222', NULL, 6, 'active', '4.50', '', 1, 0, 0, '2025-10-10 02:30:32'),
@@ -546,7 +652,7 @@ INSERT INTO `users` (`ID`, `Username`, `Email`, `Password`, `PhoneNumber`, `Avat
 (192, 'test3210', 'ts321@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0987987909', NULL, 6, 'active', NULL, '', 1, 0, 0, '2025-10-31 02:54:39'),
 (194, 'Trong Phat Le', 'trongphat@gmail.com', 'e10adc3949ba59abbe56e057f20f883e', '0379974903', NULL, 7, 'active', NULL, '', 1, 0, 0, '2025-10-31 03:10:49'),
 (196, 'Test Shipper Image2', 'shipperanh@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0379974000', 'https://res.cloudinary.com/dbaeafw6z/image/upload/v1764087923/avatars/nwpsa5c8qwc5m5neddiz.png', 6, 'active', NULL, 'test', 1, 0, 0, '2025-11-25 16:10:06'),
-(197, 'testSerc2', 'tsr@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0989777882', 'https://res.cloudinary.com/dbaeafw6z/image/upload/v1764216117/avatars/nesh7mvbnufwxjfvezkg.png', 2, 'active', NULL, 'testS', 1, 0, 0, '2025-11-27 04:00:38');
+(197, 'testSerc2Upd', 'tsr@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0989777882', 'https://res.cloudinary.com/dbaeafw6z/image/upload/v1764216117/avatars/nesh7mvbnufwxjfvezkg.png', 2, 'active', NULL, 'testS', 1, 0, 0, '2025-11-27 04:00:38');
 
 -- --------------------------------------------------------
 
@@ -580,6 +686,14 @@ INSERT INTO `vehicles` (`id`, `shipper_id`, `license_plate`, `model`, `type`, `i
 --
 -- Chỉ mục cho các bảng đã đổ
 --
+
+--
+-- Chỉ mục cho bảng `incident_reports`
+--
+ALTER TABLE `incident_reports`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `fk_incidents_orders` (`OrderID`),
+  ADD KEY `fk_incidents_users` (`ReporterID`);
 
 --
 -- Chỉ mục cho bảng `notifications`
@@ -635,6 +749,13 @@ ALTER TABLE `shipper_locations`
   ADD KEY `idx_lng` (`lng`);
 
 --
+-- Chỉ mục cho bảng `system_logs`
+--
+ALTER TABLE `system_logs`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `fk_logs_users` (`UserID`);
+
+--
 -- Chỉ mục cho bảng `trackings`
 --
 ALTER TABLE `trackings`
@@ -672,10 +793,16 @@ ALTER TABLE `vehicles`
 --
 
 --
+-- AUTO_INCREMENT cho bảng `incident_reports`
+--
+ALTER TABLE `incident_reports`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT cho bảng `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=130;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=148;
 
 --
 -- AUTO_INCREMENT cho bảng `orders`
@@ -699,13 +826,19 @@ ALTER TABLE `ratings`
 -- AUTO_INCREMENT cho bảng `receipts`
 --
 ALTER TABLE `receipts`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT cho bảng `roles`
 --
 ALTER TABLE `roles`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT cho bảng `system_logs`
+--
+ALTER TABLE `system_logs`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT cho bảng `trackings`
@@ -717,7 +850,7 @@ ALTER TABLE `trackings`
 -- AUTO_INCREMENT cho bảng `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
 
 --
 -- AUTO_INCREMENT cho bảng `users`
@@ -734,6 +867,13 @@ ALTER TABLE `vehicles`
 --
 -- Các ràng buộc cho các bảng đã đổ
 --
+
+--
+-- Các ràng buộc cho bảng `incident_reports`
+--
+ALTER TABLE `incident_reports`
+  ADD CONSTRAINT `fk_incidents_orders` FOREIGN KEY (`OrderID`) REFERENCES `orders` (`ID`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_incidents_users` FOREIGN KEY (`ReporterID`) REFERENCES `users` (`ID`) ON DELETE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `notifications`
@@ -767,6 +907,12 @@ ALTER TABLE `receipts`
 --
 ALTER TABLE `shipper_locations`
   ADD CONSTRAINT `fk_shipper_locations_user` FOREIGN KEY (`shipper_id`) REFERENCES `users` (`ID`) ON DELETE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `system_logs`
+--
+ALTER TABLE `system_logs`
+  ADD CONSTRAINT `fk_logs_users` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `trackings`

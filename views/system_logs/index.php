@@ -89,7 +89,16 @@ if (!isset($_SESSION["dangnhap"]) || $_SESSION["role"] != 1) {
         logs.forEach(log => {
             const time = new Date(log.Created_at).toLocaleString('vi-VN');
             const user = log.Username ? `<span class="font-weight-bold text-dark">${log.Username}</span>` : '<em class="text-muted">Hệ thống/Lỗi</em>';
-            const target = log.TargetTable ? `${log.TargetTable} #${log.TargetID}` : '-';
+            // const target = log.TargetTable ? `${log.TargetTable} #${log.TargetID}` : '-';
+            let target = '-';
+            if (log.TargetTable) {
+                target = log.TargetTable; // Mặc định chỉ hiện tên bảng (VD: notifications)
+                
+                // Chỉ thêm ID nếu nó tồn tại (khác null và khác 0)
+                if (log.TargetID && log.TargetID != 0) {
+                    target += ` #${log.TargetID}`;
+                }
+            }
 
             const row = `
                 <tr>

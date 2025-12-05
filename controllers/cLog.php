@@ -6,6 +6,7 @@ class controlLog {
     
     // Hàm tĩnh (Static) để gọi nhanh: controlLog::record(...)
     public static function record($userId, $action, $targetTable = null, $targetId = null, $description = '') {
+        // $userId = ($userId > 0) ? $userId : 1;
         $db = new clsKetNoi();
         $conn = $db->moKetNoi();
 

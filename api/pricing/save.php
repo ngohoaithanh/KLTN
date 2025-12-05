@@ -16,6 +16,18 @@ try {
     $priceKg = floatval($data['PricePerKg']);
     $active = intval($data['IsActive']);
 
+    if ($active == 1) {
+        // Tắt tất cả bảng giá khác cùng loại xe
+        $stmt_deactivate = $conn->prepare("UPDATE pricing_rules SET IsActive = 0 WHERE VehicleType = ? AND ID != ?");
+        
+        // Nếu là thêm mới ($data['ID'] chưa có), ta truyền tạm ID = 0 (để không trùng ai cả)
+        $current_id = (isset($data['ID']) && $data['ID'] > 0) ? $data['ID'] : 0;
+        
+        $stmt_deactivate->bind_param("si", $type, $current_id);
+        $stmt_deactivate->execute();
+        $stmt_deactivate->close();
+    }
+
     if (isset($data['ID']) && $data['ID'] > 0) {
         // UPDATE
         $stmt = $conn->prepare("UPDATE pricing_rules SET Name=?, VehicleType=?, BaseDistance=?, BasePrice=?, PricePerKm=?, FreeWeight=?, PricePerKg=?, IsActive=? WHERE ID=?");

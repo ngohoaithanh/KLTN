@@ -1,6 +1,16 @@
 <?php
+// FILE: api/order/update_order.php (Đã thêm Ghi Log)
 header('Content-Type: application/json; charset=utf-8');
+
+// 1. Khởi động Session để lấy ID Admin
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+// Include Log Controller
+include_once('../../controllers/cLog.php');
 include_once('../../config/database.php');
+$current_user_id = isset($_POST['UpdatedBy']) ? intval($_POST['UpdatedBy']) : 0;
+
 
 $db = new clsKetNoi();
 $conn = $db->moKetNoi();
@@ -22,12 +32,12 @@ if (
     $recipient = trim($_POST['Recipient']);
     $recipientPhone = trim($_POST['RecipientPhone']);
     
-    // Kiểm tra giá trị trọng lượng (Weight)
+    // Kiểm tra giá trị trọng lượng
     if (!isset($_POST['Weight']) || empty($_POST['Weight'])) {
         echo json_encode(['success' => false, 'error' => 'Thiếu trường: Weight']);
         exit;
     }
-    $weight = floatval($_POST['Weight']); // Lấy trọng lượng từ POST
+    $weight = floatval($_POST['Weight']);
     
     if ($weight <= 0) {
         echo json_encode(['success' => false, 'error' => 'Trọng lượng phải lớn hơn 0']);
@@ -38,25 +48,14 @@ if (
     $cod = floatval($_POST['COD_amount']);
     $note = isset($_POST['Note']) ? trim($_POST['Note']) : '';
 
-    // Tính toán ShippingFee dựa trên trọng lượng
-    if ($weight <= 1) {
-        $shippingFee = 15000;
-    } elseif ($weight <= 2) {
-        $shippingFee = 18000;
-    } else {
-        $extraWeight = $weight - 2;
-        $extraFee = ceil($extraWeight * 2) * 2500;
-        $shippingFee = 18000 + $extraFee;
-    }
-
-    // Kiểm tra các trạng thái hợp lệ
+    // Kiểm tra trạng thái
     $allowed_statuses = ['pending','accepted','picked_up','in_transit','delivered','delivery_failed','cancelled'];
     if (!in_array($status, $allowed_statuses)) {
         echo json_encode(['success' => false, 'error' => 'Trạng thái không hợp lệ']);
         exit;
     }
 
-    // Thực hiện cập nhật dữ liệu
+    // Thực hiện cập nhật
     $conn->begin_transaction();
 
     try {
@@ -67,26 +66,12 @@ if (
                     Recipient = ?, 
                     RecipientPhone = ?, 
                     Weight = ?, 
-                    ShippingFee = ?, 
                     Status = ?, 
                     COD_amount = ?, 
                     Note = ? 
                 WHERE ID = ?";
         $stmt = $conn->prepare($sql);
-       $stmt->bind_param(
-    'ssssddsdsi', // Kiểu dữ liệu
-    $pickup,      // s
-    $delivery,    // s
-    $recipient,   // s
-    $recipientPhone, // s
-    $weight,      // d
-    $shippingFee, // d
-    $status,      // s
-    $cod,         // d
-    $note,        // s
-    $id           // i
-);
-
+        $stmt->bind_param('ssssdsdsi', $pickup, $delivery, $recipient, $recipientPhone, $weight, $status, $cod, $note, $id);
 
         if (!$stmt->execute()) {
             throw new Exception("Lỗi khi cập nhật đơn hàng: " . $stmt->error);
@@ -104,6 +89,25 @@ if (
 
         $stmt_user->close();
         $conn->commit();
+
+        // ghi log
+        try {
+            if ($current_user_id > 0) {
+                $log_desc = "Cập nhật đơn hàng #$id: "
+                          . "Pickup='$pickup', Delivery='$delivery', Recipient='$recipient', "
+                          . "RecipientPhone='$recipientPhone', Weight=$weight, Status='$status', "
+                          . "COD=$cod, Note='$note'. "
+                          . "Cập nhật khách hàng (ID=$customerID): Name='$fullName', Phone='$phoneNumber'.";
+                
+                controlLog::record(
+                    $current_user_id,      // ai sửa?
+                    'UPDATE_ORDER',        // loại hành động
+                    'orders',              // bảng
+                    $id,                   // reference id
+                    $log_desc              // mô tả
+                );
+            }
+        } catch (Exception $e) {}
 
         echo json_encode(['success' => true]);
 

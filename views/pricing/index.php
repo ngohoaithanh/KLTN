@@ -223,15 +223,34 @@
     // 4. Xóa
     async function deleteRule(id) {
         if(!confirm('Bạn có chắc chắn muốn xóa bảng giá này?')) return;
+        
         try {
             const res = await fetch('api/pricing/delete.php', {
                 method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({id: id})
             });
-            const result = await res.json();
-            if(result.success) loadRules();
-            else alert('Lỗi khi xóa');
-        } catch(e) { alert('Lỗi kết nối'); }
+            
+            const text = await res.text();
+            let result;
+            try {
+                result = JSON.parse(text);
+            } catch (e) {
+                alert('Lỗi Server (Không phải JSON): ' + text);
+                return;
+            }
+
+            if(result.success) {
+                loadRules();
+                alert(result.message);
+            } else {
+                alert('Lỗi: ' + result.error);
+            }
+            
+        } catch(e) { 
+            console.error(e);
+            alert('Lỗi kết nối mạng hoặc lỗi hệ thống.'); 
+        }
     }
 
     function getVehicleIcon(type) {
